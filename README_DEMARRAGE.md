@@ -92,3 +92,9 @@ Le bouton Réinitialiser la position restaure 23 cm de hauteur et 52 cm de recul
 Les valeurs restent sélectionnées entre les coups et changements de vue durant
 la session. Pendant un tir, les ajustements se font autour du point de tir initial,
 sans suivre la blanche. Le zoom conserve son réglage indépendant.
+
+En vue joueur, déplacer la souris verticalement règle aussi la hauteur des yeux :
+vers le haut pour les relever, vers le bas pour les abaisser (limites 12–50 cm).
+Le curseur et sa valeur restent synchronisés. Le clic droit réduit aussi la
+sensibilité verticale ; le clic gauche verrouille la direction et la hauteur.
+Pendant le mouvement des billes, la souris ne déplace pas la caméra.

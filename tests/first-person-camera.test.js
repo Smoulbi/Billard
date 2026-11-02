@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,firstPersonPose,freezeFirstPersonShot,currentFirstPersonPose} from '../dist/first-person-camera.js';
+import {adjustFirstPersonHeight,createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,firstPersonPose,freezeFirstPersonShot,currentFirstPersonPose} from '../dist/first-person-camera.js';
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-10,`${a} != ${b}`);
 test('eyes are behind the cue ball and aligned with any shot direction',()=>{
   for(const aim of [{x:1,z:0},{x:0,z:-1},{x:Math.SQRT1_2,z:Math.SQRT1_2}]){
@@ -48,4 +48,15 @@ test('live eye adjustments during a shot remain relative to its original positio
   cue.x=.8;aim.x=0;aim.z=1;
   assert.deepEqual(currentFirstPersonPose(view,cue,aim,true,{height:.5,setback:1.1}),
     firstPersonPose({x:-.7,z:.2},{x:1,z:0},{height:.5,setback:1.1}));
+});
+
+test('vertical mouse travel raises or lowers the eyes within the slider limits',()=>{
+  const view=createFirstPersonView();
+  near(adjustFirstPersonHeight(view,23,-100),33);
+  near(adjustFirstPersonHeight(view,23,100),13);
+  near(adjustFirstPersonHeight(view,23,-10000),50);
+  near(adjustFirstPersonHeight(view,23,10000),12);
+  view.fine=true;near(adjustFirstPersonHeight(view,23,-100),24);
+  view.locked=true;near(adjustFirstPersonHeight(view,23,-100),23);
+  near(adjustFirstPersonHeight(view,23,NaN),23);
 });

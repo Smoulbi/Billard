@@ -1,4 +1,4 @@
-import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
+import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
 import * as THREE from './vendor/three.module.js';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
@@ -1432,7 +1432,7 @@ function forcePlacementCamera() {
   if(cameraMode!=='overhead') {
     cameraMode='overhead';orbit.topDown=true;
     orbit.targetX=0;orbit.targetZ=0;orbit.distance=3.97;
-    firstPerson.previousX=null;
+    firstPerson.previousX=null;firstPerson.previousY=null;
   }
   el.cameraName.textContent='DESSUS';
   updateCamera();
@@ -1444,7 +1444,7 @@ function toggleCamera() {
   const modes=['perspective','overhead','first-person'];
   cameraMode=modes[(modes.indexOf(cameraMode)+1)%modes.length];
   orbit.topDown=cameraMode==='overhead';
-  firstPerson.previousX=null;
+  firstPerson.previousX=null;firstPerson.previousY=null;
   el.cameraName.textContent=cameraMode==='first-person'?'PREMIÈRE PERSONNE':orbit.topDown?'DESSUS':'PERSPECTIVE';
   updateCamera();updateVisuals();
 }
@@ -1502,7 +1502,7 @@ function refreshPlacementUI() {
     el.cameraName.textContent=`PREMIÈRE PERSONNE · ${firstPerson.fine?'FINE':'NORMALE'} · ${firstPerson.locked?'VERROUILLÉE':'LIBRE'}`;
     if(!placementMode&&!needsCuePlacement)el.sceneHint.textContent=shotActive?
       'CAMÉRA FIXE AU POINT DE TIR · V : CHANGER DE VUE':
-      'SOURIS : VISER · CLIC DROIT : VISÉE FINE · CLIC GAUCHE : VERROUILLER / LIBÉRER · V : VUE';
+      'SOURIS ↔ : VISER · ↕ : HAUTEUR DES YEUX · CLIC DROIT : VISÉE FINE · CLIC GAUCHE : VERROUILLER / LIBÉRER · V : VUE';
   }
   if(placementZone) {
     placementZone.visible=available&&headOnly;
@@ -1574,7 +1574,7 @@ function bindControls() {
   el.gameCanvas.addEventListener('pointerdown',e=>{
     el.gameCanvas.focus({preventScroll:true});
     if(cameraMode==='first-person') {
-      firstPerson.previousX=e.clientX;
+      firstPerson.previousX=e.clientX;firstPerson.previousY=e.clientY;
       if(e.button===2){
         e.preventDefault();
         if(!shotActive){firstPerson.fine=!firstPerson.fine;refreshPlacementUI();}
@@ -1614,13 +1614,17 @@ function bindControls() {
       updateAimAt(e.clientX,e.clientY);
     }else updateAimAt(e.clientX,e.clientY);
   });
-  el.gameCanvas.addEventListener('pointerleave',()=>{firstPerson.previousX=null;});
+  el.gameCanvas.addEventListener('pointerleave',()=>{firstPerson.previousX=null;firstPerson.previousY=null;});
   el.gameCanvas.addEventListener('pointermove',e=>{
     if(cameraMode==='first-person'&&!placementMode&&!needsCuePlacement&&!placementPointer){
-      const previous=firstPerson.previousX;
-      firstPerson.previousX=e.clientX;
+      const previous=firstPerson.previousX,previousY=firstPerson.previousY;
+      firstPerson.previousX=e.clientX;firstPerson.previousY=e.clientY;
       if(previous!==null&&!shotActive&&el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden){
         aim=rotateFirstPersonAim(firstPerson,aim,e.clientX-previous);
+        if(previousY!==null&&!firstPerson.locked){
+          el.firstPersonHeightSlider.value=String(adjustFirstPersonHeight(firstPerson,Number(el.firstPersonHeightSlider.value),e.clientY-previousY));
+          el.firstPersonHeightSlider.dispatchEvent(new Event('input'));
+        }
         updateVisuals();
       }
       return;
@@ -1714,7 +1718,7 @@ function bindControls() {
       [el.firstPersonSetbackSlider,el.firstPersonSetbackValue,30,110]
     ]){
       const value=Number(slider.value);
-      label.textContent=`${value} cm`;
+      label.textContent=`${value.toLocaleString('fr-FR',{maximumFractionDigits:1})} cm`;
       const filled=(value-min)/(max-min)*100;
       slider.style.background=`linear-gradient(to right,var(--accent) ${filled}%,#35443e ${filled}%)`;
     }
