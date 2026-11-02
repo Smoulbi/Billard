@@ -55,6 +55,15 @@
           <details class="shot-dock" open>
             <summary>COMMANDES DE JEU <span>Puissance · Effet</span></summary>
             <div class="shot-dock-body"><div class="shot-dock-content">
+              <div id="firstPersonSettings" class="shot-control" hidden>
+                <div class="control-title"><strong>ZOOM · VUE JOUEUR</strong><span id="firstPersonFovValue" class="power-value">60°</span></div>
+                <p class="control-description">Élargissez le champ de vision pour voir davantage la table, sans déplacer votre position.</p>
+                <input id="firstPersonFovSlider" type="range" min="35" max="85" value="60" step="1" aria-label="Champ de vision de la vue à la première personne en degrés">
+                <div class="range-labels"><span>ZOOM +</span><span>VUE LARGE</span></div>
+                <button id="firstPersonFovReset" class="text-button" type="button">RÉINITIALISER À 60°</button>
+                <div class="panel-divider slim"></div>
+              </div>
+
         <div id="matchPanel" class="match-panel" hidden>
           <div class="match-score"><div id="playerOne" class="match-player current"><small>JOUEUR 1</small><strong>À LA TABLE</strong><span id="playerOneGroup">TABLE OUVERTE</span></div><div id="playerTwo" class="match-player"><small>JOUEUR 2</small><strong>EN ATTENTE</strong><span id="playerTwoGroup">TABLE OUVERTE</span></div></div>
           <p id="matchMessage" class="match-message">Prêt pour la casse.</p>
@@ -172,6 +181,6 @@
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=059"></script>
+  <script type="module" src="./game.js?v=060"></script>
 </body>
 </html>

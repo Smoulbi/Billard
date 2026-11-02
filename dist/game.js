@@ -26,7 +26,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
@@ -1401,6 +1401,9 @@ function physicsStep(dt) {
 }
 
 function updateCamera() {
+  el.firstPersonSettings.hidden=cameraMode!=='first-person'||!!fallbackCtx;
+  const fov=cameraMode==='first-person'?Number(el.firstPersonFovSlider.value):40;
+  if(camera.fov!==fov){camera.fov=fov;camera.updateProjectionMatrix();}
   if(cameraMode==='first-person') {
     const cue=balls.find(b=>b.num===0);
     if(!cue)return;
@@ -1672,6 +1675,16 @@ function bindControls() {
   el.spinReset.addEventListener('click',()=>setSpin(0,0));
   el.powerSlider.addEventListener('input',()=>setPower(el.powerSlider.value));
   el.breakPreset.addEventListener('click',()=>{setPower(100);setSpin(0,0);setElevation(0);});
+  const updateFirstPersonZoom=()=>{
+    const value=Number(el.firstPersonFovSlider.value);
+    el.firstPersonFovValue.textContent=`${value}°`;
+    const filled=(value-35)/50*100;
+    el.firstPersonFovSlider.style.background=`linear-gradient(to right,var(--accent) ${filled}%,#35443e ${filled}%)`;
+    if(cameraMode==='first-person')updateCamera();
+  };
+  el.firstPersonFovSlider.addEventListener('input',updateFirstPersonZoom);
+  el.firstPersonFovReset.addEventListener('click',()=>{el.firstPersonFovSlider.value='60';updateFirstPersonZoom();});
+  updateFirstPersonZoom();
   el.elevationSlider.addEventListener('input',()=>setElevation(el.elevationSlider.value));
   el.shootButton.addEventListener('click',shoot);
   el.resetButton.addEventListener('click',showMatchSetup);

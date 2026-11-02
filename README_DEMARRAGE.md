@@ -72,3 +72,9 @@ restent accessibles pendant le mouvement. Pour déplacer la blanche, utiliser
 PLACER LA BLANCHE (ou les positions rapides à la casse) ; la vue de dessus
 reste disponible pour faciliter ce placement. La vue à la première personne
 nécessite le rendu 3D et n’est pas proposée dans le mode 2D de secours.
+
+Dans la vue joueur, le réglage « ZOOM · VUE JOUEUR » modifie le champ de vision
+en direct de 35° (rapproché) à 85° (large), y compris en plein écran et pendant
+un tir. Le réglage initial est désormais de 60°, plus large que l’ancienne vue
+à 40°. Il est conservé entre les coups et les changements de caméra durant
+la session ; le bouton Réinitialiser le ramène à 60°.
