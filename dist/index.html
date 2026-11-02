@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1216">
+  <meta name="description" content="Un atelier de simulation de billard américain en 3D : trajectoires, puissance, rétro et effets.">
+  <title>FRAME — Atelier de billard 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=058">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand"><div class="brand-symbol"><span></span><span></span><span></span></div><div><b>FRAME<span class="brand-period">.</span></b><small>ATELIER DE BILLARD</small></div></div>
+      <div class="topbar-center"><span class="live-dot"></span> POOL AMÉRICAIN · PROFIL ACTIF <span class="topbar-sep">/</span> VERSION 0.58</div>
+      <div class="topbar-right"><span class="badge-outline">PROTOTYPE INTERACTIF</span><button id="audioToggle" class="icon-button" title="Activer ou désactiver le son" aria-label="Activer ou désactiver le son">SON <span id="audioLabel">ON</span></button></div>
+    </header>
+
+    <div class="workspace">
+      <aside class="left-panel panel">
+        <div class="eyebrow">01 / LA SESSION</div>
+        <h1>Le jeu,<br><em>à votre main.</em></h1>
+        <p class="intro">Partie à deux joueurs, arbitrage automatique du jeu de la 8 et simulation de physique en temps réel.</p>
+
+        <div class="panel-divider"></div>
+        <div class="eyebrow">PARTIE EN COURS <span id="modeChip" class="mini-chip">JEU DE LA 8</span></div>
+        <div class="stat-row"><div><small>COUPS JOUÉS</small><strong id="shotsCount">00</strong></div><div><small>BILLES EMPOCHÉES</small><strong><span id="pottedCount">00</span><span class="stat-muted"> / <span id="ballTotal">15</span></span></strong></div></div>
+        <div class="balls-progress" id="ballsProgress" aria-label="Billes encore en jeu"></div>
+
+        <div class="panel-divider"></div>
+        <div class="eyebrow">ÉTAT DE LA TABLE</div>
+        <div class="status-card"><div class="status-indicator" id="statusIndicator"></div><div><strong id="statusTitle">À vous de jouer</strong><p id="statusText">Orientez la queue pour préparer votre coup.</p></div></div>
+
+        <div class="left-bottom">
+          <div class="eyebrow">LE PROJET</div>
+          <p>Physique calculée à 240 Hz, traces enregistrées jusqu’à 60 Hz, scénarios reproductibles et export des coordonnées. Résultats à comparer à des tirs réels.</p>
+          <div class="version-row"><span>BUILD 049</span><span>POOL US · SNOOKER CONSERVÉ</span></div>
+        </div>
+      </aside>
+
+      <main class="main-stage">
+        <div class="stage-heading"><div><span class="eyebrow">TABLE Nº 01 / ÉDITION TOURNOI</span><h2>La table de compétition.</h2></div><div class="table-legend"><span><i class="legend-dot"></i> BILLARD AMÉRICAIN</span><span>WPA / 9 FT</span></div></div>
+
+        <section class="scene-frame" aria-label="Table de billard 3D interactive">
+          <canvas id="gameCanvas" tabindex="0" aria-label="Table de billard. Avant la casse, glissez la blanche dans la zone de départ. Souris pour viser, clic droit maintenu pour tourner, molette enfoncée et déplacement pour bouger la caméra, défilement pour zoomer, touche F pour le plein écran."></canvas>
+          <div class="scene-vignette"></div>
+          <div class="scene-top-left"><span class="scene-kicker">VUE ACTIVE</span><strong id="cameraName">PERSPECTIVE</strong></div>
+          <div id="placementQuick" class="placement-quick" aria-label="Positions de casse rapides"><span>PLACEMENT RAPIDE</span><button type="button" data-cue-z="-0.42">HAUT</button><button type="button" data-cue-z="0">CENTRE</button><button type="button" data-cue-z="0.42">BAS</button></div>
+          <div class="scene-top-right"><span class="scene-kicker">POSITION DE TIR</span><strong id="shotState">PRÊT</strong></div>
+          <div class="scene-bottom-left"><span class="crosshair">+</span><span id="sceneHint">CLIC DROIT : TOURNER <span class="hint-sep">·</span> MOLETTE ENFONCÉE : DÉPLACER <span class="hint-sep">·</span> DÉFILER : ZOOM <span class="hint-sep">·</span> F : PLEIN ÉCRAN</span></div>
+          <div class="scene-bottom-right"><button id="fullscreenButton" class="camera-button" type="button" aria-label="Activer ou quitter le plein écran">PLEIN ÉCRAN</button><button id="placeCueButton" class="camera-button place-cue-button" type="button">PLACER LA BLANCHE</button><button id="viewButton" class="camera-button" title="Changer de caméra"><span class="view-icon">▣</span> CHANGER DE VUE <kbd>V</kbd></button></div>
+          <details class="shot-dock" open>
+            <summary>COMMANDES DE JEU <span>Puissance · Effet</span></summary>
+            <div class="shot-dock-body"><div class="shot-dock-content">
+        <div id="matchPanel" class="match-panel" hidden>
+          <div class="match-score"><div id="playerOne" class="match-player current"><small>JOUEUR 1</small><strong>À LA TABLE</strong><span id="playerOneGroup">TABLE OUVERTE</span></div><div id="playerTwo" class="match-player"><small>JOUEUR 2</small><strong>EN ATTENTE</strong><span id="playerTwoGroup">TABLE OUVERTE</span></div></div>
+          <p id="matchMessage" class="match-message">Prêt pour la casse.</p>
+        </div>
+        <div class="shot-control"><div class="panel-divider"></div>
+        <div class="control-title"><div><span class="control-index">01</span><strong>POINT D'IMPACT</strong></div><button id="spinReset" class="text-button">CENTRER</button></div>
+        <p class="control-description">Déplacez le point sur la blanche pour doser le rétro, le coulé et l'effet latéral.</p>
+        <div class="spin-area"><span class="axis-label label-top">COULÉ</span><div id="spinPad" class="spin-pad" tabindex="0" role="application" aria-label="Point d'impact sur la bille blanche, flèches pour régler, Origine pour centrer"><div class="spin-circle"><div class="spin-axis horizontal"></div><div class="spin-axis vertical"></div><div id="spinDot" class="spin-dot"></div></div></div><span class="axis-label label-bottom">RÉTRO</span><span class="axis-side label-left">GAUCHE</span><span class="axis-side label-right">DROITE</span></div>
+        <div class="spin-readout"><span id="spinType">BILLE CENTRÉE</span><span id="spinCoords">0.00 / 0.00</span></div>
+        <div id="impactReadout" class="impact-readout" aria-live="polite"><span>TRAJECTOIRE INITIALE</span><strong id="squirtValue">AXE VISÉ</strong></div>
+
+        </div><div class="shot-control"><div class="panel-divider"></div>
+        <div class="control-title"><div><span class="control-index">02</span><strong>PUISSANCE</strong></div><span id="powerValue" class="power-value">46%</span></div>
+        <p class="control-description">Course progressive : dosage précis à faible vitesse et réserve de puissance pour la casse.</p>
+        <input id="powerSlider" type="range" min="5" max="100" value="46" step="1" aria-label="Puissance du tir">
+        <div class="range-labels"><span>DOUX</span><span>CONTRÔLE</span><span>CASSE</span></div>
+        <div class="power-instruments"><div><small>VITESSE INITIALE ESTIMÉE</small><strong id="powerSpeed">1,7 m/s</strong><span id="powerMode">COUP CONTRÔLÉ</span></div><button id="breakPreset" type="button" title="100 % de puissance, point d’impact centré et queue à plat">PRÉRÉGLAGE<br>CASSE 100 %</button></div>
+
+        </div><div class="shot-control"><div class="panel-divider slim"></div>
+        <div class="control-title"><div><span class="control-index">04</span><strong>ÉLÉVATION DE LA QUEUE</strong></div><span id="elevationValue" class="power-value">0°</span></div>
+        <p class="control-description">De 0 à 15°. L'inclinaison transforme une part de l'effet latéral en rotation sur le tapis. Pas de saut ni de massé complet.</p>
+        <input id="elevationSlider" type="range" min="0" max="15" value="0" step="1" aria-label="Élévation de la queue en degrés">
+        <div class="range-labels"><span>À PLAT</span><span>15°</span></div>
+
+        </div>
+        <div id="callPanel" class="call-panel" hidden>
+          <div class="panel-divider"></div>
+          <div class="eyebrow">ANNONCE AVANT LE COUP</div>
+          <label for="calledBall" class="call-label">BILLE VISÉE</label>
+          <select id="calledBall" aria-label="Bille annoncée"><option value="">Choisir une bille</option></select>
+          <div class="call-label">POCHE VISÉE</div>
+          <div id="calledPockets" class="called-pockets" role="group" aria-label="Choisir la poche annoncée">
+            <button type="button" data-pocket="0">COIN H. G.</button><button type="button" data-pocket="2">COIN H. D.</button>
+            <button type="button" data-pocket="1">COIN B. G.</button><button type="button" data-pocket="3">COIN B. D.</button>
+            <button type="button" data-pocket="4">MILIEU HAUT</button><button type="button" data-pocket="5">MILIEU BAS</button>
+          </div>
+          <button type="button" id="safetyButton" class="safety-button">ANNONCER UN COUP DE SÉCURITÉ</button>
+          <p id="callHint" class="call-hint">Annoncez une bille et une poche avant de tirer.</p>
+        </div>
+
+            </div>
+        <div class="actions"><button id="shootButton" class="primary-button"><span>TIRER</span><span class="button-arrow">↗</span></button><button id="resetButton" class="secondary-button"><span>↺</span> NOUVELLE PARTIE</button></div>
+            </div>
+          </details>
+          <div id="loadingOverlay" class="loading-overlay"><div class="loader-ring"></div><p>PRÉPARATION DE LA TABLE</p></div>
+
+  <div id="matchOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="matchOverlayTitle">
+    <div class="game-dialog"><span class="eyebrow">FRAME / NOUVELLE PARTIE</span><h2 id="matchOverlayTitle">Choisir le mode de jeu.</h2>
+      <div class="game-mode-grid"><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JEU DE LA 8</b><span>2 joueurs locaux · règles WPA</span></label><label class="mode-tile disabled"><input type="radio" name="gameMode" value="nine" disabled><b>JEU DE LA 9</b><span>PROCHAINEMENT</span></label></div>
+      <label class="call-switch-row"><input id="requireCall" type="checkbox" checked><span><b>Annonce de bille et de poche</b><small>À chaque coup hors casse. Désactivable pour une variante sans annonce.</small></span></label>
+      <label class="dialog-label" for="breakerSelect">PREMIER JOUEUR À CASSER</label>
+      <select id="breakerSelect" class="dialog-select"><option value="0">Joueur 1</option><option value="1">Joueur 2</option></select>
+      <button id="startMatch" type="button" class="primary-button dialog-primary"><span>LANCER LA PARTIE</span><span class="button-arrow">↗</span></button>
+      <p>Les décisions de casse sont proposées selon les règles WPA. Le replacement de la blanche se fait à la souris.</p>
+    </div>
+  </div>
+  <div id="decisionOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="decisionTitle" hidden>
+    <div class="game-dialog"><span class="eyebrow">ARBITRE / DÉCISION DE CASSE</span><h2 id="decisionTitle">Choix après la casse.</h2><p id="decisionText"></p><div id="decisionActions" class="decision-actions"></div></div>
+  </div>
+  <div id="victoryOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="victoryTitle" aria-describedby="victoryReason" hidden>
+    <div class="game-dialog victory-dialog">
+      <span class="eyebrow">FRAME / PARTIE TERMINÉE</span>
+      <div class="victory-medallion" aria-hidden="true">8</div>
+      <h2 id="victoryTitle">Victoire !</h2>
+      <p class="victory-winner" id="victoryWinner">JOUEUR 1</p>
+      <p class="victory-outcome" id="victoryOutcome">LA BILLE 8 A ÉTÉ EMPOCHÉE LÉGALEMENT</p>
+      <p id="victoryReason" class="victory-reason"></p>
+      <div class="victory-actions"><button type="button" id="victoryNewMatch" class="primary-button"><span>NOUVELLE PARTIE</span><span class="button-arrow">↗</span></button><button type="button" id="victoryInspect" class="secondary-button">REVOIR LA TABLE</button></div>
+    </div>
+  </div>
+        </section>
+
+        <section class="lab-panel" aria-labelledby="labHeading">
+          <div class="lab-heading"><div><span class="eyebrow">03 / BANC D’ESSAI PHYSIQUE</span><h3 id="labHeading">Laboratoire de trajectoires.</h3><p id="labDescription">Chargez un coup reproductible, puis mesurez le mouvement de la blanche.</p></div><label class="lab-check"><input id="showTraces" type="checkbox" checked> TRACÉS</label></div>
+          <div class="lab-controls"><select id="labScenario" aria-label="Scénario physique à charger"><option value="stop">Tir d'arrêt</option><option value="draw">Rétro</option><option value="follow">Coulé</option><option value="bank">Bande avec effet</option><option value="swerve">Trajectoire courbe</option></select><button id="labLoad" class="lab-button accent">CHARGER</button><button id="labReplay" class="lab-button" disabled>REJOUER</button><button id="labExport" class="lab-button" disabled>EXPORT CSV</button></div>
+          <div class="lab-measurements"><div><small>DISTANCE BLANCHE</small><strong id="labDistance">—</strong></div><div><small>APRÈS PREMIER CHOC</small><strong id="labAfterContact">—</strong></div><div><small>REBONDS BANDES</small><strong id="labCushions">—</strong></div><div><small>TEMPS SIMULÉ</small><strong id="labTime">—</strong></div></div>
+          <div class="lab-legend"><span><i class="lab-dot cue"></i> Blanche</span><span><i class="lab-dot object"></i> Première bille touchée</span><span id="labState">En attente d'un tir</span></div>
+        </section>
+
+        <section class="calibration-panel" aria-labelledby="calibrationHeading">
+          <div class="calibration-heading">
+            <div><span class="eyebrow">04 / VALIDATION EXPÉRIMENTALE</span><h3 id="calibrationHeading">Banc de calibration.</h3><p>57 essais reproductibles, dont 24 composantes de rebond oblique jusqu’à 75° comparées à la régression de 1 217 impacts mesurés sur une table de pool. Le profil snooker reste conservé.</p></div>
+            <div class="calibration-actions"><button id="calibrationRun" class="lab-button accent" type="button">CALCULER LES 57 ESSAIS</button><button id="calibrationExport" class="lab-button" type="button" disabled>EXPORT CSV</button></div>
+          </div>
+          <div class="calibration-stats" id="calibrationStats" aria-live="polite"><span>Mesures non calculées.</span></div>
+          <div class="calibration-table-scroll"><table class="calibration-table"><thead><tr><th scope="col">ESSAI</th><th scope="col">SIMULATION</th><th scope="col">THÉORIE</th><th scope="col">RÉF. PUBLIÉE</th><th scope="col">ÉCART PUBLIÉ</th><th scope="col">MESURE PERSONNELLE</th><th scope="col">ÉCART PERSONNEL</th></tr></thead><tbody id="calibrationRows"><tr><td colspan="7" class="calibration-empty">Exécuter les essais pour obtenir les résultats.</td></tr></tbody></table></div>
+          <p class="calibration-footnote">Les 57 essais sont comparés notamment aux régressions de <a href="https://mediatum.ub.tum.de/doc/1155344/988748.pdf" target="_blank" rel="noopener noreferrer">Nierhoff, Heunisch &amp; Hirche — 1 217 impacts de pool US</a>. Pool v0.17 : référence empirique conservée. Pool v0.18–0.19 : ressort normal/tangentiel inspiré des principes de <a href="https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html" target="_blank" rel="noopener noreferrer">Stronge</a>. Pool v0.20 : contact couplé en 3D avec cisaillement vertical. Pool v0.21 : <strong>identification sous contraintes et contrôle sur la vitesse 1,2 m/s exclue de l'ajustement</strong>. <strong>Recherche v0.22 : un contact simultané bille–bande–tapis est implémenté dans un banc séparé, mais ses écarts avec la régression américaine sont supérieurs ; il n'est pas activé en jeu.</strong> Aucun de ces modèles mécaniques n'est validé sur une table indépendante ; les coefficients K55/K66 ne sont pas mesurés. Snooker historique inchangé, géométrie toujours américaine. Les mesures personnelles restent dans ce navigateur.</p>
+        </section>
+
+        <div class="bottom-bar"><div class="tip-mark">i</div><p><strong>Lecture des résultats</strong> — La simulation est comparée à des références théoriques, mesurées ou indicatives, identifiées séparément. Le laboratoire exporte des trajectoires à 60 Hz maximum.</p><div class="key-shortcut"><kbd>ESPACE</kbd> TIRER</div></div>
+        <div class="notice"><span class="notice-asterisk">✳</span> Prototype indépendant d'entraînement, sans affiliation avec ShootersPool.</div>
+      </main>
+
+      <aside class="right-panel panel">
+        <div class="eyebrow">02 / LES RÉGLAGES</div>
+        <div class="control-heading"><h2>Options<br>avancées<span>.</span></h2><span class="control-number">ASSISTANCE · PHYSIQUE</span></div>
+
+        <div class="panel-divider slim"></div>
+        <div class="control-title"><div><span class="control-index">03</span><strong>ASSISTANCE</strong></div><label class="switch"><input type="checkbox" id="aimAssist" checked><span class="switch-track"></span></label></div>
+        <p class="control-description">Prévision calculée avec la puissance, le glissement et la collision réels. Blanc : arrivée ; vert : blanche après choc ; or : bille touchée.</p>
+
+        <div class="panel-divider slim"></div>
+        <div class="control-title"><div><span class="control-index">05</span><strong>MODÈLE DE BANDE</strong></div></div>
+        <p class="control-description">v0.17 : meilleure correspondance à la régression utilisée pour calibrer. v0.18–0.21 : modèles mécaniques expérimentaux. Le nouveau candidat physique v0.22 est rejeté par l'audit et reste hors du jeu. Pas de mesure directe K55/K66.</p>
+        <select id="cushionModel" class="rail-model-select" aria-label="Choisir le modèle de contact bille–bande">
+          <option value="empirical" selected>POOL v0.17 · RÉFÉRENCE CALIBRÉE</option>
+          <option value="compliant">POOL v0.18 · ÉLASTIQUE EXPÉRIMENTAL</option>
+          <option value="compliant-tuned">POOL v0.19 · ÉLASTIQUE AJUSTÉ (PROVISOIRE)</option>
+          <option value="coupled-3d">POOL v0.20 · CONTACT 3D COUPLÉ (EXPÉRIMENTAL)</option>
+          <option value="coupled-v021">POOL v0.21 · CONTACT 3D AFFINÉ (PROVISOIRE)</option>
+        </select>
+
+
+        <div class="panel-footer"><span class="live-dot"></span> BANDES · PROFIL POOL US <span>V0.58</span></div>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="./game.js?v=058"></script>
+</body>
+</html>
