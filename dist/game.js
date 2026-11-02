@@ -698,7 +698,7 @@ function newGame() {
   updateCounters();setStatus('Casse à préparer','Glissez la blanche dans la zone de départ, puis visez le triangle.',false);
   el.shotState.textContent='PRÊT';el.shootButton.disabled=false;
   el.cushionModel.disabled=false;
-  updateVisuals();
+  setSpin(0,0);
 }
 
 const groupLabel = group => group === 'solid' ? 'PLEINES 1–7' :
@@ -1353,7 +1353,7 @@ function settleShot() {
     else setStatus('Essai terminé','Les billes sont immobiles. Vous pouvez rejouer.',false);
     el.shootButton.disabled=false;el.shotState.textContent='PRÊT';
   }
-  updateVisuals();
+  setSpin(0,0);
 }
 
 function physicsStep(dt) {
@@ -1424,8 +1424,20 @@ function updateCamera() {
   camera.lookAt(orbit.targetX,0,orbit.targetZ);
 }
 
+function forcePlacementCamera() {
+  if(fallbackCtx)return;
+  if(cameraMode!=='overhead') {
+    cameraMode='overhead';orbit.topDown=true;
+    orbit.targetX=0;orbit.targetZ=0;orbit.distance=3.97;
+    firstPerson.previousX=null;
+  }
+  el.cameraName.textContent='DESSUS';
+  updateCamera();
+}
+
 function toggleCamera() {
   if(fallbackCtx)return;
+  if(placementMode||needsCuePlacement||placementPointer){forcePlacementCamera();return;}
   const modes=['perspective','overhead','first-person'];
   cameraMode=modes[(modes.indexOf(cameraMode)+1)%modes.length];
   orbit.topDown=cameraMode==='overhead';
@@ -1466,6 +1478,7 @@ function cuePlacementAvailable() {
 }
 
 function refreshPlacementUI() {
+  if(placementMode||needsCuePlacement||placementPointer)forcePlacementCamera();
   const available=cuePlacementAvailable();
   const headOnly=breakPlacementAvailable()||match?.ballInHand==='head';
   el.placeCueButton.hidden=!available;
@@ -1585,6 +1598,12 @@ function bindControls() {
         if(!grabbing&&!moveCueTo(target?.x,target?.z))return;
         placementPointer={id:e.pointerId,
           offsetX:grabbing?cue.x-target.x:0,offsetZ:grabbing?cue.z-target.z:0};
+        forcePlacementCamera();
+        const overheadPoint=tablePointAt(e.clientX,e.clientY);
+        if(grabbing&&overheadPoint){
+          placementPointer.offsetX=cue.x-overheadPoint.x;
+          placementPointer.offsetZ=cue.z-overheadPoint.z;
+        }
         el.gameCanvas.setPointerCapture(e.pointerId);
         el.gameCanvas.style.cursor='grabbing';
         return;
@@ -1652,6 +1671,8 @@ function bindControls() {
   });
   el.placementQuick.querySelectorAll('[data-cue-z]').forEach(button=>{
     button.addEventListener('click',()=>{
+      if(!breakPlacementAvailable())return;
+      forcePlacementCamera();
       moveCueTo(-.93,Number(button.dataset.cueZ));
       placementMode=false;
       refreshPlacementUI();

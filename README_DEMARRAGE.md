@@ -78,3 +78,10 @@ en direct de 35° (rapproché) à 85° (large), y compris en plein écran et pen
 un tir. Le réglage initial est désormais de 60°, plus large que l’ancienne vue
 à 40°. Il est conservé entre les coups et les changements de caméra durant
 la session ; le bouton Réinitialiser le ramène à 60°.
+
+Le placement de la blanche impose désormais la vue de dessus (placement
+obligatoire après faute, bouton de placement, glisser et positions de casse
+rapides). Pendant le placement actif, changer de caméra conserve la vue de
+dessus. Une fois le placement terminé, les trois vues redeviennent disponibles.
+L’effet choisi est automatiquement centré à la fin de chaque coup et au
+démarrage d’une nouvelle partie ; l’effet du tir en cours reste appliqué.
