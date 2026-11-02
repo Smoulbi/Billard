@@ -53,3 +53,22 @@ Cliquer sur l’en-tête du panneau pour le replier ou le rouvrir.
 Sur petit écran, les réglages se trouvent sous la table et défilent ;
 le bouton Tirer reste visible. Le point d’impact se règle aussi avec les
 flèches du clavier après sélection de la bille de réglage ; Origine le centre.
+
+## Vue à la première personne (PC)
+
+Le bouton CHANGER DE VUE ou la touche V depuis la table alterne désormais
+Perspective → Dessus → Première personne → Perspective.
+Dans la nouvelle vue, la caméra se place automatiquement derrière la blanche,
+penchée dans l’axe du coup. Déplacer la souris horizontalement pour orienter le tir.
+Un clic droit active/désactive la visée fine (sensibilité divisée par dix) ;
+un clic gauche verrouille/déverrouille la direction. Le statut est affiché en haut
+à gauche. Les réglages de puissance et d’effet et le bouton Tirer / Espace
+restent identiques. La molette ne déplace pas cette caméra.
+
+Pendant le tir, la caméra reste au point de départ, même si la blanche est
+empochée. Une fois les billes arrêtées, elle se replace derrière la blanche ;
+la visée est déverrouillée et revient en sensibilité normale. Les autres vues
+restent accessibles pendant le mouvement. Pour déplacer la blanche, utiliser
+PLACER LA BLANCHE (ou les positions rapides à la casse) ; la vue de dessus
+reste disponible pour faciliter ce placement. La vue à la première personne
+nécessite le rendu 3D et n’est pas proposée dans le mode 2D de secours.
