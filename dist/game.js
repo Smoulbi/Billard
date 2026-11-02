@@ -26,7 +26,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
@@ -1407,7 +1407,10 @@ function updateCamera() {
   if(cameraMode==='first-person') {
     const cue=balls.find(b=>b.num===0);
     if(!cue)return;
-    const pose=currentFirstPersonPose(firstPerson,cue,aim,shotActive);
+    const pose=currentFirstPersonPose(firstPerson,cue,aim,shotActive,{
+      height:Number(el.firstPersonHeightSlider.value)/100,
+      setback:Number(el.firstPersonSetbackSlider.value)/100
+    });
     camera.position.set(pose.position.x,pose.position.y,pose.position.z);
     camera.up.set(0,1,0);
     camera.lookAt(pose.target.x,pose.target.y,pose.target.z);
@@ -1705,6 +1708,24 @@ function bindControls() {
   };
   el.firstPersonFovSlider.addEventListener('input',updateFirstPersonZoom);
   el.firstPersonFovReset.addEventListener('click',()=>{el.firstPersonFovSlider.value='60';updateFirstPersonZoom();});
+  const updateFirstPersonPosition=()=>{
+    for(const [slider,label,min,max] of [
+      [el.firstPersonHeightSlider,el.firstPersonHeightValue,12,50],
+      [el.firstPersonSetbackSlider,el.firstPersonSetbackValue,30,110]
+    ]){
+      const value=Number(slider.value);
+      label.textContent=`${value} cm`;
+      const filled=(value-min)/(max-min)*100;
+      slider.style.background=`linear-gradient(to right,var(--accent) ${filled}%,#35443e ${filled}%)`;
+    }
+    if(cameraMode==='first-person')updateCamera();
+  };
+  el.firstPersonHeightSlider.addEventListener('input',updateFirstPersonPosition);
+  el.firstPersonSetbackSlider.addEventListener('input',updateFirstPersonPosition);
+  el.firstPersonPositionReset.addEventListener('click',()=>{
+    el.firstPersonHeightSlider.value='23';el.firstPersonSetbackSlider.value='52';updateFirstPersonPosition();
+  });
+  updateFirstPersonPosition();
   updateFirstPersonZoom();
   el.elevationSlider.addEventListener('input',()=>setElevation(el.elevationSlider.value));
   el.shootButton.addEventListener('click',shoot);

@@ -23,7 +23,7 @@ test('fine aim rotates ten times less; locking prevents rotation',()=>{
 test('camera stays at the shot origin even if the cue moves or is pocketed',()=>{
   const view=createFirstPersonView(),cue={x:-.76,z:0},aim={x:1,z:0};
   freezeFirstPersonShot(view,cue,aim);
-  const initial=structuredClone(view.shot);
+  const initial=firstPersonPose(cue,aim);
   cue.x=1;cue.z=.4;cue.active=false;
   assert.deepEqual(currentFirstPersonPose(view,cue,{x:0,z:1},true),initial);
 });
@@ -34,4 +34,18 @@ test('next shot resets fine aim and lock and relocates behind the new cue positi
   resetFirstPersonAim(view);
   assert.deepEqual(view,createFirstPersonView());
   assert.deepEqual(currentFirstPersonPose(view,{x:1,z:.2},aim,false),firstPersonPose({x:1,z:.2},aim));
+});
+
+test('eye height and setback adjust independently along the shot axis',()=>{
+  const cue={x:.3,z:-.2},aim={x:0,z:1};
+  const pose=firstPersonPose(cue,aim,{height:.4,setback:.9});
+  near(pose.position.y,.4);near(pose.position.z,-1.1);near(pose.position.x,.3);
+  assert.deepEqual(pose.target,firstPersonPose(cue,aim).target);
+});
+test('live eye adjustments during a shot remain relative to its original position',()=>{
+  const view=createFirstPersonView(),cue={x:-.7,z:.2},aim={x:1,z:0};
+  freezeFirstPersonShot(view,cue,aim);
+  cue.x=.8;aim.x=0;aim.z=1;
+  assert.deepEqual(currentFirstPersonPose(view,cue,aim,true,{height:.5,setback:1.1}),
+    firstPersonPose({x:-.7,z:.2},{x:1,z:0},{height:.5,setback:1.1}));
 });

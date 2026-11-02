@@ -85,3 +85,10 @@ rapides). Pendant le placement actif, changer de caméra conserve la vue de
 dessus. Une fois le placement terminé, les trois vues redeviennent disponibles.
 L’effet choisi est automatiquement centré à la fin de chaque coup et au
 démarrage d’une nouvelle partie ; l’effet du tir en cours reste appliqué.
+
+La vue joueur propose aussi « HAUTEUR DES YEUX » (12–50 cm au-dessus du tapis)
+et « RECUL DERRIÈRE LA BLANCHE » (30–110 cm), réglables en direct dans le panneau.
+Le bouton Réinitialiser la position restaure 23 cm de hauteur et 52 cm de recul.
+Les valeurs restent sélectionnées entre les coups et changements de vue durant
+la session. Pendant un tir, les ajustements se font autour du point de tir initial,
+sans suivre la blanche. Le zoom conserve son réglage indépendant.

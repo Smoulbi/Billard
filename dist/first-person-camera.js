@@ -10,16 +10,17 @@ export function rotateFirstPersonAim(view, aim, deltaX) {
   const angle=Math.atan2(aim.z,aim.x)+deltaX*(view.fine?0.00035:0.0035);
   return {x:Math.cos(angle),z:Math.sin(angle)};
 }
-export function firstPersonPose(cue, aim) {
+export function firstPersonPose(cue, aim, {height=0.23, setback=0.52}={}) {
   // Eyes above the shaft, close to the cue ball, looking along the shot line.
   return {
-    position:{x:cue.x-aim.x*0.52,y:0.23,z:cue.z-aim.z*0.52},
+    position:{x:cue.x-aim.x*setback,y:height,z:cue.z-aim.z*setback},
     target:{x:cue.x+aim.x*1.4,y:0.035,z:cue.z+aim.z*1.4}
   };
 }
 export function freezeFirstPersonShot(view, cue, aim) {
-  view.shot=firstPersonPose(cue,aim);
+  view.shot={cue:{x:cue.x,z:cue.z},aim:{...aim}};
 }
-export function currentFirstPersonPose(view, cue, aim, shooting) {
-  return shooting&&view.shot?view.shot:firstPersonPose(cue,aim);
+export function currentFirstPersonPose(view, cue, aim, shooting, settings) {
+  const origin=shooting&&view.shot?view.shot:{cue,aim};
+  return firstPersonPose(origin.cue,origin.aim,settings);
 }

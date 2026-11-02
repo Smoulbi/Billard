@@ -61,6 +61,13 @@
                 <input id="firstPersonFovSlider" type="range" min="35" max="85" value="60" step="1" aria-label="Champ de vision de la vue à la première personne en degrés">
                 <div class="range-labels"><span>ZOOM +</span><span>VUE LARGE</span></div>
                 <button id="firstPersonFovReset" class="text-button" type="button">RÉINITIALISER À 60°</button>
+                <div class="control-title"><strong>HAUTEUR DES YEUX</strong><span id="firstPersonHeightValue" class="power-value">23 cm</span></div>
+                <input id="firstPersonHeightSlider" type="range" min="12" max="50" value="23" step="1" aria-label="Hauteur des yeux au-dessus du tapis en centimètres">
+                <div class="range-labels"><span>BAS</span><span>HAUT</span></div>
+                <div class="control-title" style="margin-top:16px"><strong>RECUL DERRIÈRE LA BLANCHE</strong><span id="firstPersonSetbackValue" class="power-value">52 cm</span></div>
+                <input id="firstPersonSetbackSlider" type="range" min="30" max="110" value="52" step="1" aria-label="Recul des yeux derrière la blanche en centimètres">
+                <div class="range-labels"><span>PROCHE</span><span>ÉLOIGNÉ</span></div>
+                <button id="firstPersonPositionReset" class="text-button" type="button">RÉINITIALISER LA POSITION</button>
                 <div class="panel-divider slim"></div>
               </div>
 
@@ -181,6 +188,6 @@
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=061"></script>
+  <script type="module" src="./game.js?v=062"></script>
 </body>
 </html>
