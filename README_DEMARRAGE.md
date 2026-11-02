@@ -30,6 +30,19 @@ Le fichier LISEZ-MOI.md et les notes de version anciennes sont conservés tels q
 Les données enregistrées dans le navigateur ne font pas partie du code source et ne sont pas exportées.
 L’archive conserve tous les fichiers suivis par Git, sans le répertoire .git ni identifiants d’accès.
 
+## Tester la version publiée sur GitHub Pages
+
+Dans le dépôt GitHub : **Settings → Pages → Build and deployment → Source →
+GitHub Actions**. Puis ouvrir **Actions → Publier le billard sur GitHub Pages →
+Run workflow → main → Run workflow** pour lancer la première publication si
+elle n’a pas déjà démarré. Attendre que l’exécution soit verte puis ouvrir le
+lien du déploiement `github-pages`.
+
+L’adresse prévue avec les paramètres GitHub Pages par défaut est
+https://smoulbi.github.io/Billard/ . Les mises à jour de `main` relancent
+automatiquement les tests et la publication. Seul le contenu de `dist/` est
+publié ; aucun serveur ni installation de dépendances n’est nécessaire.
+
 ## Commandes dans la vue de jeu
 
 Le panneau « COMMANDES DE JEU » regroupe la puissance, le point d’impact
