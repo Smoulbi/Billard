@@ -144,3 +144,27 @@ recule et pivote vers la vue de dessus en 0,5 seconde. Elle reste ensuite en
 vue de dessus. Changer de vue manuellement annule la transition ; un placement
 obligatoire de la blanche conserve sa priorité. Les tirs des deux autres vues
 ne déclenchent pas cette animation. Les réglages de la vue joueur sont conservés.
+
+## Puissance par geste de souris (mode par défaut)
+
+Le bouton MODE : GESTE SOURIS / MODE : JAUGE se trouve dans le bloc Puissance.
+Le geste souris est sélectionné par défaut en 3D ; le mode 2D utilise la jauge.
+Pour utiliser le geste, cliquer VISER À LA SOURIS ou passer en première personne.
+
+1. Viser avec la souris capturée, puis clic gauche pour figer la direction et
+   la hauteur et passer au mouvement de queue.
+2. Descendre la souris pour reculer la queue, puis la remonter pour frapper.
+   Le tir part au contact avec la blanche ; la vitesse d’avancée détermine
+   la puissance, indépendamment de la vitesse du recul. La jauge affiche
+   la puissance estimée pendant l’avancée.
+3. S libère le pointeur et annule le geste sans tirer, pour régler le spin
+   et les autres paramètres. Un clic sur la table reprend la visée.
+
+Un second clic gauche pendant le geste revient à la visée. Échap, une perte
+de capture ou un changement de caméra annulent aussi le geste sans tirer.
+Un recul volontaire est nécessaire pour éviter les tirs sur un tremblement
+de souris. Le dézoom automatique après le tir reste actif.
+
+MODE : JAUGE restaure la puissance choisie précédemment ; Tirer et Espace
+fonctionnent alors comme avant. En mode geste, ces commandes préparent
+la visée et ne déclenchent pas de tir à la puissance de la jauge.

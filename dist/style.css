@@ -179,3 +179,6 @@ body:has(.scene-frame.scene-immersive){overflow:hidden}
   .shot-dock-body>.actions{flex-direction:row;padding:7px 10px}
   .shot-dock-body>.actions button{flex:1;min-width:0;height:40px;font-size:10px}
 }
+
+.power-mode-button{width:100%;min-height:36px;border:1px solid #617d60;border-radius:4px;background:#1c3026;color:var(--accent);font:10px var(--mono);padding:8px;margin:8px 0 0}.power-mode-button[aria-pressed=true]{background:#34492c;border-color:var(--accent)}.power-mode-button:disabled,input[type=range]:disabled{opacity:.5;cursor:default}
+.power-instruments button:disabled{opacity:.45;cursor:default}

@@ -19,7 +19,7 @@ test('ball-in-hand remains adjustable after its first placement until the next s
     game.indexOf('function moveCueTo('));
   const pointerRelease=game.slice(game.indexOf('const releasePointer=e=>{'),
     game.indexOf("el.gameCanvas.addEventListener('pointerup'"));
-  const shooting=game.slice(game.indexOf('function shoot()'),game.indexOf('function pocketBall('));
+  const shooting=game.slice(game.indexOf('function shoot('),game.indexOf('function pocketBall('));
   assert.match(placement,/match\.ballInHand/,'placement is allowed while ball-in-hand is owned');
   assert.doesNotMatch(pointerRelease,/match\.ballInHand\s*=\s*null/,
     'releasing the first placement must not consume ball-in-hand');

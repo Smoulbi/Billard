@@ -92,6 +92,8 @@
         </div><div class="shot-control"><div class="panel-divider"></div>
         <div class="control-title"><div><span class="control-index">02</span><strong>PUISSANCE</strong></div><span id="powerValue" class="power-value">46%</span></div>
         <p class="control-description">Échelle proportionnelle à la vitesse : 25 % = 3 m/s, 50 % = 6 m/s, 100 % = 12 m/s sur une frappe centrée.</p>
+        <button id="powerModeButton" class="power-mode-button" type="button" aria-pressed="true">MODE : GESTE SOURIS</button>
+        <p id="mouseStrokeHint" class="control-description" hidden>Visez, puis clic gauche pour préparer le geste. S : réglages.</p>
         <input id="powerSlider" type="range" min="1" max="100" value="46" step="any" aria-label="Puissance du tir">
         <div class="range-labels"><span>DOUX</span><span>CONTRÔLE</span><span>CASSE</span></div>
         <div class="power-instruments"><div><small>VITESSE INITIALE ESTIMÉE</small><strong id="powerSpeed">5,5 m/s</strong><span id="powerMode">COUP CONTRÔLÉ</span></div><button id="breakPreset" type="button" title="100 % de puissance, point d’impact centré et queue à plat">PRÉRÉGLAGE<br>CASSE 100 %</button></div>
@@ -195,6 +197,6 @@
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=066"></script>
+  <script type="module" src="./game.js?v=067"></script>
 </body>
 </html>
