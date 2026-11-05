@@ -98,3 +98,27 @@ vers le haut pour les relever, vers le bas pour les abaisser (limites 12–50 cm
 Le curseur et sa valeur restent synchronisés. Le clic droit réduit aussi la
 sensibilité verticale ; le clic gauche verrouille la direction et la hauteur.
 Pendant le mouvement des billes, la souris ne déplace pas la caméra.
+
+## Jeu de la 9
+
+Choisir « JEU DE LA 9 » dans Nouvelle partie. Neuf billes sont disposées en
+losange, la 1 en tête et la 9 au centre. Il faut toucher la plus petite bille
+présente en premier ; toute bille légalement empochée permet de continuer.
+La 9 empochée légalement gagne immédiatement, y compris par combinaison
+ou sur une casse régulière. Aucune annonce de bille/poche n’est requise.
+
+Une casse sans bille empochée exige quatre billes distinctes aux bandes.
+Une faute donne la blanche en main partout sur la table à l’adversaire ;
+la 9 empochée sur faute est replacée. Trois fautes consécutives du même
+joueur font perdre la partie, avec avertissement affiché après la deuxième.
+Un coup régulier remet à zéro le compteur de fautes du joueur.
+
+Juste après une casse régulière, le joueur à la table peut annoncer un
+push-out dans les commandes de jeu. Le premier contact et la bande ne sont
+alors pas obligatoires, mais empocher la blanche reste une faute. Une 9
+empochée sur push-out est replacée. L’adversaire choisit de jouer la position
+ou de rendre la main. Le push-out n’est disponible que pour ce premier coup.
+
+Le jeu de la 8 reste disponible. Au chargement, le modèle de bande par défaut
+est désormais Pool v0.21 et l’assistance de trajectoire est désactivée.
+Ces deux réglages restent modifiables.

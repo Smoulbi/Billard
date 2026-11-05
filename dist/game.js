@@ -1,3 +1,4 @@
+import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js';
 import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
 import * as THREE from './vendor/three.module.js';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
@@ -26,7 +27,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
@@ -679,6 +680,9 @@ function newGame() {
   el.labDescription.textContent='La partie utilise le simulateur physique. Les tirs restent mesurés pendant le jeu.';
   el.labState.textContent='JEU DE LA 8';
   placeBall(0,-0.76,0);
+  if(match?.mode==='nine'){
+    for(const ball of nineBallRack(RADIUS))placeBall(ball.num,ball.x,ball.z);
+  }else{
   // WPA: one full ball and one striped ball at opposite rear corners.
   const sequence=[1,2,9,3,8,10,4,11,5,12,6,13,14,7,15];
   let index=0;
@@ -694,6 +698,7 @@ function newGame() {
       placeBall(num,x,z);
     }
   }
+  }
   aim={x:1,z:0};
   updateCounters();setStatus('Casse à préparer','Glissez la blanche dans la zone de départ, puis visez le triangle.',false);
   el.shotState.textContent='PRÊT';el.shootButton.disabled=false;
@@ -706,18 +711,29 @@ const groupLabel = group => group === 'solid' ? 'PLEINES 1–7' :
 
 function refreshMatchUI() {
   el.matchPanel.hidden=!match;
-  el.modeChip.textContent=match?'JEU DE LA 8':'PRÉPARATION';
+  el.modeChip.textContent=match?(match.mode==='nine'?'JEU DE LA 9':'JEU DE LA 8'):'PRÉPARATION';
   for(let player=0;player<2;player++){
     const node=player===0?el.playerOne:el.playerTwo;
     node.classList.toggle('current',Boolean(match&&match.current===player&&match.phase!=='finished'));
     node.querySelector('strong').textContent=match?.winner===player?'VAINQUEUR':
       match?.phase==='finished'?'PARTIE TERMINÉE':
       match?.current===player?'À LA TABLE':'EN ATTENTE';
-    (player===0?el.playerOneGroup:el.playerTwoGroup).textContent=groupLabel(match?.groups[player]);
+    (player===0?el.playerOneGroup:el.playerTwoGroup).textContent=match?.mode==='nine'?`${match.fouls[player]} FAUTE(S) CONSÉCUTIVE(S)`:groupLabel(match?.groups[player]);
   }
   if(match){
     el.matchMessage.textContent=match.phase==='finished'?`Joueur ${match.winner+1} remporte la partie.`:
       `Joueur ${match.current+1} · ${match.lastResult?.reason||'Casse à préparer.'}`;
+  }
+  el.nineBallPanel.hidden=match?.mode!=='nine';
+  if(match?.mode==='nine'){
+    const remaining=balls.filter(b=>b.active&&b.num>0).map(b=>b.num);
+    el.nineBallTarget.textContent=match.phase==='finished'?'PARTIE TERMINÉE':
+      `TOUCHER LA ${Math.min(...remaining)} EN PREMIER`;
+    el.pushOutButton.hidden=!match.pushOutAvailable;
+    el.pushOutButton.disabled=shotActive;
+    el.pushOutButton.classList.toggle('active',safetyCalled);
+    el.pushOutButton.setAttribute('aria-pressed',String(safetyCalled));
+    el.pushOutButton.textContent=safetyCalled?'PUSH-OUT ANNONCÉ · ANNULER':'ANNONCER UN PUSH-OUT';
   }
   refreshCallUI();
   if(match){
@@ -731,7 +747,7 @@ function refreshMatchUI() {
 }
 
 function refreshCallUI() {
-  const visible=Boolean(match&&match.phase==='playing');
+  const visible=Boolean(match&&match.mode==='eight'&&match.phase==='playing');
   el.callPanel.hidden=!visible;
   if(!visible)return;
   el.callPanel.classList.toggle('auto-mode',!match.callPocket);
@@ -766,7 +782,8 @@ function showMatchSetup() {
 
 function startMatch() {
   if(shotActive)return;
-  match=newEightBallMatch({callPocket:el.requireCall.checked,
+  const nine=document.querySelector('input[name=gameMode]:checked')?.value==='nine';
+  match=(nine?newNineBallMatch:newEightBallMatch)({callPocket:el.requireCall.checked,
     breaker:Number(el.breakerSelect.value)});
   needsCuePlacement=false;chosenPocket=null;safetyCalled=false;shotEvents=null;
   newGame();
@@ -776,9 +793,10 @@ function startMatch() {
 }
 
 function showVictoryScreen() {
-  const summary=eightBallVictoryPresentation(match);
+  const summary=match?.mode==='nine'?nineBallVictoryPresentation(match):eightBallVictoryPresentation(match);
   if(!summary)return;
   // Match dialogs belong to the scene and remain visible in fullscreen.
+  el.victoryOverlay.querySelector('.victory-medallion').textContent=match.mode==='nine'?'9':'8';
   el.victoryWinner.textContent=summary.winner;
   el.victoryOutcome.textContent=summary.outcome;
   el.victoryReason.textContent=summary.reason;
@@ -787,6 +805,8 @@ function showVictoryScreen() {
 }
 
 const breakChoices = {
+  'take-shot':'Jouer depuis cette position',
+  'pass-shot':'Rendre la main au joueur du push-out',
   'spot-head':'Replacer la 8 · blanche dans la zone de casse',
   'spot-continue':'Replacer la 8 · continuer',
   'rerack-incoming':'Refaire le triangle · casse de l’adversaire',
@@ -794,25 +814,25 @@ const breakChoices = {
   'accept':'Accepter la position des billes'
 };
 
-function spotEightBall() {
-  const eight=balls.find(b=>b.num===8);
-  if(!eight||eight.active)return;
+function spotObjectBall(number=8) {
+  const ball=balls.find(b=>b.num===number);
+  if(!ball||ball.active)return;
   const footSpot=0.49;
   let found=null;
   for(const direction of [-1,1]){
     for(let step=0;step<70;step++){
       const x=footSpot+direction*step*(2*RADIUS+.0006);
       if(x<-LENGTH+RADIUS||x>LENGTH-RADIUS)break;
-      if(balls.every(b=>!b.active||b.num===8||Math.hypot(b.x-x,b.z)>2*RADIUS+.001)){
+      if(balls.every(b=>!b.active||b.num===number||Math.hypot(b.x-x,b.z)>2*RADIUS+.001)){
         found={x,z:0};break;
       }
     }
     if(found)break;
   }
   if(!found)return;
-  eight.x=found.x;eight.z=found.z;eight.active=true;stopBall(eight);
-  eight.mesh.visible=true;eight.mesh.position.set(eight.x,RADIUS,eight.z);
-  for(let i=fallingBalls.length-1;i>=0;i--)if(fallingBalls[i].num===8){
+  ball.x=found.x;ball.z=found.z;ball.active=true;stopBall(ball);
+  ball.mesh.visible=true;ball.mesh.position.set(ball.x,RADIUS,ball.z);
+  for(let i=fallingBalls.length-1;i>=0;i--)if(fallingBalls[i].num===number){
     if(fallingBalls[i].mesh)scene.remove(fallingBalls[i].mesh);
     fallingBalls.splice(i,1);
   }
@@ -843,6 +863,7 @@ function prepareCueInHand() {
 
 function openBreakDecision() {
   if(!match?.pending)return;
+  el.decisionOverlay.querySelector('h2').textContent=match.mode==='nine'?'Choix après le push-out.':'Choix après la casse.';
   el.decisionText.textContent=match.lastResult.reason;
   el.decisionActions.replaceChildren();
   for(const action of match.pending.options){
@@ -851,11 +872,11 @@ function openBreakDecision() {
     button.textContent=breakChoices[action];
     button.addEventListener('click',()=>{
       const shouldSpot=action==='spot-head'||action==='spot-continue';
-      match=resolveEightBallDecision(match,action);
+      match=match.mode==='nine'?resolveNineBallDecision(match,action):resolveEightBallDecision(match,action);
       if(match.lastResult.kind==='rerack'){
         chosenPocket=null;safetyCalled=false;needsCuePlacement=false;
         newGame();
-      } else if(shouldSpot)spotEightBall();
+      } else if(shouldSpot)spotObjectBall();
       if(match.ballInHand)prepareCueInHand();
       el.decisionOverlay.hidden=true;
       setStatus('Décision appliquée',match.lastResult.reason,false);
@@ -1255,7 +1276,7 @@ function shoot() {
   shotEvents=match?{firstContact:null,contactTime:null,railAfterContact:false,
     breakRailSet:new Set(),pocketed:[],scratch:false,
     remainingBefore:balls.filter(b=>b.active&&b.num>0).map(b=>b.num),
-    calledBall:Number(el.calledBall.value)||null,calledPocket:chosenPocket,safety:safetyCalled}:null;
+    calledBall:Number(el.calledBall.value)||null,calledPocket:chosenPocket,safety:safetyCalled,pushOut:match.mode==='nine'&&safetyCalled}:null;
   // Ball-in-hand stays adjustable until the cue is actually struck.
   if(match)match.ballInHand=null;
   placementMode=false;placementPointer=null;
@@ -1327,7 +1348,9 @@ function settleShot() {
   el.labExport.disabled=!telemetry;
   el.labState.textContent='MESURE TERMINÉE · REJOUABLE';
   if(match&&shotEvents){
-    match=adjudicateEightBall(match,{...shotEvents,breakRails:shotEvents.breakRailSet.size});
+    const adjudicate=match.mode==='nine'?adjudicateNineBall:adjudicateEightBall;
+    match=adjudicate(match,{...shotEvents,breakRails:shotEvents.breakRailSet.size});
+    if(match.mode==='nine'&&match.spotNine)spotObjectBall(9);
     shotEvents=null;
     chosenPocket=null;safetyCalled=false;
     el.calledBall.value='';
@@ -1473,7 +1496,7 @@ function tablePointAt(clientX,clientY) {
 }
 
 function breakPlacementAvailable() {
-  return !shotActive && match?.phase==='break' && shotCount===0 && balls.length===16;
+  return !shotActive && match?.phase==='break' && shotCount===0 && balls.length===(match.mode==='nine'?10:16);
 }
 
 function cuePlacementAvailable() {
@@ -1556,6 +1579,18 @@ function setSpin(x,y) {
 
 function bindControls() {
   bindCalibration();
+  const refreshModeChoice=()=>{
+    const nine=document.querySelector('input[name=gameMode]:checked')?.value==='nine';
+    el.requireCall.disabled=nine;
+    el.requireCall.closest('label').hidden=nine;
+    document.querySelectorAll('input[name=gameMode]').forEach(input=>input.closest('label').classList.toggle('selected',input.checked));
+  };
+  document.querySelectorAll('input[name=gameMode]').forEach(input=>input.addEventListener('change',refreshModeChoice));
+  refreshModeChoice();
+  el.pushOutButton.addEventListener('click',()=>{
+    if(shotActive||match?.mode!=='nine'||!match.pushOutAvailable)return;
+    safetyCalled=!safetyCalled;refreshMatchUI();
+  });
   el.startMatch.addEventListener('click',startMatch);
   el.victoryNewMatch.addEventListener('click',showMatchSetup);
   el.victoryInspect.addEventListener('click',()=>{

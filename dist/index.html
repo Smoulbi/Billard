@@ -23,7 +23,7 @@
       <aside class="left-panel panel">
         <div class="eyebrow">01 / LA SESSION</div>
         <h1>Le jeu,<br><em>à votre main.</em></h1>
-        <p class="intro">Partie à deux joueurs, arbitrage automatique du jeu de la 8 et simulation de physique en temps réel.</p>
+        <p class="intro">Partie à deux joueurs, arbitrage automatique des jeux de la 8 et de la 9 et simulation de physique en temps réel.</p>
 
         <div class="panel-divider"></div>
         <div class="eyebrow">PARTIE EN COURS <span id="modeChip" class="mini-chip">JEU DE LA 8</span></div>
@@ -71,6 +71,13 @@
                 <div class="panel-divider slim"></div>
               </div>
 
+        <div id="nineBallPanel" class="shot-control" hidden>
+          <div class="eyebrow">JEU DE LA 9 · ROTATION</div>
+          <p id="nineBallTarget" class="match-message">TOUCHER LA 1 EN PREMIER</p>
+          <p class="control-description">Touchez la plus petite bille en premier. Empochez légalement la 9 pour gagner, même par combinaison. Deux fautes sont signalées ; la troisième consécutive fait perdre.</p>
+          <button id="pushOutButton" class="safety-button" type="button" aria-pressed="false" hidden>ANNONCER UN PUSH-OUT</button>
+          <p class="control-description">Après une casse régulière, un push-out peut être annoncé : contact et bande facultatifs. L’adversaire choisit ensuite de jouer ou de rendre la main.</p>
+        </div>
         <div id="matchPanel" class="match-panel" hidden>
           <div class="match-score"><div id="playerOne" class="match-player current"><small>JOUEUR 1</small><strong>À LA TABLE</strong><span id="playerOneGroup">TABLE OUVERTE</span></div><div id="playerTwo" class="match-player"><small>JOUEUR 2</small><strong>EN ATTENTE</strong><span id="playerTwoGroup">TABLE OUVERTE</span></div></div>
           <p id="matchMessage" class="match-message">Prêt pour la casse.</p>
@@ -119,7 +126,7 @@
 
   <div id="matchOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="matchOverlayTitle">
     <div class="game-dialog"><span class="eyebrow">FRAME / NOUVELLE PARTIE</span><h2 id="matchOverlayTitle">Choisir le mode de jeu.</h2>
-      <div class="game-mode-grid"><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JEU DE LA 8</b><span>2 joueurs locaux · règles WPA</span></label><label class="mode-tile disabled"><input type="radio" name="gameMode" value="nine" disabled><b>JEU DE LA 9</b><span>PROCHAINEMENT</span></label></div>
+      <div class="game-mode-grid"><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JEU DE LA 8</b><span>2 joueurs locaux · règles WPA</span></label><label class="mode-tile"><input type="radio" name="gameMode" value="nine"><b>JEU DE LA 9</b><span>2 joueurs · rotation · push-out</span></label></div>
       <label class="call-switch-row"><input id="requireCall" type="checkbox" checked><span><b>Annonce de bille et de poche</b><small>À chaque coup hors casse. Désactivable pour une variante sans annonce.</small></span></label>
       <label class="dialog-label" for="breakerSelect">PREMIER JOUEUR À CASSER</label>
       <select id="breakerSelect" class="dialog-select"><option value="0">Joueur 1</option><option value="1">Joueur 2</option></select>
@@ -128,7 +135,7 @@
     </div>
   </div>
   <div id="decisionOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="decisionTitle" hidden>
-    <div class="game-dialog"><span class="eyebrow">ARBITRE / DÉCISION DE CASSE</span><h2 id="decisionTitle">Choix après la casse.</h2><p id="decisionText"></p><div id="decisionActions" class="decision-actions"></div></div>
+    <div class="game-dialog"><span class="eyebrow">ARBITRE / DÉCISION</span><h2 id="decisionTitle">Choix après la casse.</h2><p id="decisionText"></p><div id="decisionActions" class="decision-actions"></div></div>
   </div>
   <div id="victoryOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="victoryTitle" aria-describedby="victoryReason" hidden>
     <div class="game-dialog victory-dialog">
@@ -169,18 +176,18 @@
         <div class="control-heading"><h2>Options<br>avancées<span>.</span></h2><span class="control-number">ASSISTANCE · PHYSIQUE</span></div>
 
         <div class="panel-divider slim"></div>
-        <div class="control-title"><div><span class="control-index">03</span><strong>ASSISTANCE</strong></div><label class="switch"><input type="checkbox" id="aimAssist" checked><span class="switch-track"></span></label></div>
+        <div class="control-title"><div><span class="control-index">03</span><strong>ASSISTANCE</strong></div><label class="switch"><input type="checkbox" id="aimAssist"><span class="switch-track"></span></label></div>
         <p class="control-description">Prévision calculée avec la puissance, le glissement et la collision réels. Blanc : arrivée ; vert : blanche après choc ; or : bille touchée.</p>
 
         <div class="panel-divider slim"></div>
         <div class="control-title"><div><span class="control-index">05</span><strong>MODÈLE DE BANDE</strong></div></div>
         <p class="control-description">v0.17 : meilleure correspondance à la régression utilisée pour calibrer. v0.18–0.21 : modèles mécaniques expérimentaux. Le nouveau candidat physique v0.22 est rejeté par l'audit et reste hors du jeu. Pas de mesure directe K55/K66.</p>
         <select id="cushionModel" class="rail-model-select" aria-label="Choisir le modèle de contact bille–bande">
-          <option value="empirical" selected>POOL v0.17 · RÉFÉRENCE CALIBRÉE</option>
+          <option value="empirical">POOL v0.17 · RÉFÉRENCE CALIBRÉE</option>
           <option value="compliant">POOL v0.18 · ÉLASTIQUE EXPÉRIMENTAL</option>
           <option value="compliant-tuned">POOL v0.19 · ÉLASTIQUE AJUSTÉ (PROVISOIRE)</option>
           <option value="coupled-3d">POOL v0.20 · CONTACT 3D COUPLÉ (EXPÉRIMENTAL)</option>
-          <option value="coupled-v021">POOL v0.21 · CONTACT 3D AFFINÉ (PROVISOIRE)</option>
+          <option value="coupled-v021" selected>POOL v0.21 · CONTACT 3D AFFINÉ (PROVISOIRE)</option>
         </select>
 
 
@@ -188,6 +195,6 @@
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=063"></script>
+  <script type="module" src="./game.js?v=064"></script>
 </body>
 </html>
