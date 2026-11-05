@@ -168,3 +168,9 @@ de souris. Le dézoom automatique après le tir reste actif.
 MODE : JAUGE restaure la puissance choisie précédemment ; Tirer et Espace
 fonctionnent alors comme avant. En mode geste, ces commandes préparent
 la visée et ne déclenchent pas de tir à la puissance de la jauge.
+
+La sensibilité du geste a été réduite par trois : une avancée de 600 pixels/s
+donne désormais environ 17 % (2 m/s sur une frappe centrée), au lieu de 50 %.
+Ce calcul utilise les déplacements du pointeur rapportés par le navigateur,
+et non la vitesse physique de la main ; le ressenti dépend donc aussi des
+réglages de souris du système.

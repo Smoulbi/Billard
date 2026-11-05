@@ -2,7 +2,8 @@
 export const MAX_STROKE_PULL = 0.30;
 const METRES_PER_PIXEL = 0.001;
 const MIN_BACKSWING = 0.015;
-const FULL_POWER_PIXELS_PER_SECOND = 1200;
+// Softer mapping: 600 px/s gives about 17%, rather than the former 50%.
+const FULL_POWER_PIXELS_PER_SECOND = 3600;
 const SPEED_WINDOW_MS = 80;
 export function createMouseStroke(now=0) {
   return {pull:0,armed:false,lastTime:now,samples:[],power:0,fired:false,forward:false};
