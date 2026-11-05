@@ -1,3 +1,4 @@
+import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-camera-transition.js';
 import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js';
 import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
 import * as THREE from './vendor/three.module.js';
@@ -31,6 +32,7 @@ const ids = ['aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
+let shotCameraTransition=null;
 const firstPerson=createFirstPersonView();
 
 let scene, renderer, camera, cueGroup, aimLine, deflectionLine, objectLine, ghostMarker;
@@ -674,6 +676,7 @@ function clearTable() {
 }
 
 function newGame() {
+  shotCameraTransition=null;
   clearTable();
   resetFirstPersonAim(firstPerson);
   activeLabScenario=null;lastShotSnapshot=null;
@@ -775,6 +778,7 @@ function refreshCallUI() {
 function showMatchSetup() {
   if(shotActive)return;
   releaseAimMouse();
+  shotCameraTransition=null;
   el.matchOverlay.hidden=false;
   el.decisionOverlay.hidden=true;
   el.victoryOverlay.hidden=true;
@@ -1285,6 +1289,8 @@ function shoot() {
   placementMode=false;placementPointer=null;
   freezeFirstPersonShot(firstPerson,cue,aim);
   releaseAimMouse();
+  shotCameraTransition=null;
+  if(cameraMode==='first-person'&&!fallbackCtx)beginShotCameraTransition();
   shotActive=true;scratchedThisShot=false;pocketsThisShot=0;accumulator=0;
   el.cushionModel.disabled=true;
   shotSimTime=0;lastMetricsAt=0;
@@ -1428,7 +1434,33 @@ function physicsStep(dt) {
   if(shotActive&&!hasMotion)settleShot();
 }
 
+function beginShotCameraTransition() {
+  const target=camera.clone();
+  target.position.set(0,3.97,.001);target.up.set(0,0,-1);target.lookAt(0,0,0);
+  shotCameraTransition={start:performance.now(),
+    duration:window.matchMedia('(prefers-reduced-motion: reduce)').matches?1:SHOT_CAMERA_DURATION,
+    position:camera.position.clone(),rotation:camera.quaternion.clone(),fov:camera.fov,
+    destination:target.position.clone(),orientation:target.quaternion.clone()};
+}
+
+function animateShotCamera(now) {
+  const move=shotCameraTransition;
+  if(!move)return;
+  const progress=shotCameraProgress(now-move.start,move.duration);
+  camera.position.lerpVectors(move.position,move.destination,progress);
+  camera.quaternion.slerpQuaternions(move.rotation,move.orientation,progress);
+  camera.fov=move.fov+(40-move.fov)*progress;
+  camera.updateProjectionMatrix();
+  if(now-move.start>=SHOT_CAMERA_DELAY+move.duration){
+    shotCameraTransition=null;cameraMode='overhead';orbit.topDown=true;
+    orbit.targetX=0;orbit.targetZ=0;orbit.distance=3.97;
+    el.cameraName.textContent='DESSUS';
+    updateCamera();refreshPlacementUI();
+  }
+}
+
 function updateCamera() {
+  if(shotCameraTransition)return;
   el.firstPersonSettings.hidden=cameraMode!=='first-person'||!!fallbackCtx;
   const fov=cameraMode==='first-person'?Number(el.firstPersonFovSlider.value):40;
   if(camera.fov!==fov){camera.fov=fov;camera.updateProjectionMatrix();}
@@ -1456,6 +1488,7 @@ function updateCamera() {
 }
 
 function forcePlacementCamera() {
+  shotCameraTransition=null;
   releaseAimMouse();
   if(fallbackCtx)return;
   if(cameraMode!=='overhead') {
@@ -1473,7 +1506,7 @@ function releaseAimMouse() {
 }
 
 function captureAimMouse() {
-  if(cameraMode!=='first-person'||shotActive||placementMode||needsCuePlacement||
+  if(cameraMode!=='first-person'||shotActive||shotCameraTransition||placementMode||needsCuePlacement||
     !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
   firstPerson.locked=true;
   if(!el.gameCanvas.requestPointerLock){refreshPlacementUI();return;}
@@ -1483,6 +1516,7 @@ function captureAimMouse() {
 }
 
 function toggleCamera() {
+  shotCameraTransition=null;
   if(fallbackCtx)return;
   if(placementMode||needsCuePlacement||placementPointer){forcePlacementCamera();return;}
   const modes=['perspective','overhead','first-person'];
@@ -1884,6 +1918,7 @@ function animate(t) {
     }
   }
   if(shotActive&&t-lastAimVisualTime>200){lastAimVisualTime=t;updateVisuals();}
+  animateShotCamera(t);
   if(fallbackCtx)drawFallback();
   else renderer.render(scene,camera);
 }

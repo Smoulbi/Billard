@@ -138,3 +138,9 @@ la souris. Échap la libère aussi. Les tirs, le placement de la blanche et les
 fenêtres de décision libèrent automatiquement le pointeur ; après un coup,
 cliquer à nouveau pour reprendre la visée. Le clic droit conserve la précision
 fine. La capture nécessite l’autorisation du navigateur et un geste utilisateur.
+
+Après un tir joué en première personne, la caméra attend 0,45 seconde puis
+recule et pivote vers la vue de dessus en 0,5 seconde. Elle reste ensuite en
+vue de dessus. Changer de vue manuellement annule la transition ; un placement
+obligatoire de la blanche conserve sa priorité. Les tirs des deux autres vues
+ne déclenchent pas cette animation. Les réglages de la vue joueur sont conservés.
