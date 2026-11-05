@@ -93,6 +93,13 @@
         <div class="control-title"><div><span class="control-index">02</span><strong>PUISSANCE</strong></div><span id="powerValue" class="power-value">46%</span></div>
         <p class="control-description">Échelle proportionnelle à la vitesse : 25 % = 3 m/s, 50 % = 6 m/s, 100 % = 12 m/s sur une frappe centrée.</p>
         <button id="powerModeButton" class="power-mode-button" type="button" aria-pressed="true">MODE : GESTE SOURIS</button>
+        <div id="strokeSensitivityControls">
+          <div class="control-title" style="margin-top:14px"><strong>FORCE DU GESTE</strong><span id="strokeSensitivityValue" class="power-value">80 %</span></div>
+          <input id="strokeSensitivitySlider" type="range" min="10" max="150" value="80" step="5" aria-label="Force du geste de souris en pourcentage">
+          <div class="range-labels"><span>PLUS DOUX</span><span>PLUS FORT</span></div>
+          <p class="control-description">Réduit ou amplifie la force d’un même geste. Réglage conservé dans ce navigateur.</p>
+          <button id="strokeSensitivityReset" class="text-button" type="button">REVENIR À 80 %</button>
+        </div>
         <p id="mouseStrokeHint" class="control-description" hidden>Visez, puis clic gauche pour préparer le geste. S : réglages.</p>
         <input id="powerSlider" type="range" min="1" max="100" value="46" step="any" aria-label="Puissance du tir">
         <div class="range-labels"><span>DOUX</span><span>CONTRÔLE</span><span>CASSE</span></div>
@@ -197,6 +204,6 @@
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=069"></script>
+  <script type="module" src="./game.js?v=070"></script>
 </body>
 </html>

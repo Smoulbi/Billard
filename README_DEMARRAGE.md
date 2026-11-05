@@ -178,3 +178,9 @@ réglages de souris du système.
 Ajustement supplémentaire : la sensibilité du geste est réduite de 20 % par
 rapport au réglage précédent. Une avancée de 600 pixels/s correspond désormais
 à environ 13 % de puissance, soit 1,6 m/s sur une frappe centrée.
+
+Le curseur FORCE DU GESTE, dans Puissance en mode souris, permet de réduire
+ou d’amplifier la puissance d’un même geste (10–150 %). La valeur initiale
+de 80 % réduit de 20 % la sensibilité précédente. Appuyer sur S pour libérer
+la souris et l’ajuster, puis reprendre la visée. La valeur est enregistrée
+dans le navigateur ; REVENIR À 80 % restaure le réglage initial.

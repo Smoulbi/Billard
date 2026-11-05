@@ -46,3 +46,16 @@ test('ordinary forward motion gives controllable rather than break-level speed',
   for(let i=1;i<=5;i++)result=moveMouseStroke(s,-12,60+i*20);
   assert.ok(Math.abs(result-40/3)<1e-9,'600 px/s should produce 13.3% power (1.6 m/s)');
 });
+
+test('gesture force scales impact power without changing the cue movement',()=>{
+  const run=gain=>{
+    const s=createMouseStroke();moveMouseStroke(s,60,60,gain);
+    let result;for(let i=1;i<=5;i++)result=moveMouseStroke(s,-12,60+i*20,gain);
+    return {result,pull:s.pull};
+  };
+  const normal=run(1),soft=run(.8),verySoft=run(.25);
+  assert.ok(Math.abs(soft.result-normal.result*.8)<1e-9);
+  assert.ok(Math.abs(verySoft.result-normal.result*.25)<1e-9);
+  assert.equal(soft.pull,normal.pull);
+  assert.equal(run(NaN).result,normal.result);
+});
