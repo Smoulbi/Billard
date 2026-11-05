@@ -122,3 +122,19 @@ ou de rendre la main. Le push-out n’est disponible que pour ce premier coup.
 Le jeu de la 8 reste disponible. Au chargement, le modèle de bande par défaut
 est désormais Pool v0.21 et l’assistance de trajectoire est désactivée.
 Ces deux réglages restent modifiables.
+
+## Puissance linéaire et souris capturée
+
+La puissance indique une fraction de la vitesse maximale de la blanche sur
+une frappe centrée : 25 % = 3 m/s, 50 % = 6 m/s, 100 % = 12 m/s.
+Le minimum de 1 % conserve les tirs très doux. Les pourcentages du laboratoire
+ont été recalés pour conserver leurs vitesses physiques de référence.
+
+Entrer en vue première personne capture et masque le pointeur : les mouvements
+relatifs pilotent la direction et la hauteur sans buter sur les bords de l’écran.
+Un clic gauche libère la souris et fige la visée pour régler le spin, la puissance
+et les autres commandes. Cliquer sur la table ou REPRENDRE LA VISÉE recapture
+la souris. Échap la libère aussi. Les tirs, le placement de la blanche et les
+fenêtres de décision libèrent automatiquement le pointeur ; après un coup,
+cliquer à nouveau pour reprendre la visée. Le clic droit conserve la précision
+fine. La capture nécessite l’autorisation du navigateur et un geste utilisateur.

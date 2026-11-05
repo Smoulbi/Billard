@@ -88,7 +88,7 @@ test('CSV export uses metric units and reproducible trajectories', () => {
   const lines=a.toCSV().trim().split('\n');
   assert.equal(lines[0],'scenario,ball,time_s,x_m,z_m,speed_m_s,omega_x_rad_s,omega_y_rad_s,omega_z_rad_s,power_pct,tip_x,tip_y,elevation_deg,aim_x,aim_z,cushion_model');
   assert.ok(lines.length>30);
-  assert.match(lines[1],/^RÉTRO,0,0\.0000,-0\.73000,0\.00000,0\.00000,0\.0000,0\.0000,0\.0000,64,0\.000,-0\.700,0,1\.00000,0\.00000,empirical$/);
+  assert.equal(lines[1],`RÉTRO,0,0.0000,-0.73000,0.00000,0.00000,0.0000,0.0000,0.0000,${getLabScenario('draw').power},0.000,-0.700,0,1.00000,0.00000,empirical`);
 });
 
 test('the trace sampler caps sample density while keeping path length', () => {

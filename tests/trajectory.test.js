@@ -45,7 +45,7 @@ test('aim-guide first contact agrees with the continuous collision solver at eve
 });
 
 test('predicted white and object paths equal a real shot after the same number of steps',()=>{
-  for(const angle of [0,25,38,60])for(const power of [30,40,50]) {
+  for(const angle of [0,25,38,60])for(const power of [8,12,16]) {
     const {balls,aim}=cutScenario(angle);
     const predicted=predictTrajectory(balls,aim,power);
     assert.ok(predicted.firstContactTime!==null);
@@ -70,13 +70,15 @@ test('predictor includes natural roll and draw without changing the real table',
 });
 
 test('spin and cue elevation use the same physical trajectory as the actual shot',()=>{
+  // Keep the 72-step trajectory below the guide’s 62 cm display-length cap.
+  const power=12;
   const {balls,aim}=cutScenario(35);
   for(const spin of [{x:0,y:-0.5},{x:0,y:0.5},{x:0.25,y:0.2}]) {
     for(const elevation of [0,10]) {
-      const predicted=predictTrajectory(balls,aim,40,spin,elevation);
+      const predicted=predictTrajectory(balls,aim,power,spin,elevation);
       assert.equal(predicted.firstObject,1);
       const totalSteps=Math.ceil(predicted.firstContactTime/STEP)+72;
-      const actual=realShot(balls,aim,40,spin,elevation,totalSteps);
+      const actual=realShot(balls,aim,power,spin,elevation,totalSteps);
       closePoint(predicted.whiteAfter.at(-1),actual[0],0.00001);
       closePoint(predicted.objectAfter.at(-1),actual[1],0.00001);
     }

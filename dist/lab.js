@@ -1,17 +1,18 @@
 // FRAME calibration lab: deterministic setups and measurements of *simulated*
 // outcomes. These are not experimentally validated reference measurements.
 
+// Percentages below preserve the original calibrated shot speeds on the linear gauge.
 export const LAB_SCENARIOS = Object.freeze([
   {id: 'stop', title: 'TIR D’ARRÊT', subtitle: 'Blanche et bille alignées',
-    balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,-0.80], power: 55, elevation: 0},
+    balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,-0.80], power: 18.32878819959423, elevation: 0},
   {id: 'draw', title: 'RÉTRO', subtitle: 'Retour après le contact',
-    balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,-0.70], power: 64, elevation: 0},
+    balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,-0.70], power: 23.236666666666668, elevation: 0},
   {id: 'follow', title: 'COULÉ', subtitle: 'Poursuite après le contact',
-    balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,0.60], power: 47, elevation: 0},
+    balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,0.60], power: 14.758990259118713, elevation: 0},
   {id: 'bank', title: 'BANDE + EFFET', subtitle: 'Rebond avec rotation latérale',
-    balls: [[0,-0.69,-0.22],[1,0.72,-0.32]], aim: [0.73,0.68], spin: [0.48,0], power: 62, elevation: 0},
+    balls: [[0,-0.69,-0.22],[1,0.72,-0.32]], aim: [0.73,0.68], spin: [0.48,0], power: 21.81702034119718, elevation: 0},
   {id: 'swerve', title: 'TRAJECTOIRE COURBE', subtitle: 'Squirt puis swerve sur le tapis',
-    balls: [[0,-0.76,-0.12],[1,0.40,0.12]], aim: [1,0], spin: [0.70,0], power: 54, elevation: 15},
+    balls: [[0,-0.76,-0.12],[1,0.40,0.12]], aim: [1,0], spin: [0.70,0], power: 17.867389097119787, elevation: 15},
 ]);
 
 export function getLabScenario(id) {

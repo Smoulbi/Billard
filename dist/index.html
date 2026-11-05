@@ -51,7 +51,7 @@
           <div id="placementQuick" class="placement-quick" aria-label="Positions de casse rapides"><span>PLACEMENT RAPIDE</span><button type="button" data-cue-z="-0.42">HAUT</button><button type="button" data-cue-z="0">CENTRE</button><button type="button" data-cue-z="0.42">BAS</button></div>
           <div class="scene-top-right"><span class="scene-kicker">POSITION DE TIR</span><strong id="shotState">PRÊT</strong></div>
           <div class="scene-bottom-left"><span class="crosshair">+</span><span id="sceneHint">CLIC DROIT : TOURNER <span class="hint-sep">·</span> MOLETTE ENFONCÉE : DÉPLACER <span class="hint-sep">·</span> DÉFILER : ZOOM <span class="hint-sep">·</span> F : PLEIN ÉCRAN</span></div>
-          <div class="scene-bottom-right"><button id="fullscreenButton" class="camera-button" type="button" aria-label="Activer ou quitter le plein écran">PLEIN ÉCRAN</button><button id="placeCueButton" class="camera-button place-cue-button" type="button">PLACER LA BLANCHE</button><button id="viewButton" class="camera-button" title="Alterner perspective, dessus et première personne"><span class="view-icon">▣</span> CHANGER DE VUE <kbd>V</kbd></button></div>
+          <div class="scene-bottom-right"><button id="aimMouseButton" class="camera-button" type="button" hidden>REPRENDRE LA VISÉE</button><button id="fullscreenButton" class="camera-button" type="button" aria-label="Activer ou quitter le plein écran">PLEIN ÉCRAN</button><button id="placeCueButton" class="camera-button place-cue-button" type="button">PLACER LA BLANCHE</button><button id="viewButton" class="camera-button" title="Alterner perspective, dessus et première personne"><span class="view-icon">▣</span> CHANGER DE VUE <kbd>V</kbd></button></div>
           <details class="shot-dock" open>
             <summary>COMMANDES DE JEU <span>Puissance · Effet</span></summary>
             <div class="shot-dock-body"><div class="shot-dock-content">
@@ -91,10 +91,10 @@
 
         </div><div class="shot-control"><div class="panel-divider"></div>
         <div class="control-title"><div><span class="control-index">02</span><strong>PUISSANCE</strong></div><span id="powerValue" class="power-value">46%</span></div>
-        <p class="control-description">Course progressive : dosage précis à faible vitesse et réserve de puissance pour la casse.</p>
-        <input id="powerSlider" type="range" min="5" max="100" value="46" step="1" aria-label="Puissance du tir">
+        <p class="control-description">Échelle proportionnelle à la vitesse : 25 % = 3 m/s, 50 % = 6 m/s, 100 % = 12 m/s sur une frappe centrée.</p>
+        <input id="powerSlider" type="range" min="1" max="100" value="46" step="any" aria-label="Puissance du tir">
         <div class="range-labels"><span>DOUX</span><span>CONTRÔLE</span><span>CASSE</span></div>
-        <div class="power-instruments"><div><small>VITESSE INITIALE ESTIMÉE</small><strong id="powerSpeed">1,7 m/s</strong><span id="powerMode">COUP CONTRÔLÉ</span></div><button id="breakPreset" type="button" title="100 % de puissance, point d’impact centré et queue à plat">PRÉRÉGLAGE<br>CASSE 100 %</button></div>
+        <div class="power-instruments"><div><small>VITESSE INITIALE ESTIMÉE</small><strong id="powerSpeed">5,5 m/s</strong><span id="powerMode">COUP CONTRÔLÉ</span></div><button id="breakPreset" type="button" title="100 % de puissance, point d’impact centré et queue à plat">PRÉRÉGLAGE<br>CASSE 100 %</button></div>
 
         </div><div class="shot-control"><div class="panel-divider slim"></div>
         <div class="control-title"><div><span class="control-index">04</span><strong>ÉLÉVATION DE LA QUEUE</strong></div><span id="elevationValue" class="power-value">0°</span></div>
@@ -195,6 +195,6 @@
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=064"></script>
+  <script type="module" src="./game.js?v=065"></script>
 </body>
 </html>

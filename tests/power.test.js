@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {RADIUS, makePhysicsBody, strikeBall, simulatePhysics} from '../dist/physics.js';
 import {powerToCueSpeed} from '../dist/power.js';
 
-test('the whole power gauge is increasing and retains gentle low-end control', () => {
+test('the power gauge is linear across the whole range', () => {
   assert.equal(powerToCueSpeed(0),0);
   assert.equal(powerToCueSpeed(-50),0);
   assert.equal(powerToCueSpeed(200),12);
@@ -13,8 +13,10 @@ test('the whole power gauge is increasing and retains gentle low-end control', (
     assert.ok(speed>previous,`power ${pct}% must increase speed`);
     previous=speed;
   }
-  assert.ok(powerToCueSpeed(5)<0.3);
-  assert.ok(powerToCueSpeed(55)>2.1&&powerToCueSpeed(55)<2.4);
+  assert.equal(powerToCueSpeed(1),0.12);
+  assert.equal(powerToCueSpeed(25),3);
+  assert.equal(powerToCueSpeed(50),6);
+  assert.equal(powerToCueSpeed(75),9);
   assert.ok(powerToCueSpeed(90)>8);
   assert.equal(powerToCueSpeed(100),12);
 });
