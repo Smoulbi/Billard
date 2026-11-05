@@ -174,3 +174,7 @@ donne désormais environ 17 % (2 m/s sur une frappe centrée), au lieu de 50 %.
 Ce calcul utilise les déplacements du pointeur rapportés par le navigateur,
 et non la vitesse physique de la main ; le ressenti dépend donc aussi des
 réglages de souris du système.
+
+Ajustement supplémentaire : la sensibilité du geste est réduite de 20 % par
+rapport au réglage précédent. Une avancée de 600 pixels/s correspond désormais
+à environ 13 % de puissance, soit 1,6 m/s sur une frappe centrée.

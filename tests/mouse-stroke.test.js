@@ -7,7 +7,7 @@ test('a deliberate backswing followed by forward contact fires exactly once',()=
   assert.equal(moveMouseStroke(s,60,80),null);assert.equal(s.pull,.06);
   assert.equal(moveMouseStroke(s,-30,110),null);
   const power=moveMouseStroke(s,-30,140);
-  assert.ok(power>27&&power<28);assert.equal(s.pull,0);
+  assert.ok(power>22&&power<23);assert.equal(s.pull,0);
   assert.equal(moveMouseStroke(s,60,180),null);assert.equal(moveMouseStroke(s,-60,200),null);
 });
 test('same stroke distance delivers more power when moved faster',()=>{
@@ -37,12 +37,12 @@ test('invalid timestamps and movement do not produce a shot or corrupt state',()
 
 test('a pause at full backswing does not suppress a fast forward stroke',()=>{
   const s=createMouseStroke();moveMouseStroke(s,60,60);moveMouseStroke(s,-10,1060);
-  const result=moveMouseStroke(s,-50,1080);assert.ok(result>40&&result<50);
+  const result=moveMouseStroke(s,-50,1080);assert.ok(result>35&&result<40);
 });
 
 test('ordinary forward motion gives controllable rather than break-level speed',()=>{
   const s=createMouseStroke();moveMouseStroke(s,60,60);
   let result;
   for(let i=1;i<=5;i++)result=moveMouseStroke(s,-12,60+i*20);
-  assert.ok(Math.abs(result-100/6)<1e-9,'600 px/s should produce 16.7% power (2 m/s)');
+  assert.ok(Math.abs(result-40/3)<1e-9,'600 px/s should produce 13.3% power (1.6 m/s)');
 });
