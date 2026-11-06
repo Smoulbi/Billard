@@ -1,8 +1,9 @@
+import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
 import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-camera-transition.js';
 import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js';
-import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
+import {createFirstPersonView,resetFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js?v=0.61';
 import * as THREE from './vendor/three.module.js';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
@@ -50,6 +51,7 @@ let fallbackCtx = null;
 let balls = [];
 let fallingBalls = [];
 let aim = { x: 1, z: 0 };
+const aimSmoothing=createAimSmoothing(aim);
 let spin = { x: 0, y: 0 };
 let shotCount = 0;
 let shotActive = false;
@@ -710,6 +712,7 @@ function newGame() {
   }
   }
   aim={x:1,z:0};
+  resetAimSmoothing(aimSmoothing,aim);
   updateCounters();setStatus('Casse à préparer','Glissez la blanche dans la zone de départ, puis visez le triangle.',false);
   el.shotState.textContent='PRÊT';el.shootButton.disabled=false;
   el.cushionModel.disabled=false;
@@ -1523,6 +1526,7 @@ function forcePlacementCamera() {
 }
 
 function releaseAimMouse() {
+  resetAimSmoothing(aimSmoothing,aim);
   strokePhase='aim';mouseStroke=null;
   firstPerson.locked=true;
   if(document.pointerLockElement===el.gameCanvas)document.exitPointerLock();
@@ -1531,6 +1535,7 @@ function releaseAimMouse() {
 function captureAimMouse() {
   if(cameraMode!=='first-person'||shotActive||shotCameraTransition||placementMode||needsCuePlacement||
     !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
+  resetAimSmoothing(aimSmoothing,aim);
   strokePhase='aim';mouseStroke=null;
   if(document.pointerLockElement===el.gameCanvas){firstPerson.locked=false;updateVisuals();return;}
   firstPerson.locked=true;
@@ -1546,6 +1551,7 @@ function toggleSpinSelection() {
     match?.phase==='decision'||match?.phase==='finished'||!el.matchOverlay.hidden||
     !el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
   if(strokePhase==='spin'){
+    resetAimSmoothing(aimSmoothing,aim);
     strokePhase='aim';firstPerson.locked=false;mouseStroke=null;updateVisuals();return;
   }
   prepareMouseAim();
@@ -1558,6 +1564,7 @@ function beginMouseStroke() {
   if(match?.phase==='playing'&&match.callPocket&&!safetyCalled&&(!el.calledBall.value||chosenPocket===null)){
     releaseAimMouse();setStatus('Annonce incomplète','Annoncez la bille et la poche avant de préparer le geste.',false);return;
   }
+  resetAimSmoothing(aimSmoothing,aim);
   mouseStroke=createMouseStroke(performance.now());strokePhase='stroke';firstPerson.locked=true;
   setPower(1);refreshPlacementUI();
 }
@@ -1751,7 +1758,7 @@ function bindControls() {
   document.addEventListener('pointerlockchange',()=>{
     if(document.pointerLockElement===el.gameCanvas&&(cameraMode!=='first-person'||shotActive||placementMode||needsCuePlacement||
       !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden))releaseAimMouse();
-    if(document.pointerLockElement!==el.gameCanvas){strokePhase='aim';mouseStroke=null;}
+    if(document.pointerLockElement!==el.gameCanvas){resetAimSmoothing(aimSmoothing,aim);strokePhase='aim';mouseStroke=null;}
     firstPerson.locked=document.pointerLockElement!==el.gameCanvas||strokePhase==='stroke'||strokePhase==='spin';
     if(document.pointerLockElement===el.gameCanvas)el.gameCanvas.focus({preventScroll:true});
     updateVisuals();
@@ -1777,10 +1784,11 @@ function bindControls() {
       }
       return;
     }
-    aim=rotateFirstPersonAim(firstPerson,aim,e.movementX);
-    el.firstPersonHeightSlider.value=String(adjustFirstPersonHeight(firstPerson,Number(el.firstPersonHeightSlider.value),e.movementY));
-    el.firstPersonHeightSlider.dispatchEvent(new Event('input'));
-    updateVisuals();
+    queueAimMovement(aimSmoothing,firstPerson,e.movementX);
+    if(e.movementY!==0){
+      el.firstPersonHeightSlider.value=String(adjustFirstPersonHeight(firstPerson,Number(el.firstPersonHeightSlider.value),e.movementY));
+      el.firstPersonHeightSlider.dispatchEvent(new Event('input'));
+    }
   });
   const refreshModeChoice=()=>{
     const nine=document.querySelector('input[name=gameMode]:checked')?.value==='nine';
@@ -2035,7 +2043,14 @@ function resize() {
 }
 
 function animate(t) {
-  const delta=Math.min(MAX_DT,(t-lastFrame)/1000);lastFrame=t;
+  const elapsed=Math.max(0,(t-lastFrame)/1000);
+  const delta=Math.min(MAX_DT,elapsed);lastFrame=t;
+  if(cameraMode==='first-person'&&strokePhase==='aim'&&!firstPerson.locked&&!shotActive&&
+    !shotCameraTransition&&document.pointerLockElement===el.gameCanvas&&
+    el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden){
+    const smoothed=stepAimSmoothing(aimSmoothing,elapsed);
+    if(smoothed){aim=smoothed;updateVisuals();}
+  }
   if(shotActive){accumulator+=delta;let iterations=0;while(accumulator>=FIXED_STEP&&iterations++<20){physicsStep(FIXED_STEP);accumulator-=FIXED_STEP;}}
   for(let i=fallingBalls.length-1;i>=0;i--){
     const fall=fallingBalls[i];

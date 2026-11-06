@@ -1,8 +1,8 @@
-# FRAME v0.60 — projet complet
+# FRAME v0.61 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.60 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.61 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -227,3 +227,12 @@ Un geste réduit à un seul événement ou à moins de 8 ms de données ne décl
 pas de tir : le message invite à reculer davantage et recommencer.
 La force du geste et ses préférences enregistrées ne changent pas :
 60 % correspond toujours à l’ancien 30 %.
+
+## Version 0.61 — visée fluide
+
+La rotation horizontale en première personne est désormais interpolée à chaque
+image avec une réponse courte de 25 ms, indépendante de la fréquence d’affichage.
+Les mouvements souris s’accumulent dans une direction cible sans recalculer
+la scène à chaque événement. La sensibilité et le clic droit de précision
+restent identiques. Au verrouillage du tir ou au réglage d’effet, le lissage
+s’arrête immédiatement sur la direction affichée, sans saut ni dérive.

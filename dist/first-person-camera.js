@@ -5,9 +5,12 @@ export function createFirstPersonView() {
 export function resetFirstPersonAim(view) {
   view.fine=false;view.locked=false;view.previousX=null;view.previousY=null;view.shot=null;
 }
+export function firstPersonYawDelta(view,deltaX) {
+  return view.locked||!Number.isFinite(deltaX)?0:deltaX*(view.fine?0.00035:0.0035);
+}
 export function rotateFirstPersonAim(view, aim, deltaX) {
   if(view.locked||!Number.isFinite(deltaX))return {...aim};
-  const angle=Math.atan2(aim.z,aim.x)+deltaX*(view.fine?0.00035:0.0035);
+  const angle=Math.atan2(aim.z,aim.x)+firstPersonYawDelta(view,deltaX);
   return {x:Math.cos(angle),z:Math.sin(angle)};
 }
 export function firstPersonPose(cue, aim, {height=0.23, setback=0.52}={}) {
