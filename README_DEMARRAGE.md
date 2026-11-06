@@ -1,8 +1,8 @@
-# FRAME v0.61 — projet complet
+# FRAME v0.62 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.61 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.62 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -236,3 +236,31 @@ Les mouvements souris s’accumulent dans une direction cible sans recalculer
 la scène à chaque événement. La sensibilité et le clic droit de précision
 restent identiques. Au verrouillage du tir ou au réglage d’effet, le lissage
 s’arrête immédiatement sur la direction affichée, sans saut ni dérive.
+
+## Version 0.62 — entraînement libre
+
+Dans Nouvelle partie, sélectionner ENTRAÎNEMENT. La séance démarre avec la
+blanche seule, sans assistance ni tracés. Les boutons BLANCHE SEULE, TRIANGLE
+DE 8 et LOSANGE DE 9 permettent de changer la disposition sans quitter la séance.
+Il n’y a ni faute, ni annonce obligatoire, ni alternance de joueurs, ni victoire
+sur la 8 ou la 9. Une blanche empochée est replacée automatiquement.
+
+PLACER LES BILLES impose la vue de dessus. Glisser une bille pour la déplacer,
+ou sélectionner son numéro et cliquer sur un emplacement libre du tapis.
+Pour ajouter une bille absente ou empochée, sélectionner son numéro, cliquer
+AJOUTER PUIS CLIQUER, puis choisir sa position sur la table. RETIRER supprime
+la bille sélectionnée ; la blanche ne peut pas être supprimée. Le placement
+refuse les chevauchements, les poches et les positions hors tapis.
+TERMINER PLACEMENT rend la main aux commandes de visée et de tir habituelles.
+
+ANNULER et RÉTABLIR parcourent jusqu’à 100 actions (coups, placements et
+changements de disposition), quand les billes sont arrêtées. Les positions,
+les billes empochées, le compteur de coups, la direction, l’effet, la puissance,
+l’élévation et le modèle de bande sont restaurés. Après annulation d’un coup,
+modifier les réglages et tirer permet de rejouer la même position autrement.
+Une nouvelle action après annulation abandonne la branche de rétablissement.
+
+L’assistance et les tracés sont accessibles dans le panneau d’entraînement,
+y compris en plein écran. L’historique reste en mémoire durant la séance ;
+aucune sauvegarde nommée ni export de positions n’est ajouté dans cette version.
+Les modes 8/9 restent séparés et conservent leurs règles.
