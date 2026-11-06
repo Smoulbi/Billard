@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=058">
+  <link rel="stylesheet" href="./style.css?v=0.59">
 </head>
 <body>
   <div class="app">
     <header class="topbar">
       <div class="brand"><div class="brand-symbol"><span></span><span></span><span></span></div><div><b>FRAME<span class="brand-period">.</span></b><small>ATELIER DE BILLARD</small></div></div>
-      <div class="topbar-center"><span class="live-dot"></span> POOL AMÉRICAIN · PROFIL ACTIF <span class="topbar-sep">/</span> VERSION 0.58</div>
+      <div class="topbar-center"><span class="live-dot"></span> POOL AMÉRICAIN · PROFIL ACTIF <span class="topbar-sep">/</span> VERSION 0.59</div>
       <div class="topbar-right"><span class="badge-outline">PROTOTYPE INTERACTIF</span><button id="audioToggle" class="icon-button" title="Activer ou désactiver le son" aria-label="Activer ou désactiver le son">SON <span id="audioLabel">ON</span></button></div>
     </header>
 
@@ -37,7 +37,7 @@
         <div class="left-bottom">
           <div class="eyebrow">LE PROJET</div>
           <p>Physique calculée à 240 Hz, traces enregistrées jusqu’à 60 Hz, scénarios reproductibles et export des coordonnées. Résultats à comparer à des tirs réels.</p>
-          <div class="version-row"><span>BUILD 049</span><span>POOL US · SNOOKER CONSERVÉ</span></div>
+          <div class="version-row"><span>BUILD 059</span><span>POOL US · SNOOKER CONSERVÉ</span></div>
         </div>
       </aside>
 
@@ -160,7 +160,7 @@
         </section>
 
         <section class="lab-panel" aria-labelledby="labHeading">
-          <div class="lab-heading"><div><span class="eyebrow">03 / BANC D’ESSAI PHYSIQUE</span><h3 id="labHeading">Laboratoire de trajectoires.</h3><p id="labDescription">Chargez un coup reproductible, puis mesurez le mouvement de la blanche.</p></div><label class="lab-check"><input id="showTraces" type="checkbox" checked> TRACÉS</label></div>
+          <div class="lab-heading"><div><span class="eyebrow">03 / BANC D’ESSAI PHYSIQUE</span><h3 id="labHeading">Laboratoire de trajectoires.</h3><p id="labDescription">Chargez un coup reproductible, puis mesurez le mouvement de la blanche.</p></div><label class="lab-check"><input id="showTraces" type="checkbox"> TRACÉS</label></div>
           <div class="lab-controls"><select id="labScenario" aria-label="Scénario physique à charger"><option value="stop">Tir d'arrêt</option><option value="draw">Rétro</option><option value="follow">Coulé</option><option value="bank">Bande avec effet</option><option value="swerve">Trajectoire courbe</option></select><button id="labLoad" class="lab-button accent">CHARGER</button><button id="labReplay" class="lab-button" disabled>REJOUER</button><button id="labExport" class="lab-button" disabled>EXPORT CSV</button></div>
           <div class="lab-measurements"><div><small>DISTANCE BLANCHE</small><strong id="labDistance">—</strong></div><div><small>APRÈS PREMIER CHOC</small><strong id="labAfterContact">—</strong></div><div><small>REBONDS BANDES</small><strong id="labCushions">—</strong></div><div><small>TEMPS SIMULÉ</small><strong id="labTime">—</strong></div></div>
           <div class="lab-legend"><span><i class="lab-dot cue"></i> Blanche</span><span><i class="lab-dot object"></i> Première bille touchée</span><span id="labState">En attente d'un tir</span></div>
@@ -200,10 +200,10 @@
         </select>
 
 
-        <div class="panel-footer"><span class="live-dot"></span> BANDES · PROFIL POOL US <span>V0.58</span></div>
+        <div class="panel-footer"><span class="live-dot"></span> BANDES · PROFIL POOL US <span>V0.59</span></div>
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=072"></script>
+  <script type="module" src="./game.js?v=0.59"></script>
 </body>
 </html>

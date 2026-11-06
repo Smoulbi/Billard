@@ -1,8 +1,8 @@
-# FRAME v0.58 — archive complète
+# FRAME v0.59 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-La version affichée dans le jeu est 0.58. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.59 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -206,3 +206,9 @@ pendant un recul de queue, le geste en cours est annulé sans tirer.
 Échap libère le pointeur et masque le point, en conservant l’effet sélectionné,
 pour accéder à la puissance, à la sensibilité et aux autres commandes.
 Le système à jauge conserve son sélecteur latéral habituel.
+
+## Version 0.59
+
+Les tracés des billes sont désactivés au chargement. Ils restent activables
+avec la case TRACÉS dans le laboratoire. La version du jeu est désormais
+incrémentée à chaque mise à jour livrée, conformément à `AGENTS.md`.
