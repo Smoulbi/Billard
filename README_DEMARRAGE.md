@@ -1,8 +1,8 @@
-# FRAME v0.59 — projet complet
+# FRAME v0.60 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.59 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.60 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -212,3 +212,18 @@ Le système à jauge conserve son sélecteur latéral habituel.
 Les tracés des billes sont désactivés au chargement. Ils restent activables
 avec la case TRACÉS dans le laboratoire. La version du jeu est désormais
 incrémentée à chaque mise à jour livrée, conformément à `AGENTS.md`.
+
+## Version 0.60 — mesure du geste
+
+La puissance du geste est mesurée à partir des positions horodatées de la
+queue, sur les 80 dernières millisecondes disponibles avant le contact.
+Les limites de cette fenêtre et l’instant du contact sont interpolés entre
+les mesures ; aucune durée de 16 ms n’est supposée après une pause.
+Le premier mouvement d’avancée sert à commencer l’enregistrement, sans
+attribuer une vitesse arbitraire à son déplacement. Des événements portant
+le même horaire sont regroupés sans leur ajouter du temps artificiel.
+
+Un geste réduit à un seul événement ou à moins de 8 ms de données ne déclenche
+pas de tir : le message invite à reculer davantage et recommencer.
+La force du geste et ses préférences enregistrées ne changent pas :
+60 % correspond toujours à l’ancien 30 %.

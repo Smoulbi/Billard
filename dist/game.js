@@ -1,5 +1,5 @@
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
-import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js';
+import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
 import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-camera-transition.js';
 import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js';
 import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
@@ -1580,7 +1580,8 @@ function refreshPowerInput() {
   el.powerSlider.disabled=mouse;el.breakPreset.disabled=mouse;
   el.strokeSensitivityControls.hidden=!mouse;
   el.mouseStrokeHint.hidden=!mouse;
-  el.mouseStrokeHint.textContent=strokePhase==='spin'?
+  el.mouseStrokeHint.textContent=mouseStroke?.needsRetry?
+    'GESTE NON MESURÉ · RECULEZ DAVANTAGE LA QUEUE ET RECOMMENCEZ':strokePhase==='spin'?
     'EFFET : DÉPLACEZ LE POINT ROUGE SUR LA BLANCHE · S : VALIDER · ÉCHAP : AUTRES RÉGLAGES':strokePhase==='stroke'?
     'BAS : RECULER LA QUEUE · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':
     'En première personne : visez, puis clic gauche pour préparer le geste. S règle l’effet sur la blanche ; Échap libère la souris.';
@@ -1767,6 +1768,9 @@ function bindControls() {
     if(powerInputMode==='mouse'&&strokePhase==='stroke'){
       const power=moveMouseStroke(mouseStroke,e.movementY,e.timeStamp,strokeSensitivityGain(el.strokeSensitivitySlider.value));
       setPower(mouseStroke.power||1);
+      if(mouseStroke.power===0){
+        el.powerValue.textContent='—';el.powerSpeed.textContent='—';el.powerMode.textContent='MESURE DU GESTE';
+      }
       if(power!==null){
         setPower(power);
         if(!shoot('gesture')){releaseAimMouse();updateVisuals();}
