@@ -1,8 +1,8 @@
-# FRAME v0.63 — projet complet
+# FRAME v0.64 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.63 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.64 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -273,3 +273,15 @@ Les billes peuvent être placées près de la lèvre des six poches, y compris
 sur les petites zones de support à l’entrée, lorsqu’elles restent stables.
 Les positions dans le trou, dans le caoutchouc ou sur une autre bille restent
 interdites. Les règles de placement des parties de 8 et de 9 ne changent pas.
+
+## Version 0.64 — interface de jeu compacte
+
+Un indicateur fixe en haut du panneau précise l’action active : visée, effet,
+geste de tir, placement ou mouvement des billes, avec les raccourcis utiles.
+La puissance, le mode de tir et les boutons principaux restent accessibles.
+Les réglages de caméra, l’effet latéral, l’élévation, la sensibilité et les
+explications se déplient à la demande. En mode souris, la jauge manuelle
+désactivée est masquée ; elle réapparaît en mode jauge.
+En entraînement, Placer les billes et Annuler/Rétablir restent visibles.
+Le sélecteur de billes s’ouvre automatiquement en passant au placement ;
+les triangles et aides sont regroupés dans Table et aides.

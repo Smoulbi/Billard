@@ -184,3 +184,41 @@ body:has(.scene-frame.scene-immersive){overflow:hidden}
 .power-instruments button:disabled{opacity:.45;cursor:default}
 
 .training-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}.training-grid button{min-height:36px;padding:7px 5px;background:#192c25;border:1px solid #4f6c57;border-radius:4px;color:#d2e8c7;font:9px/1.5 var(--mono)}.training-grid button:disabled{opacity:.4;cursor:default}.training-panel .lab-check{display:flex;margin:10px 0}.training-panel select{width:100%}
+
+/* Compact game dock: essential controls stay visible, secondary settings fold. */
+.scene-frame{--dock-width:232px}.shot-dock{width:232px}
+.shot-dock:not([open]){width:auto}
+.shot-dock>summary{min-height:40px;padding:12px 10px;font-size:10px}
+.shot-dock>summary span{display:inline;float:right;margin:0;font-size:8px}
+.shot-dock:not([open])>summary span{display:none}
+.shot-dock-body{top:40px}
+.play-mode-card{flex:none;padding:9px 11px;border-bottom:1px solid #354d43;background:#172a22}
+.play-mode-card strong{display:block;font:600 11px var(--mono);color:var(--accent);letter-spacing:.6px}
+.play-mode-card span{display:block;margin-top:5px;font:10px/1.5 var(--body);color:#bbd0c2}
+.play-mode-card[data-phase=spin]{background:#302329}.play-mode-card[data-phase=spin] strong{color:#ffabb2}
+.play-mode-card[data-phase=stroke]{background:#302b1d}.play-mode-card[data-phase=stroke] strong{color:#efd394}
+.shot-dock-content{padding:10px 11px 12px}
+.shot-dock .panel-divider,.shot-dock .control-index{display:none}
+.shot-dock .control-title>div{gap:0}
+.shot-dock .dock-section{border:1px solid #30483d;border-radius:5px;margin:8px 0;background:#111f1d}
+.shot-dock .dock-section>summary{min-height:34px;padding:10px;font:500 10px var(--mono);color:#c7dbcb}
+.shot-dock .dock-section[open]>summary{border-bottom:1px solid #30483d;color:var(--accent)}
+.dock-section-content{padding:10px}
+.shot-dock .control-description{font-size:10px;line-height:1.5;margin:7px 0}
+.shot-dock #mouseStrokeHint{display:none}
+.shot-dock .shot-control{margin:10px 0}
+.shot-dock .match-player{padding:8px 6px}
+.shot-dock .match-message{font-size:10px;line-height:1.45;margin:7px 0}
+.shot-dock .match-player span{font-size:8px}
+.shot-dock .training-grid{gap:5px;margin:7px 0}
+.shot-dock .training-grid button{min-height:32px;font-size:8px}
+.training-history{font:9px/1.5 var(--mono);color:#8fa899;margin:6px 0}
+.shot-dock .power-mode-button{min-height:32px;font-size:9px;margin-top:7px}
+.shot-dock .power-instruments strong{font-size:18px}
+.shot-dock .power-instruments>div{padding:7px 9px}
+.shot-dock[data-power-mode=mouse] #powerSlider,.shot-dock[data-power-mode=mouse] #powerSlider+.range-labels,.shot-dock[data-power-mode=mouse] #breakPreset{display:none}
+.shot-dock-body>.actions{padding:8px 10px;gap:6px}
+.shot-dock .primary-button{height:42px;padding:0 12px;font-size:11px}
+.shot-dock .secondary-button{height:32px;font-size:9px}
+@media(max-width:700px){.scene-frame{--dock-width:210px}.shot-dock{width:210px}.shot-dock .dock-section-content .control-description{display:block}}
+@media(max-width:500px) and (orientation:portrait){.scene-frame{--dock-width:0px}.shot-dock{width:100%}.shot-dock-body>.shot-dock-content{display:block}.play-mode-card{padding:6px 10px}.play-mode-card span{margin-top:2px;font-size:9px}}

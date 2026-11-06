@@ -32,7 +32,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
@@ -710,6 +710,7 @@ const groupLabel = group => group === 'solid' ? 'PLEINES 1–7' :
   group === 'stripe' ? 'RAYÉES 9–15' : 'TABLE OUVERTE';
 
 function refreshMatchUI() {
+  refreshControlMode();
   el.matchPanel.hidden=!match;
   el.modeChip.textContent=training?'ENTRAÎNEMENT':match?(match.mode==='nine'?'JEU DE LA 9':'JEU DE LA 8'):'PRÉPARATION';
   for(let player=0;player<2;player++){
@@ -881,14 +882,14 @@ function showMatchSetup() {
   el.matchOverlay.hidden=false;
   el.decisionOverlay.hidden=true;
   el.victoryOverlay.hidden=true;
-  el.startMatch.focus();
+  el.startMatch.focus();refreshControlMode();
 }
 
 function startMatch() {
   if(shotActive)return;
   const mode=document.querySelector('input[name=gameMode]:checked')?.value;
   const nine=mode==='nine';
-  training=mode==='training'?createTrainingSession():null;trainingDrag=null;
+  training=mode==='training'?createTrainingSession():null;trainingDrag=null;el.trainingEditor.open=false;
   if(training){el.aimAssist.checked=false;el.showTraces.checked=false;}
   match=training?null:(nine?newNineBallMatch:newEightBallMatch)({callPocket:el.requireCall.checked,
     breaker:Number(el.breakerSelect.value)});
@@ -1675,6 +1676,7 @@ function prepareMouseAim() {
 function refreshPowerInput() {
   if(fallbackCtx)powerInputMode='gauge';
   const mouse=powerInputMode==='mouse';
+  el.powerModeButton.closest('.shot-dock').dataset.powerMode=mouse?'mouse':'gauge';
   el.powerModeButton.textContent=mouse?'MODE : GESTE SOURIS':'MODE : JAUGE';
   el.powerModeButton.setAttribute('aria-pressed',String(mouse));
   el.powerModeButton.disabled=shotActive||!!fallbackCtx;
@@ -1734,7 +1736,33 @@ function cuePlacementAvailable() {
   return breakPlacementAvailable()||Boolean(!shotActive&&match?.phase==='playing'&&match.ballInHand);
 }
 
+function refreshControlMode() {
+  let phase='ready',title='PRÊT À JOUER',hint=powerInputMode==='mouse'?'Cliquez sur VISER À LA SOURIS pour préparer le coup.':'Réglez la puissance · Tirer ou Espace.';
+  if(!el.matchOverlay.hidden){title='CHOIX DU MODE';hint='Partie de 8, de 9 ou entraînement libre.';}
+  else if(match?.phase==='decision'){title='DÉCISION';hint='Choisissez la suite du jeu dans la fenêtre.';}
+  else if(match?.phase==='finished'){title='PARTIE TERMINÉE';hint='Nouvelle partie pour recommencer.';}
+  else if(shotActive){phase='moving';title='BILLES EN MOUVEMENT';hint='Le coup est en cours.';}
+  else if(training?.editing||needsCuePlacement||placementMode||placementPointer){
+    phase='placement';title='PLACEMENT';
+    hint=training?.addNumber!=null?`Cliquez sur le tapis pour ajouter la bille ${training.addNumber}.`:
+      training?'Glissez une bille · Terminer placement pour jouer.':'Placez la blanche sur le tapis.';
+  }else if(strokePhase==='spin'){
+    phase='spin';title='RÉGLAGE DE L’EFFET';hint='Déplacez le point rouge · S pour valider.';
+  }else if(strokePhase==='stroke'){
+    phase='stroke';title=mouseStroke?.needsRetry?'RECOMMENCER LE GESTE':'GESTE DE TIR';
+    hint=mouseStroke?.needsRetry?'Reculez davantage la queue, puis recommencez.':'Bas : reculer · Haut : frapper · S : effet.';
+  }else if(document.pointerLockElement===el.gameCanvas){
+    phase='aim';title='VISÉE';hint=powerInputMode==='mouse'?'Clic gauche : geste · S : effet · Échap : réglages.':'Clic gauche : réglages · Espace : tirer.';
+  }else if(cameraMode==='first-person'){
+    title='RÉGLAGES';hint='Cliquez sur la table pour viser · S : effet.';
+  }
+  if(el.controlModeTitle.textContent!==title)el.controlModeTitle.textContent=title;
+  if(el.controlModeHint.textContent!==hint)el.controlModeHint.textContent=hint;
+  el.controlModeTitle.parentElement.dataset.phase=phase;
+}
+
 function refreshPlacementUI() {
+  refreshControlMode();
   refreshPowerInput();
   refreshTrainingUI();
   if(training?.editing||placementMode||needsCuePlacement||placementPointer)forcePlacementCamera();
@@ -1822,7 +1850,7 @@ function bindControls() {
   bindCalibration();
   el.trainingEditButton.addEventListener('click',()=>{
     if(!training||shotActive)return;
-    training.editing=!training.editing;training.addNumber=null;
+    training.editing=!training.editing;training.addNumber=null;el.trainingEditor.open=training.editing;
     releaseAimMouse();if(training.editing)forcePlacementCamera();updateVisuals();
   });
   for(const [button,kind] of [[el.trainingClear,'clear'],[el.trainingEight,'eight'],[el.trainingNine,'nine']])
@@ -1833,7 +1861,7 @@ function bindControls() {
   el.trainingAdd.addEventListener('click',()=>{
     if(!training||shotActive)return;
     if(balls.some(b=>b.num===training.selected&&b.active))return;
-    training.editing=true;training.addNumber=training.selected;forcePlacementCamera();updateVisuals();
+    training.editing=true;training.addNumber=training.selected;el.trainingEditor.open=true;forcePlacementCamera();updateVisuals();
   });
   el.trainingRemove.addEventListener('click',()=>{
     if(!training||shotActive||training.selected===0)return;
@@ -1879,6 +1907,7 @@ function bindControls() {
     releaseAimMouse();
     if(powerInputMode==='gauge'){gaugePower=Number(el.powerSlider.value);powerInputMode='mouse';}
     else{powerInputMode='gauge';setPower(gaugePower);}
+    el.spinSettings.open=powerInputMode==='gauge';
     updateVisuals();
     if(powerInputMode==='mouse')prepareMouseAim();
   });
