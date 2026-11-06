@@ -157,8 +157,8 @@ Pour utiliser le geste, cliquer VISER À LA SOURIS ou passer en première person
    Le tir part au contact avec la blanche ; la vitesse d’avancée détermine
    la puissance, indépendamment de la vitesse du recul. La jauge affiche
    la puissance estimée pendant l’avancée.
-3. S libère le pointeur et annule le geste sans tirer, pour régler le spin
-   et les autres paramètres. Un clic sur la table reprend la visée.
+3. S annule le geste sans tirer et ouvre le réglage direct de l’effet sur la
+   blanche ; S valide. Échap libère le pointeur pour les autres paramètres.
 
 Un second clic gauche pendant le geste revient à la visée. Échap, une perte
 de capture ou un changement de caméra annulent aussi le geste sans tirer.
@@ -181,7 +181,7 @@ rapport au réglage précédent. Une avancée de 600 pixels/s correspond désorm
 
 Le curseur FORCE DU GESTE, dans Puissance en mode souris, permet de réduire
 ou d’amplifier la puissance d’un même geste (10–150 %). La valeur initiale
-de 80 % réduit de 20 % la sensibilité précédente. Appuyer sur S pour libérer
+de 80 % réduit de 20 % la sensibilité précédente. Appuyer sur Échap pour libérer
 la souris et l’ajuster, puis reprendre la visée. La valeur est enregistrée
 dans le navigateur ; REVENIR À 80 % restaure le réglage initial.
 
@@ -191,3 +191,18 @@ de réinitialisation sont désormais à 60 %. La plage devient 20–300 %, avec
 les mêmes limites physiques qu’avant. Les anciennes préférences enregistrées
 sont converties automatiquement pour conserver leur force, sans être doublées
 à chaque rechargement.
+
+## Réglage de l’effet directement sur la blanche (mode geste souris)
+
+Appuyer sur S pour entrer en sélection d’effet : le pointeur reste capturé et
+un point rouge apparaît sur la surface de la blanche. Les mouvements latéraux
+règlent l’effet gauche/droite ; les mouvements verticaux règlent coulé/rétro.
+La queue se décale pour aligner son extrémité sur le point choisi. La direction
+de visée et la hauteur des yeux restent fixes. Clic droit affine le réglage.
+
+Un second appui sur S valide, masque le point rouge et reprend la visée.
+Le clic gauche ne déclenche aucun tir durant cette sélection. Si S est pressé
+pendant un recul de queue, le geste en cours est annulé sans tirer.
+Échap libère le pointeur et masque le point, en conservant l’effet sélectionné,
+pour accéder à la puissance, à la sensibilité et aux autres commandes.
+Le système à jauge conserve son sélecteur latéral habituel.

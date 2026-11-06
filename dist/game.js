@@ -1,3 +1,4 @@
+import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js';
 import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-camera-transition.js';
 import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js';
@@ -35,6 +36,7 @@ const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 let cameraMode='perspective';
 let shotCameraTransition=null;
 let powerInputMode='mouse';
+let spinImpactMarker;
 let strokePhase='aim';
 let mouseStroke=null;
 let gaugePower=46;
@@ -1144,6 +1146,9 @@ function makeCylinder(length,r1,r2,center,mat) {
 
 function makeCueAndGuides() {
   cueGroup=new THREE.Group();scene.add(cueGroup);
+  spinImpactMarker=new THREE.Mesh(new THREE.SphereGeometry(.0025,20,16),
+    new THREE.MeshBasicMaterial({color:0xff2538,depthTest:false,depthWrite:false,toneMapped:false}));
+  spinImpactMarker.renderOrder=20;spinImpactMarker.visible=false;scene.add(spinImpactMarker);
   const shaft = new THREE.MeshStandardMaterial({color:0xdcc69b,roughness:0.55});
   const grip = new THREE.MeshStandardMaterial({color:0x20292c,roughness:0.8});
   const blue = new THREE.MeshStandardMaterial({color:0x376a8b,roughness:0.55});
@@ -1220,6 +1225,7 @@ function updateVisuals() {
   const cue=balls.find(b=>b.num===0);
   const ready=cue&&cue.active&&!shotActive;
   cueGroup.visible=!!ready;
+  spinImpactMarker.visible=!!ready&&powerInputMode==='mouse'&&cameraMode==='first-person'&&strokePhase==='spin'&&document.pointerLockElement===el.gameCanvas;
   aimLine.visible=!!ready&&el.aimAssist.checked;
   deflectionLine.visible=false;
   ghostMarker.visible=false;objectLine.visible=false;
@@ -1232,6 +1238,13 @@ function updateVisuals() {
     RADIUS+0.005+spin.y*0.62*RADIUS*Math.cos(tilt)-0.045*Math.sin(tilt),
     cue.z+aim.x*contactOffset);
   cueGroup.rotation.set(0,-Math.atan2(aim.z,aim.x),-tilt,'YXZ');
+  const contact=spinContactPoint(cue,aim,spin,RADIUS,elevation);
+  spinImpactMarker.position.set(contact.x,contact.y,contact.z);
+  if(powerInputMode==='mouse'){
+    // The blue tip ends at local x=-.035: align it with the selected surface point.
+    cueGroup.position.set(contact.x+.035*aim.x*Math.cos(tilt),
+      contact.y-.035*Math.sin(tilt),contact.z+.035*aim.z*Math.cos(tilt));
+  }
   if(strokePhase==='stroke'&&mouseStroke)cueGroup.translateX(-mouseStroke.pull);
   const deflection=Math.abs(impact.squirtDegrees);
   el.impactReadout.classList.toggle('warning',impact.miscue);
@@ -1278,6 +1291,7 @@ function sound(strength=0.4,low=false) {
 }
 
 function shoot(source='gauge') {
+  if(strokePhase==='spin')return false;
   if(powerInputMode==='mouse'&&source==='gauge'){prepareMouseAim();return false;}
   const cue=balls.find(b=>b.num===0);
   if(shotActive||!cue||!cue.active||match?.phase==='decision'||
@@ -1526,6 +1540,18 @@ function captureAimMouse() {
   }catch(_error){firstPerson.locked=true;refreshPlacementUI();}
 }
 
+function toggleSpinSelection() {
+  if(powerInputMode!=='mouse'||fallbackCtx){releaseAimMouse();updateVisuals();return;}
+  if(shotActive||shotCameraTransition||placementMode||needsCuePlacement||
+    match?.phase==='decision'||match?.phase==='finished'||!el.matchOverlay.hidden||
+    !el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
+  if(strokePhase==='spin'){
+    strokePhase='aim';firstPerson.locked=false;mouseStroke=null;updateVisuals();return;
+  }
+  prepareMouseAim();
+  mouseStroke=null;strokePhase='spin';firstPerson.locked=true;updateVisuals();
+}
+
 function beginMouseStroke() {
   if(powerInputMode!=='mouse'||cameraMode!=='first-person'||shotActive||
     document.pointerLockElement!==el.gameCanvas)return;
@@ -1554,9 +1580,10 @@ function refreshPowerInput() {
   el.powerSlider.disabled=mouse;el.breakPreset.disabled=mouse;
   el.strokeSensitivityControls.hidden=!mouse;
   el.mouseStrokeHint.hidden=!mouse;
-  el.mouseStrokeHint.textContent=strokePhase==='stroke'?
-    'BAS : RECULER LA QUEUE · HAUT : FRAPPER · S : RÉGLAGES · CLIC GAUCHE : REVISER':
-    'En première personne : visez, puis clic gauche pour préparer le geste. S libère la souris pour les réglages.';
+  el.mouseStrokeHint.textContent=strokePhase==='spin'?
+    'EFFET : DÉPLACEZ LE POINT ROUGE SUR LA BLANCHE · S : VALIDER · ÉCHAP : AUTRES RÉGLAGES':strokePhase==='stroke'?
+    'BAS : RECULER LA QUEUE · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':
+    'En première personne : visez, puis clic gauche pour préparer le geste. S règle l’effet sur la blanche ; Échap libère la souris.';
   el.shootButton.firstElementChild.textContent=mouse?'VISER À LA SOURIS':'TIRER';
 }
 
@@ -1627,11 +1654,11 @@ function refreshPlacementUI() {
   el.aimMouseButton.hidden=cameraMode!=='first-person'||document.pointerLockElement===el.gameCanvas;
   el.aimMouseButton.disabled=shotActive;
   if(cameraMode==='first-person') {
-    el.cameraName.textContent=`PREMIÈRE PERSONNE · ${firstPerson.fine?'FINE':'NORMALE'} · ${strokePhase==='stroke'?'GESTE DE TIR':document.pointerLockElement===el.gameCanvas?'VISÉE ACTIVE':'SOURIS LIBRE'}`;
+    el.cameraName.textContent=`PREMIÈRE PERSONNE · ${firstPerson.fine?'FINE':'NORMALE'} · ${strokePhase==='spin'?'RÉGLAGE DE L’EFFET':strokePhase==='stroke'?'GESTE DE TIR':document.pointerLockElement===el.gameCanvas?'VISÉE ACTIVE':'SOURIS LIBRE'}`;
     if(!placementMode&&!needsCuePlacement)el.sceneHint.textContent=shotActive?
       'CAMÉRA FIXE AU POINT DE TIR · V : CHANGER DE VUE':
       document.pointerLockElement===el.gameCanvas?
-      (powerInputMode==='mouse'?(strokePhase==='stroke'?'BAS : RECULER · HAUT : FRAPPER · S : RÉGLAGES · CLIC GAUCHE : REVISER':'SOURIS : VISER · CLIC GAUCHE : GESTE DE TIR · S : RÉGLAGES'):
+      (powerInputMode==='mouse'?(strokePhase==='spin'?'DÉPLACEZ LE POINT ROUGE · CLIC DROIT : PRÉCISION · S : VALIDER · ÉCHAP : LIBÉRER LA SOURIS':strokePhase==='stroke'?'BAS : RECULER · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':'SOURIS : VISER · CLIC GAUCHE : GESTE DE TIR · S : EFFET · ÉCHAP : RÉGLAGES'):
       'SOURIS ↔ : VISER · ↕ : HAUTEUR · CLIC DROIT : PRÉCISION · CLIC GAUCHE / S / ÉCHAP : LIBÉRER LA SOURIS'):
       'VISÉE FIGÉE · RÉGLEZ LE COUP · CLIQUEZ SUR LA TABLE OU REPRENDRE LA VISÉE POUR VISER';
   }
@@ -1724,15 +1751,19 @@ function bindControls() {
     if(document.pointerLockElement===el.gameCanvas&&(cameraMode!=='first-person'||shotActive||placementMode||needsCuePlacement||
       !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden))releaseAimMouse();
     if(document.pointerLockElement!==el.gameCanvas){strokePhase='aim';mouseStroke=null;}
-    firstPerson.locked=document.pointerLockElement!==el.gameCanvas||strokePhase==='stroke';
-    if(!firstPerson.locked)el.gameCanvas.focus({preventScroll:true});
+    firstPerson.locked=document.pointerLockElement!==el.gameCanvas||strokePhase==='stroke'||strokePhase==='spin';
+    if(document.pointerLockElement===el.gameCanvas)el.gameCanvas.focus({preventScroll:true});
     updateVisuals();
   });
-  document.addEventListener('pointerlockerror',()=>{strokePhase='aim';mouseStroke=null;firstPerson.locked=true;refreshPlacementUI();});
+  document.addEventListener('pointerlockerror',()=>{strokePhase='aim';mouseStroke=null;firstPerson.locked=true;updateVisuals();});
   window.addEventListener('blur',releaseAimMouse);
   document.addEventListener('mousemove',e=>{
     if(document.pointerLockElement!==el.gameCanvas||cameraMode!=='first-person'||shotActive||
       placementMode||needsCuePlacement||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
+    if(powerInputMode==='mouse'&&strokePhase==='spin'){
+      const next=moveSpinTarget(spin,e.movementX,e.movementY,firstPerson.fine);
+      setSpin(next.x,next.y);return;
+    }
     if(powerInputMode==='mouse'&&strokePhase==='stroke'){
       const power=moveMouseStroke(mouseStroke,e.movementY,e.timeStamp,strokeSensitivityGain(el.strokeSensitivitySlider.value));
       setPower(mouseStroke.power||1);
@@ -1784,6 +1815,7 @@ function bindControls() {
         return;
       }
       if(e.button===1)return;
+      if(e.button===0&&strokePhase==='spin'){e.preventDefault();return;}
       if(e.button===0&&!placementMode&&!needsCuePlacement){
         if(document.pointerLockElement===el.gameCanvas){
           if(powerInputMode==='mouse'){
@@ -1977,7 +2009,7 @@ function bindControls() {
       toggleSceneFullscreen(stage,document).finally(()=>requestAnimationFrame(resize));
       return;
     }
-    if(e.key.toLowerCase()==='s'){e.preventDefault();releaseAimMouse();updateVisuals();return;}
+    if(e.key.toLowerCase()==='s'){if(!e.repeat){e.preventDefault();toggleSpinSelection();}return;}
     if(e.code==='Space'){e.preventDefault();shoot();}
     if(e.key.toLowerCase()==='v')toggleCamera();
     if(e.key.toLowerCase()==='h'){el.aimAssist.checked=!el.aimAssist.checked;updateVisuals();}
