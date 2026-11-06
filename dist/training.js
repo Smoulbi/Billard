@@ -1,5 +1,5 @@
 import {RADIUS} from './physics.js';
-import {canPlaceFreeCue} from './placement.js';
+import {canPlaceSupportedBall} from './placement.js?v=0.63';
 import {nineBallRack} from './nine-ball-rules.js';
 const HISTORY_LIMIT=100;
 
@@ -17,7 +17,7 @@ export function trainingLayout(kind='clear') {
   return [cue,...rack];
 }
 export function canPlaceTrainingBall(num,x,z,balls) {
-  return canPlaceFreeCue(x,z,[])&&balls.every(b=>b.num===num||b.active===false||
+  return canPlaceSupportedBall(x,z)&&balls.every(b=>b.num===num||b.active===false||
     Math.hypot(x-b.x,z-b.z)>=2*RADIUS+1e-5);
 }
 export function createTrainingSession() {

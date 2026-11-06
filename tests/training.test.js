@@ -22,7 +22,7 @@ test('training placement rejects pockets, cushions and overlapping white or obje
   assert.equal(canPlaceTrainingBall(1,.4,0,balls),true);
   assert.equal(canPlaceTrainingBall(2,0,0,[{...balls[0],active:false}]),true);
   assert.equal(canPlaceTrainingBall(2,LENGTH,WIDTH,balls),false);
-  assert.equal(canPlaceTrainingBall(2,0,WIDTH,balls),false);
+  assert.equal(canPlaceTrainingBall(2,0,WIDTH+.03,balls),false);
   assert.equal(canPlaceTrainingBall(2,NaN,0,balls),false);
 });
 test('multiple undo and redo operations restore balls, potted states and shot settings',()=>{

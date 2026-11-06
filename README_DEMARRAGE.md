@@ -1,8 +1,8 @@
-# FRAME v0.62 — projet complet
+# FRAME v0.63 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.62 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.63 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -264,3 +264,12 @@ L’assistance et les tracés sont accessibles dans le panneau d’entraînement
 y compris en plein écran. L’historique reste en mémoire durant la séance ;
 aucune sauvegarde nommée ni export de positions n’est ajouté dans cette version.
 Les modes 8/9 restent séparés et conservent leurs règles.
+
+## Version 0.63 — placement au bord des poches
+
+En entraînement, le placement utilise maintenant le contour réel du tapis,
+la limite de chute des poches et les segments de bandes du simulateur.
+Les billes peuvent être placées près de la lèvre des six poches, y compris
+sur les petites zones de support à l’entrée, lorsqu’elles restent stables.
+Les positions dans le trou, dans le caoutchouc ou sur une autre bille restent
+interdites. Les règles de placement des parties de 8 et de 9 ne changent pas.

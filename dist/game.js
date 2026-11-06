@@ -1,4 +1,4 @@
-import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.62';
+import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.63';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
@@ -839,7 +839,7 @@ function moveTrainingBall(num,x,z) {
   if(!b||!canPlaceTrainingBall(num,x,z,balls))return false;
   if(Math.hypot(b.x-x,b.z-z)<1e-7)return false;
   b.x=x;b.z=z;stopBall(b);b.mesh.position.set(x,RADIUS,z);
-  boardRevision++;updateVisuals();return true;
+  boardRevision++;setStatus('Bille déplacée','Terminez le placement pour préparer le tir.',false);updateVisuals();return true;
 }
 
 function beginTrainingPlacement(e) {
@@ -857,6 +857,7 @@ function beginTrainingPlacement(e) {
     b.active=true;b.mesh.visible=true;b.x=target.x;b.z=target.z;stopBall(b);
     b.mesh.position.set(b.x,RADIUS,b.z);boardRevision++;
     training.selected=num;training.addNumber=null;
+    setStatus('Bille ajoutée','La position est valide. Vous pouvez continuer le placement.',false);
     updateCounters();updateVisuals();return;
   }
   const hit=balls.filter(b=>b.active).sort((a,b)=>Math.hypot(a.x-target.x,a.z-target.z)-Math.hypot(b.x-target.x,b.z-target.z))[0];
