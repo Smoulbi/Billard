@@ -36,3 +36,9 @@ export function moveMouseStroke(stroke,deltaY,now,sensitivity=1) {
   }
   return null;
 }
+
+// The v2 UI scale doubles the previous percentage without changing physical gain.
+export function strokeSensitivityGain(percent) {
+  const value=Number(percent);
+  return (Number.isFinite(value)?Math.max(20,Math.min(300,value)):60)/200;
+}

@@ -1,4 +1,4 @@
-import {createMouseStroke,moveMouseStroke} from './mouse-stroke.js';
+import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js';
 import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-camera-transition.js';
 import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js';
 import {createFirstPersonView,resetFirstPersonAim,rotateFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js';
@@ -1689,20 +1689,27 @@ function bindControls() {
   bindCalibration();
   const refreshStrokeSensitivity=()=>{
     el.strokeSensitivityValue.textContent=`${el.strokeSensitivitySlider.value} %`;
-    const filled=(Number(el.strokeSensitivitySlider.value)-10)/140*100;
+    const filled=(Number(el.strokeSensitivitySlider.value)-20)/280*100;
     el.strokeSensitivitySlider.style.background=`linear-gradient(to right,var(--accent) ${filled}%,#35443e ${filled}%)`;
   };
   const saveStrokeSensitivity=()=>{
     refreshStrokeSensitivity();
-    try{localStorage.setItem('frame.mouseStrokeSensitivity.v1',el.strokeSensitivitySlider.value);}catch(_error){/* Storage can be unavailable. */}
+    try{localStorage.setItem('frame.mouseStrokeSensitivity.v2',el.strokeSensitivitySlider.value);}catch(_error){/* Storage can be unavailable. */}
   };
   try{
-    const saved=localStorage.getItem('frame.mouseStrokeSensitivity.v1');
+    const saved=localStorage.getItem('frame.mouseStrokeSensitivity.v2');
     const value=Number(saved);
-    if(saved!==null&&Number.isFinite(value)&&value>=10&&value<=150)el.strokeSensitivitySlider.value=String(value);
+    if(saved!==null&&Number.isFinite(value)&&value>=20&&value<=300)el.strokeSensitivitySlider.value=String(value);
+    else{
+      const old=localStorage.getItem('frame.mouseStrokeSensitivity.v1');
+      const previous=Number(old);
+      if(old!==null&&Number.isFinite(previous)&&previous>=10&&previous<=150){
+        el.strokeSensitivitySlider.value=String(previous*2);saveStrokeSensitivity();
+      }
+    }
   }catch(_error){/* Keep the softer default when storage is unavailable. */}
   el.strokeSensitivitySlider.addEventListener('input',saveStrokeSensitivity);
-  el.strokeSensitivityReset.addEventListener('click',()=>{el.strokeSensitivitySlider.value='80';saveStrokeSensitivity();});
+  el.strokeSensitivityReset.addEventListener('click',()=>{el.strokeSensitivitySlider.value='60';saveStrokeSensitivity();});
   refreshStrokeSensitivity();
   el.powerModeButton.addEventListener('click',()=>{
     if(shotActive||fallbackCtx)return;
@@ -1727,7 +1734,7 @@ function bindControls() {
     if(document.pointerLockElement!==el.gameCanvas||cameraMode!=='first-person'||shotActive||
       placementMode||needsCuePlacement||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
     if(powerInputMode==='mouse'&&strokePhase==='stroke'){
-      const power=moveMouseStroke(mouseStroke,e.movementY,e.timeStamp,Number(el.strokeSensitivitySlider.value)/100);
+      const power=moveMouseStroke(mouseStroke,e.movementY,e.timeStamp,strokeSensitivityGain(el.strokeSensitivitySlider.value));
       setPower(mouseStroke.power||1);
       if(power!==null){
         setPower(power);

@@ -184,3 +184,10 @@ ou d’amplifier la puissance d’un même geste (10–150 %). La valeur initial
 de 80 % réduit de 20 % la sensibilité précédente. Appuyer sur S pour libérer
 la souris et l’ajuster, puis reprendre la visée. La valeur est enregistrée
 dans le navigateur ; REVENIR À 80 % restaure le réglage initial.
+
+La nouvelle échelle de force du geste affiche le double de l’ancien pourcentage :
+60 % correspond exactement à l’ancien 30 %. La valeur par défaut et le bouton
+de réinitialisation sont désormais à 60 %. La plage devient 20–300 %, avec
+les mêmes limites physiques qu’avant. Les anciennes préférences enregistrées
+sont converties automatiquement pour conserver leur force, sans être doublées
+à chaque rechargement.

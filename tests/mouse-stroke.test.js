@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createMouseStroke,moveMouseStroke,MAX_STROKE_PULL} from '../dist/mouse-stroke.js';
+import {strokeSensitivityGain,createMouseStroke,moveMouseStroke,MAX_STROKE_PULL} from '../dist/mouse-stroke.js';
 test('a deliberate backswing followed by forward contact fires exactly once',()=>{
   const s=createMouseStroke();
   assert.equal(moveMouseStroke(s,-50,20),null);
@@ -58,4 +58,10 @@ test('gesture force scales impact power without changing the cue movement',()=>{
   assert.ok(Math.abs(verySoft.result-normal.result*.25)<1e-9);
   assert.equal(soft.pull,normal.pull);
   assert.equal(run(NaN).result,normal.result);
+});
+
+test('new 60% strength retains the previous 30% physical gain',()=>{
+  assert.equal(strokeSensitivityGain(60),.3);
+  for(const previous of [10,30,80,150])assert.equal(strokeSensitivityGain(previous*2),previous/100);
+  assert.equal(strokeSensitivityGain(NaN),.3);
 });
