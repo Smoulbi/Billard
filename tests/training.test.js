@@ -12,7 +12,7 @@ test('training starts with a cue ball and offers complete distinct eight and nin
     for(let i=0;i<positions.length;i++)for(let j=0;j<i;j++)
       assert.ok(Math.hypot(positions[i].x-positions[j].x,positions[i].z-positions[j].z)>=2*RADIUS);
   }
-  assert.equal(trainingLayout('eight').find(b=>b.num===8).x,.49+2*(Math.sqrt(3)*RADIUS+.00006));
+  assert.ok(Math.abs(trainingLayout('eight').find(b=>b.num===8).x-(.49+2*Math.sqrt(3)*RADIUS*1.001))<=RADIUS*.001);
   assert.throws(()=>trainingLayout('other'));
 });
 test('training placement rejects pockets, cushions and overlapping white or object balls',()=>{

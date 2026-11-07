@@ -8,7 +8,7 @@ const playing=()=>({...newNineBallMatch(),phase:'playing',ballInHand:null});
 test('nine-ball diamond has nine unique nonoverlapping balls, one at apex and nine at centre',()=>{
   const rack=nineBallRack(RADIUS);
   assert.deepEqual(rack.map(b=>b.num).sort((a,b)=>a-b),full);
-  assert.equal(rack[0].num,1);assert.equal(rack[4].num,9);assert.equal(rack[4].z,0);
+  assert.equal(rack[0].num,1);assert.equal(rack[4].num,9);assert.ok(Math.abs(rack[4].z)<=RADIUS*.001);
   for(let i=0;i<rack.length;i++)for(let j=0;j<i;j++)assert.ok(Math.hypot(rack[i].x-rack[j].x,rack[i].z-rack[j].z)>=2*RADIUS);
 });
 test('legal break retains player only with a pot and enables one push-out',()=>{

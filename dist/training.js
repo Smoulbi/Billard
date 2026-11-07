@@ -1,20 +1,16 @@
+import {imperfectRack} from './rack.js?v=0.65';
 import {RADIUS} from './physics.js';
 import {canPlaceSupportedBall} from './placement.js?v=0.63';
-import {nineBallRack} from './nine-ball-rules.js';
+import {nineBallRack} from './nine-ball-rules.js?v=0.65';
 const HISTORY_LIMIT=100;
 
-export function trainingLayout(kind='clear') {
+export function trainingLayout(kind='clear',random=Math.random) {
   const cue={num:0,x:-.76,z:0};
   if(kind==='clear')return [cue];
-  if(kind==='nine')return [cue,...nineBallRack(RADIUS)];
+  if(kind==='nine')return [cue,...nineBallRack(RADIUS,random)];
   if(kind!=='eight')throw new Error('Configuration inconnue.');
   const sequence=[1,2,9,3,8,10,4,11,5,12,6,13,14,7,15];
-  const rack=[];let index=0;
-  for(let row=0;row<5;row++)for(let j=0;j<=row;j++)rack.push({
-    num:sequence[index++],x:.49+row*(Math.sqrt(3)*RADIUS+.00006),
-    z:(j-row/2)*(2*RADIUS+.00012)
-  });
-  return [cue,...rack];
+  return [cue,...imperfectRack([1,2,3,4,5],sequence,RADIUS,random)];
 }
 export function canPlaceTrainingBall(num,x,z,balls) {
   return canPlaceSupportedBall(x,z)&&balls.every(b=>b.num===num||b.active===false||

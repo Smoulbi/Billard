@@ -1,16 +1,12 @@
+import {imperfectRack} from './rack.js?v=0.65';
 // Nine-ball rotation: lowest ball first, any legal pot continues, legal nine wins.
 export function newNineBallMatch({breaker=0}={}) {
   return {mode:'nine',callPocket:false,current:breaker,breaker,groups:[null,null],
     turn:0,phase:'break',ballInHand:'head',pending:null,winner:null,
     fouls:[0,0],pushOutAvailable:false,lastResult:null};
 }
-export function nineBallRack(radius) {
-  const rows=[1,2,3,2,1],numbers=[1,2,3,4,9,5,6,7,8];
-  let index=0;
-  return rows.flatMap((count,row)=>Array.from({length:count},(_,col)=>({
-    num:numbers[index++],x:.49+row*(Math.sqrt(3)*radius+.00006),
-    z:(col-(count-1)/2)*(2*radius+.00012)
-  })));
+export function nineBallRack(radius,random=Math.random) {
+  return imperfectRack([1,2,3,2,1],[1,2,3,4,9,5,6,7,8],radius,random);
 }
 export function adjudicateNineBall(state,shot) {
   if(!['break','playing'].includes(state.phase))throw new Error('Aucun tir ne peut être arbitré dans cet état.');

@@ -1,8 +1,8 @@
-# FRAME v0.64 — projet complet
+# FRAME v0.65 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.64 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.65 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -285,3 +285,14 @@ désactivée est masquée ; elle réapparaît en mode jauge.
 En entraînement, Placer les billes et Annuler/Rétablir restent visibles.
 Le sélecteur de billes s’ouvre automatiquement en passant au placement ;
 les triangles et aides sont regroupés dans Table et aides.
+
+## Version 0.65 — petites imperfections du triangle
+
+Les triangles de 8 et losanges de 9 utilisent un espacement virtuel augmenté
+à 1,001 fois le rayon, puis un déplacement aléatoire de chaque bille allant
+jusqu’à 0,029 mm. La bille de tête reste sur le point de replacement.
+Méthode inspirée de [Pooltool](https://github.com/ekiefl/pooltool/blob/main/pooltool/layouts.py),
+avec des espaces entre voisines compris théoriquement entre 0 et 0,114 mm.
+Ces paramètres sont une convention de simulation, pas une distribution mesurée
+sur une table réelle. Aucun réglage supplémentaire. Un nouveau triangle reçoit
+de nouvelles imperfections ; annuler/rétablir restaure les positions exactes.
