@@ -9,13 +9,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=0.66">
+  <link rel="stylesheet" href="./style.css?v=0.67">
 </head>
 <body>
   <div class="app">
     <header class="topbar">
       <div class="brand"><div class="brand-symbol"><span></span><span></span><span></span></div><div><b>FRAME<span class="brand-period">.</span></b><small>ATELIER DE BILLARD</small></div></div>
-      <div class="topbar-center"><span class="live-dot"></span> POOL AMÉRICAIN · PROFIL ACTIF <span class="topbar-sep">/</span> VERSION 0.66</div>
+      <div class="topbar-center"><span class="live-dot"></span> POOL AMÉRICAIN · PROFIL ACTIF <span class="topbar-sep">/</span> VERSION 0.67</div>
       <div class="topbar-right"><span class="badge-outline">PROTOTYPE INTERACTIF</span><button id="audioToggle" class="icon-button" title="Activer ou désactiver le son" aria-label="Activer ou désactiver le son">SON <span id="audioLabel">ON</span></button></div>
     </header>
 
@@ -37,7 +37,7 @@
         <div class="left-bottom">
           <div class="eyebrow">LE PROJET</div>
           <p>Physique calculée à 240 Hz, traces enregistrées jusqu’à 60 Hz, scénarios reproductibles et export des coordonnées. Résultats à comparer à des tirs réels.</p>
-          <div class="version-row"><span>BUILD 066</span><span>POOL US · SNOOKER CONSERVÉ</span></div>
+          <div class="version-row"><span>BUILD 067</span><span>POOL US · SNOOKER CONSERVÉ</span></div>
         </div>
       </aside>
 
@@ -140,9 +140,14 @@
 
         </div></details>
 </div>
-        <div class="actions"><button id="shootButton" class="primary-button"><span>TIRER</span><span class="button-arrow">↗</span></button><button id="resetButton" class="secondary-button"><span>↺</span> NOUVELLE PARTIE</button></div>
+        <div class="actions"><button id="shootButton" class="primary-button"><span>TIRER</span><span class="button-arrow">↗</span></button><div class="shot-actions-secondary"><button id="shotReplayButton" class="secondary-button" type="button" disabled title="Revoir le dernier tir sans modifier la partie">↻ REPLAY</button><button id="resetButton" class="secondary-button"><span>↺</span> NOUVELLE PARTIE</button></div></div>
             </div>
           </details>
+          <dialog id="replayDialog" class="replay-dialog" aria-labelledby="replayTitle">
+            <strong id="replayTitle">REPLAY DU DERNIER TIR</strong><span id="replayTime">0 / 0 s</span>
+            <progress id="replayProgress" value="0" max="1" aria-label="Progression du replay"></progress>
+            <button id="stopReplayButton" class="secondary-button" type="button">REVENIR AU JEU · ÉCHAP</button>
+          </dialog>
           <div id="loadingOverlay" class="loading-overlay"><div class="loader-ring"></div><p>PRÉPARATION DE LA TABLE</p></div>
 
   <div id="matchOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="matchOverlayTitle">
@@ -212,10 +217,10 @@
         </select>
 
 
-        <div class="panel-footer"><span class="live-dot"></span> BANDES · PROFIL POOL US <span>V0.66</span></div>
+        <div class="panel-footer"><span class="live-dot"></span> BANDES · PROFIL POOL US <span>V0.67</span></div>
       </aside>
     </div>
   </div>
-  <script type="module" src="./game.js?v=0.66"></script>
+  <script type="module" src="./game.js?v=0.67"></script>
 </body>
 </html>

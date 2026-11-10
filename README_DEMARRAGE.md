@@ -1,8 +1,8 @@
-# FRAME v0.66 — projet complet
+# FRAME v0.67 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.66 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.67 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -306,3 +306,14 @@ La caméra conserve sa position et ses réglages. Le rendu normal revient
 avec les autres vues et dès le début du recul automatique après le tir.
 La découpe reste au point de tir pendant le bref délai avant ce recul.
 Cette modification est uniquement visuelle ; les collisions restent identiques.
+
+## Version 0.67 — replay du dernier tir
+
+Le bouton REPLAY, à côté de Nouvelle partie dans le panneau de jeu, montre
+le dernier tir terminé en vue de dessus, à vitesse normale. Il lit les positions
+et rotations enregistrées pendant le tir, sans recalculer une nouvelle casse.
+La lecture ne change ni les positions actuelles, ni le joueur, ni le score,
+ni l’historique d’entraînement. Retour automatique à la fin ; le bouton
+Revenir au jeu ou Échap interrompt la lecture. Une nouvelle formation de table
+ou un nouveau tir remplace l’enregistrement précédent. Disponible en rendu 3D.
+Le bouton Rejouer du laboratoire conserve sa fonction de réexécution physique.
