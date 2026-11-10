@@ -232,3 +232,5 @@ body:has(.scene-frame.scene-immersive){overflow:hidden}
 .replay-dialog strong{display:block;color:var(--accent);font-size:11px;margin-bottom:8px}
 .replay-dialog progress{display:block;width:100%;height:6px;margin:9px 0 12px;accent-color:var(--accent)}
 .replay-dialog button{width:100%;height:32px;font-size:9px}
+
+.lab-impact-details{border:1px solid #354d43;border-radius:5px;margin:12px 0;padding:10px;font:11px/1.6 var(--mono);color:#b6cbb9}.lab-impact-details summary{cursor:pointer;color:var(--accent)}.lab-impact-details p{margin:8px 0 0}.lab-impact-details p:last-child{font:11px/1.6 var(--body);color:#8fa698}

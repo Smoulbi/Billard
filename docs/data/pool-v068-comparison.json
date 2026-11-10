@@ -1,0 +1,963 @@
+{
+  "version": "0.68",
+  "conclusion": "NON_PENETRATION_IMPROVED_US_REGRESSION_UNCHANGED",
+  "experimentalValidation": "NO_NEW_INDEPENDENT_AMERICAN_POOL_SHOTS_WITH_SPIN",
+  "sources": {
+    "poolReference": "Nierhoff/Heunisch/Hirche TUM, 1217 impacts, already-used fitted regression WITHOUT sidespin",
+    "excludedNumericalTargets": [
+      "Mathavan 2009 snooker",
+      "Mathavan 2010 reproduced 52.5 mm / 140.6 g setup",
+      "Tailuge/Han carom"
+    ],
+    "originalPdfRechecked": false,
+    "rawIndependentMeasurements": 0
+  },
+  "parameters": {
+    "diameterMm": 57.15,
+    "massKg": 0.170097,
+    "profile": "pool",
+    "noseHeightM": 0.03629025,
+    "slidingFriction": 0.2,
+    "rollingFriction": 0.01,
+    "spinningFriction": 0.015,
+    "verticalSpinDecelRadS2": 12.874015748031496,
+    "materialParametersRetuned": false
+  },
+  "protocol": {
+    "prescribedConditions": 700,
+    "cueGeneratedConditions": 270,
+    "perModelSimulations": 2910,
+    "observationTimeS": 0.08,
+    "coarseStepS": 0.004166666666666667,
+    "fineStepS": 0.0010416666666666667,
+    "mirror": true,
+    "convergenceTargets": {
+      "positionM": 0.001,
+      "velocityMps": 0.005,
+      "spinRadps": 0.5
+    }
+  },
+  "cloth": {
+    "checks": 34,
+    "passed": 34,
+    "rows": [
+      {
+        "family": "rolling",
+        "speed": 0.1,
+        "seconds": 0.5,
+        "speedErrorMps": 7.632783294297951e-17,
+        "distanceErrorM": 2.0122792321330962e-16,
+        "passed": true
+      },
+      {
+        "family": "rolling",
+        "speed": 0.25,
+        "seconds": 0.5,
+        "speedErrorMps": 1.582067810090848e-15,
+        "distanceErrorM": 4.0245584642661925e-16,
+        "passed": true
+      },
+      {
+        "family": "rolling",
+        "speed": 0.5,
+        "seconds": 0.5,
+        "speedErrorMps": 1.609823385706477e-15,
+        "distanceErrorM": 3.885780586188048e-16,
+        "passed": true
+      },
+      {
+        "family": "rolling",
+        "speed": 0.6,
+        "seconds": 0.5,
+        "speedErrorMps": 5.10702591327572e-15,
+        "distanceErrorM": 1.2212453270876722e-15,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.3,
+        "roll": -1,
+        "transitionTimeS": 0.0873743993010048,
+        "speedErrorMps": 1.1102230246251565e-16,
+        "distanceErrorM": 2.42861286636753e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.3,
+        "roll": 0,
+        "transitionTimeS": 0.0436871996505024,
+        "speedErrorMps": 0,
+        "distanceErrorM": 1.4224732503009818e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.3,
+        "roll": 0.5,
+        "transitionTimeS": 0.0218435998252512,
+        "speedErrorMps": 0,
+        "distanceErrorM": 1.0408340855860843e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.3,
+        "roll": 1,
+        "transitionTimeS": 0,
+        "speedErrorMps": 5.551115123125783e-17,
+        "distanceErrorM": 3.122502256758253e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.3,
+        "roll": 1.5,
+        "transitionTimeS": 0.0218435998252512,
+        "speedErrorMps": 1.6653345369377348e-16,
+        "distanceErrorM": 5.204170427930421e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.3,
+        "roll": 2,
+        "transitionTimeS": 0.0436871996505024,
+        "speedErrorMps": 1.1102230246251565e-16,
+        "distanceErrorM": 1.0408340855860843e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.6,
+        "roll": -1,
+        "transitionTimeS": 0.1747487986020096,
+        "speedErrorMps": 5.551115123125783e-17,
+        "distanceErrorM": 1.6653345369377348e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.6,
+        "roll": 0,
+        "transitionTimeS": 0.0873743993010048,
+        "speedErrorMps": 2.7755575615628914e-16,
+        "distanceErrorM": 4.163336342344337e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.6,
+        "roll": 0.5,
+        "transitionTimeS": 0.0436871996505024,
+        "speedErrorMps": 1.1102230246251565e-16,
+        "distanceErrorM": 1.5265566588595902e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.6,
+        "roll": 1,
+        "transitionTimeS": 0,
+        "speedErrorMps": 2.220446049250313e-16,
+        "distanceErrorM": 7.979727989493313e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.6,
+        "roll": 1.5,
+        "transitionTimeS": 0.0436871996505024,
+        "speedErrorMps": 3.3306690738754696e-16,
+        "distanceErrorM": 2.7755575615628914e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 0.6,
+        "roll": 2,
+        "transitionTimeS": 0.0873743993010048,
+        "speedErrorMps": 7.771561172376096e-16,
+        "distanceErrorM": 2.498001805406602e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 1.2,
+        "roll": -1,
+        "transitionTimeS": 0.3494975972040192,
+        "speedErrorMps": 1.9984014443252818e-15,
+        "distanceErrorM": 5.551115123125783e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 1.2,
+        "roll": 0,
+        "transitionTimeS": 0.1747487986020096,
+        "speedErrorMps": 8.881784197001252e-16,
+        "distanceErrorM": 4.440892098500626e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 1.2,
+        "roll": 0.5,
+        "transitionTimeS": 0.0873743993010048,
+        "speedErrorMps": 8.881784197001252e-16,
+        "distanceErrorM": 1.249000902703301e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 1.2,
+        "roll": 1,
+        "transitionTimeS": 0,
+        "speedErrorMps": 4.440892098500626e-16,
+        "distanceErrorM": 4.5102810375396984e-17,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 1.2,
+        "roll": 1.5,
+        "transitionTimeS": 0.0873743993010048,
+        "speedErrorMps": 0,
+        "distanceErrorM": 2.498001805406602e-16,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "sliding-to-rolling",
+        "speed": 1.2,
+        "roll": 2,
+        "transitionTimeS": 0.1747487986020096,
+        "speedErrorMps": 2.220446049250313e-15,
+        "distanceErrorM": 0,
+        "slipMps": 0,
+        "passed": true
+      },
+      {
+        "family": "vertical-spin-decay",
+        "omega": -120,
+        "seconds": 0.5,
+        "errorRadps": 2.4158453015843406e-13,
+        "passed": true
+      },
+      {
+        "family": "vertical-spin-decay",
+        "omega": -60,
+        "seconds": 0.5,
+        "errorRadps": 2.4158453015843406e-13,
+        "passed": true
+      },
+      {
+        "family": "vertical-spin-decay",
+        "omega": -10,
+        "seconds": 0.5,
+        "errorRadps": 2.4424906541753444e-14,
+        "passed": true
+      },
+      {
+        "family": "vertical-spin-decay",
+        "omega": 10,
+        "seconds": 0.5,
+        "errorRadps": 2.4424906541753444e-14,
+        "passed": true
+      },
+      {
+        "family": "vertical-spin-decay",
+        "omega": 60,
+        "seconds": 0.5,
+        "errorRadps": 2.4158453015843406e-13,
+        "passed": true
+      },
+      {
+        "family": "vertical-spin-decay",
+        "omega": 120,
+        "seconds": 0.5,
+        "errorRadps": 2.4158453015843406e-13,
+        "passed": true
+      },
+      {
+        "family": "pure-sidespin-on-isotropic-level-cloth",
+        "omega": -60,
+        "lateralDriftM": 0,
+        "longitudinalErrorM": 1.3322676295501878e-15,
+        "passed": true
+      },
+      {
+        "family": "pure-sidespin-on-isotropic-level-cloth",
+        "omega": 0,
+        "lateralDriftM": 0,
+        "longitudinalErrorM": 1.3322676295501878e-15,
+        "passed": true
+      },
+      {
+        "family": "pure-sidespin-on-isotropic-level-cloth",
+        "omega": 60,
+        "lateralDriftM": 0,
+        "longitudinalErrorM": 1.3322676295501878e-15,
+        "passed": true
+      },
+      {
+        "family": "spin-stop-threshold",
+        "omega": 10,
+        "idealStopS": 0.7767584097859327,
+        "actualStopS": 0.7458333333333319,
+        "earlyStopS": 0.030925076452600786,
+        "passed": true
+      },
+      {
+        "family": "spin-stop-threshold",
+        "omega": 60,
+        "idealStopS": 4.660550458715596,
+        "actualStopS": 4.629166666666724,
+        "earlyStopS": 0.03138379204887176,
+        "passed": true
+      },
+      {
+        "family": "spin-stop-threshold",
+        "omega": 120,
+        "idealStopS": 9.321100917431192,
+        "actualStopS": 9.287499999999794,
+        "earlyStopS": 0.03360091743139826,
+        "passed": true
+      }
+    ]
+  },
+  "old": {
+    "conditions": 970,
+    "simulations": 2910,
+    "consistencyFailures": 0,
+    "convergenceFailures": 0,
+    "residualContactFlags": [
+      {
+        "condition": {
+          "family": "prescribed-impact-state",
+          "speed": 4,
+          "deg": 85,
+          "side": -2,
+          "roll": -1
+        },
+        "normalVelocityMps": 0.003901774332871241
+      },
+      {
+        "condition": {
+          "family": "prescribed-impact-state",
+          "speed": 4,
+          "deg": 85,
+          "side": 1,
+          "roll": -1
+        },
+        "normalVelocityMps": 0.006966234338875515
+      },
+      {
+        "condition": {
+          "family": "prescribed-impact-state",
+          "speed": 4,
+          "deg": 85,
+          "side": 2,
+          "roll": -1
+        },
+        "normalVelocityMps": 0.00978444968782367
+      }
+    ],
+    "maxRelativeEnergyGain": 0,
+    "maxSymmetryError": 0,
+    "maxPositionDifferenceM": 0.00003499756943571343,
+    "maxVelocityDifferenceMps": 0.0005523792372307051,
+    "maxSpinDifferenceRadps": 0.019330856945955308
+  },
+  "new": {
+    "conditions": 970,
+    "simulations": 2910,
+    "consistencyFailures": 0,
+    "convergenceFailures": 0,
+    "residualContactFlags": [],
+    "maxRelativeEnergyGain": 0,
+    "maxSymmetryError": 0,
+    "maxPositionDifferenceM": 0.00003499756943571343,
+    "maxVelocityDifferenceMps": 0.0005523792372307051,
+    "maxSpinDifferenceRadps": 0.019330856945955308
+  },
+  "changedConditions": 10,
+  "changedCueGeneratedConditions": 0,
+  "changed": [
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 2.3,
+        "deg": 85,
+        "side": -1,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.3999885699469663,
+        "z": 0.6074862562941304,
+        "vx": 2.3150136841332047,
+        "vz": 0.0001363604014134323,
+        "wx": -10.763324780859387,
+        "wy": -78.48702154433781,
+        "wz": 79.62116816230771,
+        "active": true,
+        "energyJ": 0.8062338663370584,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.3999885699469663,
+        "z": 0.6074862562941304,
+        "vx": 2.3150136841332047,
+        "vz": -9.341458813080794e-15,
+        "wx": -10.763324780859387,
+        "wy": -78.48702154433781,
+        "wz": 79.62116816230771,
+        "active": true,
+        "energyJ": 0.8062338647556531,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.22106258384023847,
+        "z": 0.6070772934217735,
+        "vx": 2.1584149193475572,
+        "vz": -0.010361069795341023,
+        "wx": -9.844914439935962,
+        "wy": -77.45716450757732,
+        "wz": 65.92048882848091,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.22106259625480468,
+        "z": 0.6070665705092023,
+        "vx": 2.158414608964056,
+        "vz": -0.010492798925530383,
+        "wx": -9.845319625520732,
+        "wy": -77.45716450757732,
+        "wz": 65.9204616733183,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 2.3,
+        "deg": 85,
+        "side": 1,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.3999885699469663,
+        "z": 0.6074862562941304,
+        "vx": 2.1548631702869554,
+        "vz": 0.001441570075704085,
+        "wx": -10.932497480939086,
+        "wy": 69.00168856094896,
+        "wz": 83.40425116654983,
+        "active": true,
+        "energyJ": 0.7237247720113917,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.3999885699469663,
+        "z": 0.6074862562941304,
+        "vx": 2.1548631702869554,
+        "vz": -8.695301423333746e-15,
+        "wx": -10.932497480939086,
+        "wy": 69.00168856094896,
+        "wz": 83.40425116654983,
+        "active": true,
+        "energyJ": 0.7237245952700386,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.23387292534784063,
+        "z": 0.6071608044151255,
+        "vx": 1.998286923809036,
+        "vz": -0.009386551276184922,
+        "wx": -9.98515528042388,
+        "wy": 67.97183152418847,
+        "wz": 69.70554193838541,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.23387306195941415,
+        "z": 0.6070551384196359,
+        "vx": 1.998283508306721,
+        "vz": -0.010778618987649322,
+        "wx": -9.989486195931148,
+        "wy": 67.97183152418847,
+        "wz": 69.70524311928553,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 2.3,
+        "deg": 85,
+        "side": 2,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.3999885699469663,
+        "z": 0.6074862562941304,
+        "vx": 2.1546662594818375,
+        "vz": 0.003337283098084176,
+        "wx": -11.178207344181374,
+        "wy": 149.47503960195914,
+        "wz": 83.40890260289119,
+        "active": true,
+        "energyJ": 1.2122041801811831,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.3999885699469663,
+        "z": 0.6074862562941304,
+        "vx": 2.1546662594818375,
+        "vz": -8.694434061595757e-15,
+        "wx": -11.178207344181374,
+        "wy": 149.47503960195914,
+        "wz": 83.40890260289119,
+        "active": true,
+        "energyJ": 1.212203232957046,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.2338878179983143,
+        "z": 0.607267944395092,
+        "vx": 1.9981114951342378,
+        "vz": -0.00779712003776987,
+        "wx": -10.204068837107522,
+        "wy": 148.4451825651992,
+        "wz": 69.71207282619793,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.2338881421979553,
+        "z": 0.6070454900253073,
+        "vx": 1.9981033896377776,
+        "vz": -0.011019843887993841,
+        "wx": -10.214091518460895,
+        "wy": 148.4451825651992,
+        "wz": 69.71136368390067,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 75,
+        "side": 1,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.3999962679150843,
+        "z": 0.6074862562941304,
+        "vx": 3.2061841187558855,
+        "vz": 0.0005652648840126506,
+        "wx": -48.54906421309244,
+        "wy": 84.59339324724974,
+        "wz": 150.7444599775806,
+        "active": true,
+        "energyJ": 1.7697400809539223,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.3999962679150843,
+        "z": 0.6074862562941304,
+        "vx": 3.2061841187558855,
+        "vz": -6.468783841917514e-15,
+        "wx": -48.54906421309244,
+        "wy": 84.59339324724974,
+        "wz": 150.7444599775806,
+        "active": true,
+        "energyJ": 1.7697400537788521,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.14967844895786328,
+        "z": 0.6063906722239252,
+        "vx": 3.0518369156848326,
+        "vz": -0.027944164745053478,
+        "wx": -46.05480090346288,
+        "wy": 83.56348442286809,
+        "wz": 137.24076767040162,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.1496785319030825,
+        "z": 0.6063463420266902,
+        "vx": 3.051834842029312,
+        "vz": -0.02849820077857438,
+        "wx": -46.05578330508136,
+        "wy": 83.56348442286809,
+        "wz": 137.2405862482211,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 75,
+        "side": 2,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.3999962679150843,
+        "z": 0.6074862562941304,
+        "vx": 3.1960486471249325,
+        "vz": 0.030932319115458462,
+        "wx": -52.48504220880818,
+        "wy": 223.7220858561845,
+        "wz": 150.98388056728817,
+        "active": true,
+        "energyJ": 2.968902665384251,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.3999962679150843,
+        "z": 0.6074862562941304,
+        "vx": 3.1960486471249325,
+        "vz": -6.449701883681769e-15,
+        "wx": -52.48504220880818,
+        "wy": 223.7220858561845,
+        "wz": 150.98388056728817,
+        "active": true,
+        "energyJ": 2.9688212902679476,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.15046724453522317,
+        "z": 0.6074860483235184,
+        "vx": 3.0422522597772885,
+        "vz": -0.00041282265237295673,
+        "wx": -49.74268509876174,
+        "wy": 222.69217703180334,
+        "wz": 137.52837861211339,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.1504721582288146,
+        "z": 0.6062568212133037,
+        "vx": 3.0421294159542747,
+        "vz": -0.030736248135839448,
+        "wx": -49.79595663261975,
+        "wy": 222.69217703180334,
+        "wz": 137.51763112103677,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 85,
+        "side": -2,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 4.210916513415278,
+        "vz": 0.014340828576466735,
+        "wx": -18.260349833720642,
+        "wy": -260.9147104751524,
+        "wz": 134.10736763445087,
+        "active": true,
+        "energyJ": 3.907944130666667,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 4.210916513415278,
+        "vz": -8.496675585334401e-15,
+        "wx": -18.260349833720642,
+        "wy": -260.9147104751524,
+        "wz": 134.10736763445087,
+        "active": true,
+        "energyJ": 3.9079266396462256,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.06939137642748688,
+        "z": 0.6074862562941304,
+        "vx": 4.054309677434351,
+        "vz": 0.003901774332871241,
+        "wx": -17.347046750291398,
+        "wy": -259.88482614361646,
+        "wz": 120.40598215930252,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.06939210784090662,
+        "z": 0.60707983052142,
+        "vx": 4.054291391443207,
+        "vz": -0.010161008645455346,
+        "wx": -17.37137269938575,
+        "wy": -259.88482614361646,
+        "wz": 120.4043823350558,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 85,
+        "side": -1,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 4.051682637747408,
+        "vz": 0.008037156001542978,
+        "wx": -17.44330922260317,
+        "wy": -134.34602988242915,
+        "wz": 137.86879776833757,
+        "active": true,
+        "energyJ": 2.4339804208007436,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 4.051682637747408,
+        "vz": -8.174017018802715e-15,
+        "wx": -17.44330922260317,
+        "wy": -134.34602988242915,
+        "wz": 137.86879776833757,
+        "active": true,
+        "energyJ": 2.4339749270183333,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.082130959587149,
+        "z": 0.6074718723829824,
+        "vx": 3.8950425541087927,
+        "vz": -0.001890538955178439,
+        "wx": -16.574744484482306,
+        "wy": -133.31614555089322,
+        "wz": 124.16450348674428,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.08213135424353259,
+        "z": 0.6070954394622564,
+        "vx": 3.895032687345428,
+        "vz": -0.009770771132394721,
+        "wx": -16.588473602971796,
+        "wy": -133.31614555089322,
+        "wz": 124.16364025285408,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 85,
+        "side": 0,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 3.76125519879973,
+        "vz": 0.0061206476926004005,
+        "wx": -17.1949040109842,
+        "wy": -18.829098956909956,
+        "wz": 144.729288452141,
+        "active": true,
+        "energyJ": 1.8031002083287109,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 3.76125519879973,
+        "vz": -7.588547845660543e-15,
+        "wx": -17.1949040109842,
+        "wy": -18.829098956909956,
+        "wz": 144.729288452141,
+        "active": true,
+        "energyJ": 1.8030970222138927,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.10536447304945823,
+        "z": 0.6074293504902291,
+        "vx": 3.6046113295404285,
+        "vz": -0.0037471358952725644,
+        "wx": -16.33158086243882,
+        "wy": -17.79921462537462,
+        "wz": 131.02466297013768,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.105364775905729,
+        "z": 0.6070963964851495,
+        "vx": 3.6046037578621752,
+        "vz": -0.009746844702183182,
+        "wx": -16.342161692333637,
+        "wy": -17.79921462537462,
+        "wz": 131.02400053109352,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 85,
+        "side": 1,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 3.758079076992046,
+        "vz": 0.017932411401899884,
+        "wx": -18.725867195495322,
+        "wy": 120.88581060061122,
+        "wz": 144.8043149515351,
+        "active": true,
+        "energyJ": 2.1993047175904903,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 3.758079076992046,
+        "vz": -7.580741590018647e-15,
+        "wx": -18.725867195495322,
+        "wy": 120.88581060061122,
+        "wz": 144.8043149515351,
+        "active": true,
+        "energyJ": 2.19927736842709,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.10561563133444352,
+        "z": 0.6074862562941304,
+        "vx": 3.6015082690804734,
+        "vz": 0.006966234338875515,
+        "wx": -17.76644663005134,
+        "wy": 119.8559262690761,
+        "wz": 131.10608153844845,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.10561660680926675,
+        "z": 0.6070617819352859,
+        "vx": 3.601483881335456,
+        "vz": -0.0106122394778998,
+        "wx": -17.7974122980419,
+        "wy": 119.8559262690761,
+        "wz": 131.10394787746654,
+        "active": true
+      }
+    },
+    {
+      "condition": {
+        "family": "prescribed-impact-state",
+        "speed": 4,
+        "deg": 85,
+        "side": 2,
+        "roll": -1
+      },
+      "oldImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 3.757761084011555,
+        "vz": 0.021039066365728165,
+        "wx": -19.12853139481852,
+        "wy": 260.8415251392252,
+        "wz": 144.81182659674357,
+        "active": true,
+        "energyJ": 3.683626765051161,
+        "kind": "rail"
+      },
+      "newImmediate": {
+        "x": -0.39998856991986304,
+        "z": 0.6074862562941304,
+        "vx": 3.757761084011555,
+        "vz": -7.580741590018647e-15,
+        "wx": -19.12853139481852,
+        "wy": 260.8415251392252,
+        "wz": 144.81182659674357,
+        "active": true,
+        "energyJ": 3.6835891189863577,
+        "kind": "rail"
+      },
+      "oldFinal": {
+        "x": -0.10564025111982223,
+        "z": 0.6074862562941304,
+        "vx": 3.6012107453568567,
+        "vz": 0.00978444968782367,
+        "wx": -18.1438755174865,
+        "wy": 259.8116408076893,
+        "wz": 131.11538401978117,
+        "active": true
+      },
+      "newFinal": {
+        "x": -0.10564142268603487,
+        "z": 0.607052691849185,
+        "vx": 3.6011814551513255,
+        "vz": -0.01083949977894999,
+        "wx": -18.1801937063721,
+        "wy": 259.8116408076893,
+        "wz": 131.112821447118,
+        "active": true
+      }
+    }
+  ],
+  "indicativeNormalRebound": {
+    "source": "Alciatore HSV B.15 / TP B.6, approximate 50% after skid",
+    "status": "INDICATIVE_ONLY_NO_EXACT_TABLE_SPEED_PUBLISHED",
+    "diagnosticInputMps": 1.6,
+    "oldRetainedPercent": 58.22555579345458,
+    "newRetainedPercent": 58.22555579345458
+  },
+  "americanPoolRegression": {
+    "status": "IN_SAMPLE: empirically inverse-identified v0.17; NOT independent validation",
+    "componentCount": 24,
+    "old": {
+      "count": 24,
+      "maePoints": 2.78325236966751,
+      "rmsePoints": 3.846837443558314,
+      "biasPoints": -0.21087987675354528
+    },
+    "new": {
+      "count": 24,
+      "maePoints": 2.78325236966751,
+      "rmsePoints": 3.846837443558314,
+      "biasPoints": -0.21087987675354528
+    },
+    "rmseDeltaPoints": 0
+  },
+  "limitations": [
+    "Fixed-height passive projection, not a measured cushion constitutive law",
+    "No guarantee for airborne shots or all possible spins",
+    "Agreement with an in-sample regression is not independent realism validation"
+  ]
+}

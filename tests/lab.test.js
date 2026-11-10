@@ -26,7 +26,7 @@ function runScenario(id) {
 }
 
 test('all calibration setups have distinct balls fully inside the table', () => {
-  assert.equal(LAB_SCENARIOS.length,5);
+  assert.equal(LAB_SCENARIOS.length,6);
   for(const template of LAB_SCENARIOS) {
     const s=getLabScenario(template.id);
     assert.equal(s.balls[0].num,0);

@@ -1,5 +1,5 @@
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, NOSE_HEIGHT,
-  getPockets,getCushionSegments,pocketSupportClearance} from './physics.js';
+  getPockets,getCushionSegments,pocketSupportClearance} from './physics.js?v=0.68';
 import {tableClothBoundary} from './table-pocket-geometry.js';
 
 // The cue-ball centre must remain behind the head string. Avoid the cushions,

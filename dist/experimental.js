@@ -1,7 +1,7 @@
 // Independently published billiards experiments used as observable benchmarks.
 // Do not confuse direct measurements with values predicted by a published fit.
 import {LENGTH, WIDTH, RADIUS, PHYSICS, makePhysicsBody,
-  resolveBallCollision, simulatePhysics} from './physics.js';
+  resolveBallCollision, simulatePhysics} from './physics.js?v=0.68';
 import {snookerReboundFit} from './cushion-profiles.js';
 
 export const MATHAVAN_2009_URL = 'https://doi.org/10.1119/1.3157159';

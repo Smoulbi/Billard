@@ -1,6 +1,6 @@
 import {imperfectRack} from './rack.js?v=0.65';
-import {RADIUS} from './physics.js';
-import {canPlaceSupportedBall} from './placement.js?v=0.63';
+import {RADIUS} from './physics.js?v=0.68';
+import {canPlaceSupportedBall} from './placement.js?v=0.68';
 import {nineBallRack} from './nine-ball-rules.js?v=0.65';
 const HISTORY_LIMIT=100;
 

@@ -3,6 +3,9 @@
 
 // Percentages below preserve the original calibrated shot speeds on the linear gauge.
 export const LAB_SCENARIOS = Object.freeze([
+  {id:'rail-grazing',title:'BANDE RASANTE',subtitle:'Tir reproductible avec rétro et effet ; comparer les modèles de bande',
+    balls:[[0,-.42,.603]],aim:[Math.cos(Math.PI/36),Math.sin(Math.PI/36)],
+    spin:[-.45,-.45],power:40,elevation:0},
   {id: 'stop', title: 'TIR D’ARRÊT', subtitle: 'Blanche et bille alignées',
     balls: [[0,-0.73,0],[1,-0.27,0]], aim: [1,0], spin: [0,-0.80], power: 18.32878819959423, elevation: 0},
   {id: 'draw', title: 'RÉTRO', subtitle: 'Retour après le contact',
@@ -43,6 +46,7 @@ export class ShotTelemetry {
     this.cueDistance = 0;
     this.cushions = 0;
     this.collisions = 0;
+    this.railImpacts=[];this.pendingRailImpacts=new Map();
     this.firstContact = null;
     this.firstObject = null;
     this.potted = new Set();
@@ -78,6 +82,21 @@ export class ShotTelemetry {
   }
 
   onCushion() { this.cushions++; }
+
+  recordRailBefore(ball,time,kind) {
+    this.pendingRailImpacts.set(ball.num,{num:ball.num,time,kind,before:this.railState(ball)});
+  }
+  recordRailAfter(ball,time,kind) {
+    const event=this.pendingRailImpacts.get(ball.num);
+    if(!event)return;
+    this.pendingRailImpacts.delete(ball.num);
+    this.railImpacts.push({...event,time,kind,after:this.railState(ball)});
+  }
+  railState(ball) {
+    return {x:ball.x,z:ball.z,vx:ball.vx,vz:ball.vz,wx:ball.wx,wy:ball.wy,wz:ball.wz,
+      speed:Math.hypot(ball.vx,ball.vz),sidespin:ball.wy/(2*Math.PI),
+      rollSpin:(ball.wx*ball.vz-ball.wz*ball.vx)/(Math.hypot(ball.vx,ball.vz)||1)/(2*Math.PI)};
+  }
 
   onPocket(b, time) {
     this.potted.add(b.num);

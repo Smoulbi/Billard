@@ -25,7 +25,7 @@ const contact=(b,nx=-1,nz=0,parameters=COUPLED_POOL_RAIL)=>
 
 test('v0.20 and v0.21 are separately selectable alongside earlier rail models',()=>{
   assert.deepEqual(CUSHION_MODELS,
-    ['empirical','compliant','compliant-tuned','coupled-3d','coupled-v021']);
+    ['empirical','compliant','compliant-tuned','coupled-3d','coupled-v021','coupled-v068']);
   assert.equal(COUPLED_POOL_RAIL.verticalToHorizontalStiffness,1);
 });
 

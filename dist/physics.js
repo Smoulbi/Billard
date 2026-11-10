@@ -1,3 +1,4 @@
+import {resolveSeparatedRailImpact} from './separated-cushion.js?v=0.68';
 // FRAME physics — all lengths in metres, time in seconds, angular speeds in rad/s.
 // The renderer never influences the simulation. Each sphere is assumed homogeneous.
 import {CUSHION_PROFILES, DEFAULT_CUSHION_PROFILE,
@@ -11,7 +12,7 @@ import {pocketReferenceGeometry,pocketApertureClearance,
   CORNER_FACING_RUN,CORNER_FACING_ANGLE,
   SIDE_FACING_RUN,SIDE_FACING_ANGLE} from './table-pocket-geometry.js';
 export const CUSHION_MODELS=Object.freeze([
-  'empirical','compliant','compliant-tuned','coupled-3d','coupled-v021']);
+  'empirical','compliant','compliant-tuned','coupled-3d','coupled-v021','coupled-v068']);
 export const LENGTH = 1.27;
 export const WIDTH = 0.635;
 export const RADIUS = 0.028575;
@@ -527,7 +528,12 @@ function distanceToRailSquared(b, rail, t, profile) {
   return (predicted.x - closest.x) ** 2 + (predicted.z - closest.z) ** 2;
 }
 
-function railTimeOfImpact(b, rail, duration, profile) {
+function railApproachSpeed(b,nx,nz,rail,profile,model) {
+  return profile==='pool'&&rail.kind==='rail'&&model==='coupled-v068'?
+    b.vx*nx+b.vz*nz:cushionNormalSpeed(b,nx,nz);
+}
+
+function railTimeOfImpact(b, rail, duration, profile,model) {
   if (!b.active || duration <= TIME_EPS) return Infinity;
   const closest = closestRailPoint(b.x, b.z, rail);
   const dx = b.x - closest.x, dz = b.z - closest.z;
@@ -535,7 +541,7 @@ function railTimeOfImpact(b, rail, duration, profile) {
   if (distance <= NOSE_REACH + CONTACT_EPS) {
     const nx = distance > 1e-9 ? dx / distance : rail.nx;
     const nz = distance > 1e-9 ? dz / distance : rail.nz;
-    return cushionNormalSpeed(b, nx, nz) < -1e-7 ? 0 : Infinity;
+    return railApproachSpeed(b,nx,nz,rail,profile,model) < -1e-7 ? 0 : Infinity;
   }
 
   const speed = Math.hypot(b.vx, b.vz);
@@ -595,7 +601,7 @@ function advanceWithContactEvents(balls, duration, callbacks, timeOffset) {
     for (const b of balls) {
       if (!b.active) continue;
       for (const rail of RAILS) {
-        const time = railTimeOfImpact(b, rail, remaining, profile);
+        const time = railTimeOfImpact(b, rail, remaining, profile,callbacks.cushionModel);
         if (time < earliestTime) {
           earliestTime = time;
           event = {type: 'cushion', ball: b, rail};
@@ -627,7 +633,8 @@ function advanceWithContactEvents(balls, duration, callbacks, timeOffset) {
       }
     } else {
       impactSpeed = bounceCushion(event.ball,event.rail,
-        callbacks.cushionProfile,callbacks.cushionModel,callbacks.cushionParameters);
+        callbacks.cushionProfile,callbacks.cushionModel,callbacks.cushionParameters,
+        b=>callbacks.onBeforeRailContact?.(b,timeOffset+elapsed,event.rail.kind));
       if(impactSpeed>1e-7)callbacks.onRailContact?.(event.ball,impactSpeed,timeOffset+elapsed,event.rail.kind);
       if (impactSpeed > 0.045) callbacks.onCushion?.(event.ball, impactSpeed, timeOffset + elapsed, event.rail.kind);
     }
@@ -647,7 +654,7 @@ function advanceWithContactEvents(balls, duration, callbacks, timeOffset) {
 }
 
 function bounceCushion(b, rail, profile = DEFAULT_CUSHION_PROFILE,
-  cushionModel='empirical',cushionParameters) {
+  cushionModel='empirical',cushionParameters,beforeImpact) {
   const closest = closestRailPoint(b.x, b.z, rail);
   const dx = b.x - closest.x, dz = b.z - closest.z;
   const distance = Math.hypot(dx, dz);
@@ -663,8 +670,9 @@ function bounceCushion(b, rail, profile = DEFAULT_CUSHION_PROFILE,
   const tx = -nz, tz = nx;
   // The cushion nose is above the centre of the ball. This offset couples
   // normal rebound with topspin/backspin instead of simply negating vx/vz.
-  const normalSpeed = cushionNormalSpeed(b, nx, nz);
+  const normalSpeed = railApproachSpeed(b,nx,nz,rail,profile,cushionModel);
   if (normalSpeed >= -1e-7) return 0;
+  beforeImpact?.(b);
   // The empirical pool shear impulse must never create total translational
   // plus rotational energy. Evaluate before the rail impulse, not after skid.
   const preImpactEnergy=profile==='pool'&&rail.kind==='rail'?
@@ -685,6 +693,12 @@ function bounceCushion(b, rail, profile = DEFAULT_CUSHION_PROFILE,
   const restitution=rail.kind==='facing'?PHYSICS.facingRestitution:
     cushionRestitutionFor(profile,incomingLinearNormal,noseCoupling,
       incidenceAngle,incomingTotalSpeed,noseRatio);
+  if(profile==='pool'&&rail.kind==='rail'&&cushionModel==='coupled-v068') {
+    return resolveSeparatedRailImpact(b,nx,nz,{
+      mass:PHYSICS.mass,radius:RADIUS,noseHeight:NOSE_HEIGHT,
+      restitution,parameters:cushionParameters||COUPLED_POOL_RAIL_V021
+    }).speed;
+  }
   if(profile==='pool'&&rail.kind==='rail'&&
     (cushionModel==='coupled-3d'||cushionModel==='coupled-v021')) {
     return resolveCoupledRailImpact(b,nx,nz,{
@@ -819,7 +833,8 @@ export function simulatePhysics(balls, dt, callbacks = {}) {
       }
       for (const rail of RAILS) {
         const impactSpeed = bounceCushion(b,rail,
-          callbacks.cushionProfile,callbacks.cushionModel,callbacks.cushionParameters);
+          callbacks.cushionProfile,callbacks.cushionModel,callbacks.cushionParameters,
+          hit=>callbacks.onBeforeRailContact?.(hit,(step+1)*h,rail.kind));
         if(impactSpeed>1e-7)callbacks.onRailContact?.(b,impactSpeed,(step+1)*h,rail.kind);
         if (impactSpeed > 0.045) callbacks.onCushion?.(b, impactSpeed);
       }

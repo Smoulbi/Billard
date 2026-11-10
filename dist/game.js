@@ -1,6 +1,6 @@
-import {ShotReplay} from './shot-replay.js?v=0.67';
+import {ShotReplay} from './shot-replay.js?v=0.68';
 import {railCutaway} from './rail-visibility.js?v=0.66';
-import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.65';
+import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.68';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
@@ -10,15 +10,15 @@ import {createFirstPersonView,resetFirstPersonAim,adjustFirstPersonHeight,freeze
 import * as THREE from './vendor/three.module.js';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
-  simulatePhysics} from './physics.js';
-import {getLabScenario, ShotTelemetry} from './lab.js';
+  simulatePhysics} from './physics.js?v=0.68';
+import {getLabScenario, ShotTelemetry} from './lab.js?v=0.68';
 import {powerToCueSpeed} from './power.js';
 import {HEAD_STRING_X, clampBreakPosition, canPlaceBreakCue,
-  clampFreePosition, canPlaceFreeCue} from './placement.js';
+  clampFreePosition, canPlaceFreeCue} from './placement.js?v=0.68';
 import {newEightBallMatch,adjudicateEightBall,resolveEightBallDecision,
   eightBallVictoryPresentation,groupOf} from './eight-ball-rules.js';
-import {predictTrajectory} from './trajectory.js';
-import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js';
+import {predictTrajectory} from './trajectory.js?v=0.68';
+import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.68';
 import {panCameraTarget,zoomCamera} from './camera-controls.js';
 import {isFullscreenShortcut,toggleSceneFullscreen,IMMERSIVE_CLASS} from './fullscreen.js';
 import {pocketCollectorRadii,
@@ -34,7 +34,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
@@ -711,6 +711,7 @@ function clearTable() {
   if(objectTrailLine)objectTrailLine.visible=false;
   el.labLoad.disabled=false;el.labReplay.disabled=true;el.labExport.disabled=true;
   el.labDistance.textContent=el.labAfterContact.textContent=el.labCushions.textContent=el.labTime.textContent='—';
+  el.labRailImpact.textContent='Aucun impact mesuré.';
 }
 
 function newGame() {
@@ -1290,6 +1291,11 @@ function updateLabMeasurements() {
     `${summary.postContact>=0?'+':'−'}${Math.abs(summary.postContact*100).toFixed(1)} cm`;
   el.labCushions.textContent=String(summary.cushions);
   el.labTime.textContent=`${summary.duration.toFixed(2)} s`;
+  const impact=telemetry.railImpacts.find(event=>event.num===0);
+  if(impact){
+    const pair=(key,unit)=>`${impact.before[key].toFixed(2)} → ${impact.after[key].toFixed(2)} ${unit}`;
+    el.labRailImpact.textContent=`Premier impact de la blanche · Vitesse : ${pair('speed','m/s')} · Effet latéral : ${pair('sidespin','tr/s')} · Rétro (−) / coulé (+) : ${pair('rollSpin','tr/s')}`;
+  }else el.labRailImpact.textContent='Aucun impact mesuré.';
 }
 
 function updateCounters() {
@@ -1596,7 +1602,9 @@ function physicsStep(dt) {
   const hasMotion=simulatePhysics(balls,dt,{
     cushionModel:el.cushionModel.value,
     onPocket:pocketBall,
-    onRailContact:(ball,_speed,time)=>{
+    onBeforeRailContact:(ball,time,kind)=>telemetry?.recordRailBefore(ball,shotSimTime+(time??dt),kind),
+    onRailContact:(ball,_speed,time,kind)=>{
+      telemetry?.recordRailAfter(ball,shotSimTime+(time??dt),kind);
       if(shotEvents){
         if(ball.num>0)shotEvents.breakRailSet.add(ball.num);
         if(shotEvents.firstContact!==null &&
@@ -2271,7 +2279,9 @@ function bindControls() {
         'Banc de calibration · ajustement provisoire v0.19.':
       el.cushionModel.value==='coupled-3d'?
         'Banc de calibration · contact 3D couplé v0.20.':
-        'Banc de calibration · ajustement 3D prudent v0.21.';
+      el.cushionModel.value==='coupled-v021'?
+        'Banc de calibration · ajustement 3D prudent v0.21.':
+        'Banc de calibration · contact corrigé v0.68.';
     updateVisuals();
   });
   el.audioToggle.addEventListener('click',()=>{soundEnabled=!soundEnabled;el.audioLabel.textContent=soundEnabled?'ON':'OFF';});

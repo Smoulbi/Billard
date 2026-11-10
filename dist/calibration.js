@@ -1,11 +1,11 @@
 import {RADIUS, makePhysicsBody, resolveBallCollision, simulatePhysics,
-  strikeBall, isMoving} from './physics.js';
+  strikeBall, isMoving} from './physics.js?v=0.68';
 import {powerToCueSpeed} from './power.js';
 import {PUBLISHED_COLLISIONS, MATHAVAN_2009_PDF,
   measurePostSlipCollision, measureRailRebound, measurePostSlideRailRebound,
   measurePoolObliqueRailRebound,
   measureRollingDeceleration,
-  publishedCushionFit} from './experimental.js';
+  publishedCushionFit} from './experimental.js?v=0.68';
 import {CUSHION_PROFILES,TUM_POOL_RAIL,poolRailReference} from './cushion-profiles.js';
 
 // The original 14 cases are analytical limits or diagnostic simulations, not

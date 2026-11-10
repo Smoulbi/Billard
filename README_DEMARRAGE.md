@@ -1,8 +1,8 @@
-# FRAME v0.67 — projet complet
+# FRAME v0.68 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.67 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.68 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -317,3 +317,16 @@ ni l’historique d’entraînement. Retour automatique à la fin ; le bouton
 Revenir au jeu ou Échap interrompt la lecture. Une nouvelle formation de table
 ou un nouveau tir remplace l’enregistrement précédent. Disponible en rendu 3D.
 Le bouton Rejouer du laboratoire conserve sa fonction de réexécution physique.
+
+## Version 0.68 — contact de bande et diagnostic
+
+Le modèle par défaut est `coupled-v068` : il conserve les paramètres de v0.21
+et ajoute une contrainte passive de non-pénétration géométrique. La rotation
+ne peut plus, à elle seule, faire considérer le centre comme séparé de la
+bande lorsqu’il continue à avancer vers elle. L’ancien modèle v0.21 reste
+sélectionnable pour comparer. Aucun coefficient de tapis ou de gomme ajouté.
+
+Dans le laboratoire, l’exercice « Diagnostic · bande rasante » permet un tir
+reproductible. Le volet « Vitesse et effet avant / après bande » affiche les
+valeurs simulées au premier choc de la blanche. La comparaison américaine
+et les limites des sources sont détaillées dans `docs/COMPARAISON_PHYSIQUE_v0.68.md`.
