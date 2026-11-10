@@ -1,7 +1,7 @@
 // Independently published billiards experiments used as observable benchmarks.
 // Do not confuse direct measurements with values predicted by a published fit.
-import {LENGTH, WIDTH, RADIUS, PHYSICS, makePhysicsBody,
-  resolveBallCollision, simulatePhysics} from './physics.js?v=0.68';
+import {LENGTH, WIDTH, RADIUS, NOSE_HEIGHT, PHYSICS, makePhysicsBody,
+  resolveBallCollision, simulatePhysics} from './physics.js?v=0.69';
 import {snookerReboundFit} from './cushion-profiles.js';
 
 export const MATHAVAN_2009_URL = 'https://doi.org/10.1119/1.3157159';
@@ -133,4 +133,32 @@ export function measureRollingDeceleration(profile='snooker') {
   b.wz=-0.5/RADIUS;
   for(let i=0;i<120;i++)simulatePhysics([b],1/240,{cushionProfile:profile});
   return (0.5-Math.hypot(b.vx,b.vz))/0.5;
+}
+
+// Measurement protocol for model selection. The prescribed incident state is
+// AT contact, not 2 mm before it; observe the first actual pure-rolling state,
+// not a small-but-nonzero sliding velocity. All models use the same protocol.
+export function measureQualifiedPoolRebound({incoming,angleDeg=0,
+  cushionModel='empirical',step=.0001}={}) {
+  if(!Number.isFinite(incoming)||incoming<=0||!Number.isFinite(angleDeg)||
+    angleDeg<0||angleDeg>80||!Number.isFinite(step)||step<=0||step>.001)
+    throw new RangeError('Conditions de mesure de bande invalides.');
+  const reach=Math.sqrt(RADIUS**2-(NOSE_HEIGHT-RADIUS)**2);
+  const a=angleDeg*Math.PI/180,b=makePhysicsBody(0,-.4,WIDTH-reach);
+  b.vx=incoming*Math.sin(a);b.vz=incoming*Math.cos(a);
+  b.wx=b.vz/RADIUS;b.wz=-b.vx/RADIUS;
+  let incident=null,immediate=null,contacts=0,eventLimits=0;
+  for(let i=0;i<Math.ceil(2/step);i++){
+    simulatePhysics([b],step,{cushionProfile:'pool',cushionModel,
+      onBeforeRailContact:hit=>{if(!incident)incident={normal:hit.vz,tangent:hit.vx,
+        speed:Math.hypot(hit.vx,hit.vz),angleRad:Math.atan2(Math.abs(hit.vx),Math.abs(hit.vz))};},
+      onRailContact:hit=>{contacts++;if(!immediate)immediate={normal:-hit.vz,tangent:hit.vx,
+        wx:hit.wx,wy:hit.wy,wz:hit.wz};},onEventLimit:()=>eventLimits++});
+    if(contacts>1||!b.active||eventLimits)throw new Error('Mesure de bande ambiguë ou saturée.');
+    if(immediate&&b.state==='rolling'&&slipMagnitude(b)<1e-8)return {
+      incident,immediate,postRollNormal:-b.vz,postRollTangent:b.vx,
+      postRollSpeed:Math.hypot(b.vx,b.vz),elapsedS:(i+1)*step,step,
+      phase:'FIRST_PURE_ROLL',eventLimits,contacts};
+  }
+  throw new Error('Premier roulement de sortie introuvable.');
 }

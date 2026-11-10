@@ -1,11 +1,11 @@
 import {RADIUS, makePhysicsBody, resolveBallCollision, simulatePhysics,
-  strikeBall, isMoving} from './physics.js?v=0.68';
+  strikeBall, isMoving} from './physics.js?v=0.69';
 import {powerToCueSpeed} from './power.js';
 import {PUBLISHED_COLLISIONS, MATHAVAN_2009_PDF,
   measurePostSlipCollision, measureRailRebound, measurePostSlideRailRebound,
-  measurePoolObliqueRailRebound,
+  measurePoolObliqueRailRebound,measureQualifiedPoolRebound,
   measureRollingDeceleration,
-  publishedCushionFit} from './experimental.js?v=0.68';
+  publishedCushionFit} from './experimental.js?v=0.69';
 import {CUSHION_PROFILES,TUM_POOL_RAIL,poolRailReference} from './cushion-profiles.js';
 
 // The original 14 cases are analytical limits or diagnostic simulations, not
@@ -19,16 +19,16 @@ const CUTS_STUN=[20,30,40,50,60];
 const CUTS_ROLL=[15,20,30,40,49];
 const STEP=1/240;
 const PUBLISHED_CASES=PUBLISHED_COLLISIONS.flatMap((record,i)=>[
-  Object.freeze({id:`mathavan-${i}-cue`,name:`Mathavan · blanche ${record.cut}°`,
+  Object.freeze({id:`mathavan-${i}-cue`,name:`Snooker · blanche ${record.cut}°`,
     family:'published-ball',index:i,ball:'cue',unit:'m/s',reference:null,
     published:record.cue,publishedKind:'mesure directe',
     source:'Mathavan et al., 2009 · tableau I',sourceUrl:MATHAVAN_2009_PDF,
-    detail:`Collision en roulement à ${record.incoming.toFixed(3)} m/s ; vitesse de la blanche après glissement.`}),
-  Object.freeze({id:`mathavan-${i}-object`,name:`Mathavan · objet ${record.cut}°`,
+    detail:`Repère snooker 52,4 mm, hors score pool. Collision en roulement à ${record.incoming.toFixed(3)} m/s ; vitesse de la blanche après glissement.`}),
+  Object.freeze({id:`mathavan-${i}-object`,name:`Snooker · objet ${record.cut}°`,
     family:'published-ball',index:i,ball:'object',unit:'m/s',reference:null,
     published:record.object,publishedKind:'mesure directe',
     source:'Mathavan et al., 2009 · tableau I',sourceUrl:MATHAVAN_2009_PDF,
-    detail:`Collision en roulement à ${record.incoming.toFixed(3)} m/s ; vitesse de l’objet après glissement.`}),
+    detail:`Repère snooker 52,4 mm, hors score pool. Collision en roulement à ${record.incoming.toFixed(3)} m/s ; vitesse de l’objet après glissement.`}),
 ]);
 
 const SNOOKER_RAIL_CASES=[0.5,1.2,2.3,3.2].map(speed=>Object.freeze({
@@ -89,7 +89,7 @@ export const CALIBRATION_CASES=Object.freeze([
     unit:'billes',reference:null,source:'À mesurer',
     detail:'Nombre de billes ayant parcouru au moins 20 cm après 0,75 s de casse à 100 %.'})),
   ...PUBLISHED_CASES,
-  Object.freeze({id:'mathavan-rolling',name:'Mathavan · résistance du tapis',
+  Object.freeze({id:'mathavan-rolling',name:'Snooker · résistance du tapis',
     family:'published-cloth',unit:'m/s²',reference:null,published:0.125,
     publishedKind:'milieu de la plage mesurée',
     source:'Mathavan et al., 2009 · figure 6',sourceUrl:MATHAVAN_2009_PDF,
@@ -137,21 +137,22 @@ function breakSpread(test,cushionModel='empirical') {
 export function runCalibration({cushionModel='empirical'}={}) {
   const collisionCache=PUBLISHED_COLLISIONS.map(measurePostSlipCollision);
   const obliqueCache=new Map();
+  const qualified=(incoming,angleDeg=0)=>{
+    const key=`${incoming}-${angleDeg}`;
+    if(!obliqueCache.has(key))obliqueCache.set(key,measureQualifiedPoolRebound({incoming,angleDeg,cushionModel}));
+    return obliqueCache.get(key);
+  };
   return CALIBRATION_CASES.map(test=>({
     ...test,
     simulated:test.family==='cloth'?clothDistance():
       test.family==='break'?breakSpread(test,cushionModel):
       test.family==='published-ball'?collisionCache[test.index][test.ball]:
-      test.family==='pool-rail'?100*measurePostSlideRailRebound(test.incoming,'pool',cushionModel)/test.incoming:
+      test.family==='pool-rail'?100*qualified(test.incoming).postRollSpeed/test.incoming:
       test.family==='pool-rail-component'?(()=>{
-        const key=`${test.incoming}-${test.angle}`;
-        if(!obliqueCache.has(key))obliqueCache.set(key,
-          measurePoolObliqueRailRebound({incoming:test.incoming,
-            angleDeg:test.angle,cushionModel}));
-        const row=obliqueCache.get(key);
+        const row=qualified(test.incoming,test.angle);
         return 100*(test.component==='normal'?
-          row.postRollNormal/row.incomingNormal:
-          row.postRollTangent/row.incomingTangent);
+          row.postRollNormal/row.incident.normal:
+          row.postRollTangent/row.incident.tangent);
       })():
       test.family==='snooker-rail'?measureRailRebound(test.incoming,'snooker'):
       test.family==='published-cloth'?measureRollingDeceleration():cutAngle(test)

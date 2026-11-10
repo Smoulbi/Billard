@@ -1,4 +1,4 @@
-import {makePhysicsBody, strikeBall, simulatePhysics, isMoving, RADIUS} from './physics.js?v=0.68';
+import {makePhysicsBody, strikeBall, simulatePhysics, isMoving, RADIUS} from './physics.js?v=0.69';
 import {powerToCueSpeed} from './power.js';
 
 // The guide is a dry run of the shot, not an idealised 90-degree tangent.

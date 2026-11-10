@@ -6,7 +6,7 @@
 // This is a hypothesis about a rounded nose, NOT measured K55/K66 geometry,
 // rheology, or independent validation of American-pool rail rebound.
 
-import {RADIUS,NOSE_HEIGHT,PHYSICS} from './physics.js?v=0.68';
+import {RADIUS,NOSE_HEIGHT,PHYSICS} from './physics.js?v=0.69';
 
 export const SIMULTANEOUS_POOL_CONTACT=Object.freeze({
   name:'v0.22 · simultaneous rail/cloth, research candidate',

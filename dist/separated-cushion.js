@@ -10,15 +10,15 @@ export function resolveSeparatedRailImpact(ball,nx,nz,options) {
   const result=resolveCoupledRailImpact(ball,nx,nz,{
     ...options,parameters:options.parameters??COUPLED_POOL_RAIL_V021
   });
-  const residual=ball.vx*nx+ball.vz*nz;
-  let separationImpulse=0;
-  if(residual<0){
-    // Minimum passive correction to enforce v_normal >= 0. A radial nose
-    // impulse has no torque on a sphere; the cloth balances its downward
-    // component under the existing fixed-height assumption. No additional
-    // elastic rebound is invented and tangent velocity/spin stay unchanged.
-    separationImpulse=-options.mass*residual;
-    ball.vx-=residual*nx;ball.vz-=residual*nz;
-  }
+  const separationImpulse=projectRailSeparation(ball,nx,nz,options.mass);
   return {...result,speed:-incoming,separationImpulse};
+}
+
+// Minimum passive, torque-free geometric correction; shared with the
+// reference-driven model. This is not an elastic rubber coefficient.
+export function projectRailSeparation(ball,nx,nz,mass) {
+  const residual=ball.vx*nx+ball.vz*nz;
+  if(residual>=0)return 0;
+  ball.vx-=residual*nx;ball.vz-=residual*nz;
+  return -mass*residual;
 }

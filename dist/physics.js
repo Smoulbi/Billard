@@ -1,4 +1,4 @@
-import {resolveSeparatedRailImpact} from './separated-cushion.js?v=0.68';
+import {resolveSeparatedRailImpact,projectRailSeparation} from './separated-cushion.js?v=0.69';
 // FRAME physics — all lengths in metres, time in seconds, angular speeds in rad/s.
 // The renderer never influences the simulation. Each sphere is assumed homogeneous.
 import {CUSHION_PROFILES, DEFAULT_CUSHION_PROFILE,
@@ -12,7 +12,7 @@ import {pocketReferenceGeometry,pocketApertureClearance,
   CORNER_FACING_RUN,CORNER_FACING_ANGLE,
   SIDE_FACING_RUN,SIDE_FACING_ANGLE} from './table-pocket-geometry.js';
 export const CUSHION_MODELS=Object.freeze([
-  'empirical','compliant','compliant-tuned','coupled-3d','coupled-v021','coupled-v068']);
+  'empirical','compliant','compliant-tuned','coupled-3d','coupled-v021','coupled-v068','reference-v069']);
 export const LENGTH = 1.27;
 export const WIDTH = 0.635;
 export const RADIUS = 0.028575;
@@ -223,7 +223,11 @@ export function strikeBall(ball, aim, speed, english = {x: 0, y: 0}, options = {
   return impact;
 }
 
-function advanceBall(b, dt, profile = DEFAULT_CUSHION_PROFILE) {
+function advanceBall(b, dt, profile = DEFAULT_CUSHION_PROFILE,model) {
+  // The new reference model integrates the actual end of sliding instead of
+  // snapping the remaining 2 mm/s slip into rolling. Archived models retain
+  // their exact previous tolerance and results. No material friction changes.
+  const slipEps=profile==='pool'&&model==='reference-v069'?1e-9:SLIP_EPS;
   const rollingDecel=CUSHION_PROFILES[profile].rollingFriction*PHYSICS.gravity;
   const initialWx = b.wx, initialWy = b.wy, initialWz = b.wz;
   const slipX = b.vx + RADIUS * b.wz;
@@ -231,7 +235,7 @@ function advanceBall(b, dt, profile = DEFAULT_CUSHION_PROFILE) {
   const slip = Math.hypot(slipX, slipZ);
   let remaining = dt;
 
-  if (slip > SLIP_EPS) {
+  if (slip > slipEps) {
     b.state = 'sliding';
     // On a uniform sphere, the cloth removes slip 3.5x faster than it removes
     // centre-of-mass speed. Cap the force at the sliding-to-rolling transition.
@@ -247,7 +251,7 @@ function advanceBall(b, dt, profile = DEFAULT_CUSHION_PROFILE) {
     remaining -= slidingTime;
   }
 
-  if (remaining > 1e-10 || slip <= SLIP_EPS) {
+  if (remaining > 1e-10 || slip <= slipEps) {
     // Pure rolling obeys v_contact = 0; rolling resistance is much smaller
     // than sliding friction and slows the translation and rotation together.
     b.wx = b.vz / RADIUS;
@@ -274,7 +278,7 @@ function advanceBall(b, dt, profile = DEFAULT_CUSHION_PROFILE) {
   if (Math.abs(b.wy) < SPIN_EPS) b.wy = 0;
 
   if (Math.hypot(b.vx, b.vz) < SPEED_EPS &&
-      Math.hypot(b.vx + RADIUS * b.wz, b.vz - RADIUS * b.wx) < SLIP_EPS) {
+      Math.hypot(b.vx + RADIUS * b.wz, b.vz - RADIUS * b.wx) < slipEps) {
     b.vx = b.vz = b.wx = b.wz = 0;
   }
   if (b.vx === 0 && b.vz === 0) b.state = b.wy ? 'spinning' : 'stationary';
@@ -429,19 +433,19 @@ export function resolveSimultaneousBallContacts(balls, firstA, firstB) {
 // accounts for changing velocities and the transition to pure rolling.
 // This avoids missing a grazing collision whose overlap lasts less than one
 // render or physics step. Cushions and pocket capture remain substepped.
-function predictAtTime(b, t, profile = DEFAULT_CUSHION_PROFILE) {
+function predictAtTime(b, t, profile = DEFAULT_CUSHION_PROFILE,model) {
   const predicted = {x: b.x, z: b.z, vx: b.vx, vz: b.vz,
     wx: b.wx, wy: b.wy, wz: b.wz, rotX: 0, rotY: 0, rotZ: 0};
-  advanceBall(predicted, t, profile);
+  advanceBall(predicted, t, profile,model);
   return predicted;
 }
 
-function separationSquaredAt(a, b, t, profile) {
-  const pa = predictAtTime(a, t, profile), pb = predictAtTime(b, t, profile);
+function separationSquaredAt(a, b, t, profile,model) {
+  const pa = predictAtTime(a, t, profile,model), pb = predictAtTime(b, t, profile,model);
   return (pb.x - pa.x) ** 2 + (pb.z - pa.z) ** 2;
 }
 
-function ballBallTimeOfImpact(a, b, duration, profile) {
+function ballBallTimeOfImpact(a, b, duration, profile,model) {
   if (!a.active || !b.active || duration <= TIME_EPS) return Infinity;
   const dx = b.x - a.x, dz = b.z - a.z;
   const diameter = 2 * RADIUS;
@@ -472,41 +476,41 @@ function ballBallTimeOfImpact(a, b, duration, profile) {
   const ratio = 0.6180339887498949;
   let left = hi - ratio * (hi - lo);
   let right = lo + ratio * (hi - lo);
-  let dLeft = separationSquaredAt(a, b, left, profile);
-  let dRight = separationSquaredAt(a, b, right, profile);
+  let dLeft = separationSquaredAt(a, b, left, profile,model);
+  let dRight = separationSquaredAt(a, b, right, profile,model);
   for (let i = 0; i < 24; i++) {
     if (dLeft < dRight) {
       hi = right;
       right = left; dRight = dLeft;
       left = hi - ratio * (hi - lo);
-      dLeft = separationSquaredAt(a, b, left, profile);
+      dLeft = separationSquaredAt(a, b, left, profile,model);
     } else {
       lo = left;
       left = right; dLeft = dRight;
       right = lo + ratio * (hi - lo);
-      dRight = separationSquaredAt(a, b, right, profile);
+      dRight = separationSquaredAt(a, b, right, profile,model);
     }
   }
   const minimumTime = (lo + hi) * 0.5;
-  if (separationSquaredAt(a, b, minimumTime, profile) > diameterSquared) return Infinity;
+  if (separationSquaredAt(a, b, minimumTime, profile,model) > diameterSquared) return Infinity;
 
   // First entry into contact, to sub-microsecond numerical precision.
   lo = 0; hi = minimumTime;
   for (let i = 0; i < 28; i++) {
     const middle = (lo + hi) * 0.5;
-    if (separationSquaredAt(a, b, middle, profile) > diameterSquared) lo = middle;
+    if (separationSquaredAt(a, b, middle, profile,model) > diameterSquared) lo = middle;
     else hi = middle;
   }
-  const pa = predictAtTime(a, hi, profile), pb = predictAtTime(b, hi, profile);
+  const pa = predictAtTime(a, hi, profile,model), pb = predictAtTime(b, hi, profile,model);
   const contactDx = pb.x - pa.x, contactDz = pb.z - pa.z;
   const contactDistance = Math.hypot(contactDx, contactDz) || diameter;
   const closingSpeed = ((pb.vx - pa.vx) * contactDx + (pb.vz - pa.vz) * contactDz) / contactDistance;
   return closingSpeed < -MIN_BALL_CCD_IMPACT_SPEED ? hi : Infinity;
 }
 
-function advanceAll(balls, dt, profile) {
+function advanceAll(balls, dt, profile,model) {
   if (dt <= 0) return;
-  for (const b of balls) if (b.active) advanceBall(b, dt, profile);
+  for (const b of balls) if (b.active) advanceBall(b, dt, profile,model);
 }
 
 function closestRailPoint(x, z, rail) {
@@ -522,14 +526,14 @@ function cushionNormalSpeed(b, nx, nz) {
     NOSE_VERTICAL_OFFSET * (b.wx * tx + b.wz * tz);
 }
 
-function distanceToRailSquared(b, rail, t, profile) {
-  const predicted = predictAtTime(b, t, profile);
+function distanceToRailSquared(b, rail, t, profile,model) {
+  const predicted = predictAtTime(b, t, profile,model);
   const closest = closestRailPoint(predicted.x, predicted.z, rail);
   return (predicted.x - closest.x) ** 2 + (predicted.z - closest.z) ** 2;
 }
 
 function railApproachSpeed(b,nx,nz,rail,profile,model) {
-  return profile==='pool'&&rail.kind==='rail'&&model==='coupled-v068'?
+  return profile==='pool'&&rail.kind==='rail'&&(model==='coupled-v068'||model==='reference-v069')?
     b.vx*nx+b.vz*nz:cushionNormalSpeed(b,nx,nz);
 }
 
@@ -554,28 +558,28 @@ function railTimeOfImpact(b, rail, duration, profile,model) {
   const ratio = 0.6180339887498949;
   let left = hi - ratio * (hi - lo);
   let right = lo + ratio * (hi - lo);
-  let dLeft = distanceToRailSquared(b, rail, left, profile);
-  let dRight = distanceToRailSquared(b, rail, right, profile);
+  let dLeft = distanceToRailSquared(b, rail, left, profile,model);
+  let dRight = distanceToRailSquared(b, rail, right, profile,model);
   for (let i = 0; i < 22; i++) {
     if (dLeft < dRight) {
       hi = right;
       right = left; dRight = dLeft;
       left = hi - ratio * (hi - lo);
-      dLeft = distanceToRailSquared(b, rail, left, profile);
+      dLeft = distanceToRailSquared(b, rail, left, profile,model);
     } else {
       lo = left;
       left = right; dLeft = dRight;
       right = lo + ratio * (hi - lo);
-      dRight = distanceToRailSquared(b, rail, right, profile);
+      dRight = distanceToRailSquared(b, rail, right, profile,model);
     }
   }
   const minimumTime = (lo + hi) * 0.5;
-  if (distanceToRailSquared(b, rail, minimumTime, profile) > NOSE_REACH ** 2) return Infinity;
+  if (distanceToRailSquared(b, rail, minimumTime, profile,model) > NOSE_REACH ** 2) return Infinity;
 
   lo = 0; hi = minimumTime;
   for (let i = 0; i < 27; i++) {
     const mid = (lo + hi) * 0.5;
-    if (distanceToRailSquared(b, rail, mid, profile) > NOSE_REACH ** 2) lo = mid;
+    if (distanceToRailSquared(b, rail, mid, profile,model) > NOSE_REACH ** 2) lo = mid;
     else hi = mid;
   }
   return hi;
@@ -591,7 +595,7 @@ function advanceWithContactEvents(balls, duration, callbacks, timeOffset) {
     let event = null;
     for (let i = 0; i < balls.length; i++) {
       for (let j = i + 1; j < balls.length; j++) {
-        const time = ballBallTimeOfImpact(balls[i], balls[j], remaining, profile);
+        const time = ballBallTimeOfImpact(balls[i], balls[j], remaining, profile,callbacks.cushionModel);
         if (time < earliestTime) {
           earliestTime = time;
           event = {type: 'ball', a: balls[i], b: balls[j]};
@@ -610,7 +614,7 @@ function advanceWithContactEvents(balls, duration, callbacks, timeOffset) {
     }
 
     if (!event || earliestTime >= remaining) break;
-    advanceAll(balls, earliestTime, profile);
+    advanceAll(balls, earliestTime, profile,callbacks.cushionModel);
     elapsed += earliestTime;
     let impactSpeed;
     if (event.type === 'ball') {
@@ -644,11 +648,11 @@ function advanceWithContactEvents(balls, duration, callbacks, timeOffset) {
     // pin the event clock to t=0 indefinitely.
     if (impactSpeed <= 1e-7) {
       const tinyStep = Math.min(duration - elapsed, 1e-7);
-      advanceAll(balls, tinyStep, profile);
+      advanceAll(balls, tinyStep, profile,callbacks.cushionModel);
       elapsed += tinyStep;
     }
   }
-  if (elapsed < duration) advanceAll(balls, duration - elapsed, profile);
+  if (elapsed < duration) advanceAll(balls, duration - elapsed, profile,callbacks.cushionModel);
   if (eventCount === MAX_COLLISION_EVENTS) callbacks.onEventLimit?.();
   return false;
 }
@@ -670,9 +674,15 @@ function bounceCushion(b, rail, profile = DEFAULT_CUSHION_PROFILE,
   const tx = -nz, tz = nx;
   // The cushion nose is above the centre of the ball. This offset couples
   // normal rebound with topspin/backspin instead of simply negating vx/vz.
-  const normalSpeed = railApproachSpeed(b,nx,nz,rail,profile,cushionModel);
-  if (normalSpeed >= -1e-7) return 0;
+  const approachSpeed = railApproachSpeed(b,nx,nz,rail,profile,cushionModel);
+  if (approachSpeed >= -1e-7) return 0;
   beforeImpact?.(b);
+  const normalSpeed=cushionNormalSpeed(b,nx,nz);
+  const referenceModel=profile==='pool'&&rail.kind==='rail'&&cushionModel==='reference-v069';
+  if(referenceModel&&normalSpeed>=-1e-7){
+    projectRailSeparation(b,nx,nz,PHYSICS.mass);
+    return -approachSpeed;
+  }
   // The empirical pool shear impulse must never create total translational
   // plus rotational energy. Evaluate before the rail impulse, not after skid.
   const preImpactEnergy=profile==='pool'&&rail.kind==='rail'?
@@ -774,7 +784,8 @@ function bounceCushion(b, rail, profile = DEFAULT_CUSHION_PROFILE,
   b.wx += NOSE_VERTICAL_OFFSET * jt * nx * INVERSE_INERTIA;
   b.wz += NOSE_VERTICAL_OFFSET * jt * nz * INVERSE_INERTIA;
   b.wy += NOSE_REACH * jt * INVERSE_INERTIA;
-  return -normalSpeed;
+  if(referenceModel)projectRailSeparation(b,nx,nz,PHYSICS.mass);
+  return referenceModel?-approachSpeed:-normalSpeed;
 }
 
 export function pocketSupportClearance(x,z){

@@ -1,8 +1,8 @@
-# FRAME v0.68 — projet complet
+# FRAME v0.69 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.68 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.69 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -330,3 +330,18 @@ Dans le laboratoire, l’exercice « Diagnostic · bande rasante » permet un ti
 reproductible. Le volet « Vitesse et effet avant / après bande » affiche les
 valeurs simulées au premier choc de la blanche. La comparaison américaine
 et les limites des sources sont détaillées dans `docs/COMPARAISON_PHYSIQUE_v0.68.md`.
+
+## Version 0.69 — modèle de référence pool et sélection des modèles
+
+Le modèle par défaut `reference-v069` reprend la base empirique américaine de
+v0.17, la contrainte de non-pénétration de v0.68 et une résolution plus précise
+de la fin du glissement. Les coefficients de matériau ne sont pas retouchés.
+Les modèles précédents restent disponibles pour comparer.
+
+Le score pool du laboratoire utilise une vitesse incidente définie au contact
+et le premier roulement réel en sortie. Les repères snooker et l’ordre de
+grandeur indicatif d’Alciatore restent distincts. Les anciens scores sont
+archivés avec leur ancien protocole dans le rapport de sélection.
+
+Reproduire l’étude : `node scripts/study-pool-models.js`.
+Voir `docs/SELECTION_MODELE_POOL_v0.69.md` et les résultats JSON associés.

@@ -1,6 +1,6 @@
-import {ShotReplay} from './shot-replay.js?v=0.68';
+import {ShotReplay} from './shot-replay.js?v=0.69';
 import {railCutaway} from './rail-visibility.js?v=0.66';
-import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.68';
+import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
@@ -10,15 +10,15 @@ import {createFirstPersonView,resetFirstPersonAim,adjustFirstPersonHeight,freeze
 import * as THREE from './vendor/three.module.js';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
-  simulatePhysics} from './physics.js?v=0.68';
+  simulatePhysics} from './physics.js?v=0.69';
 import {getLabScenario, ShotTelemetry} from './lab.js?v=0.68';
 import {powerToCueSpeed} from './power.js';
 import {HEAD_STRING_X, clampBreakPosition, canPlaceBreakCue,
-  clampFreePosition, canPlaceFreeCue} from './placement.js?v=0.68';
+  clampFreePosition, canPlaceFreeCue} from './placement.js?v=0.69';
 import {newEightBallMatch,adjudicateEightBall,resolveEightBallDecision,
   eightBallVictoryPresentation,groupOf} from './eight-ball-rules.js';
-import {predictTrajectory} from './trajectory.js?v=0.68';
-import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.68';
+import {predictTrajectory} from './trajectory.js?v=0.69';
+import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.69';
 import {panCameraTarget,zoomCamera} from './camera-controls.js';
 import {isFullscreenShortcut,toggleSceneFullscreen,IMMERSIVE_CLASS} from './fullscreen.js';
 import {pocketCollectorRadii,
@@ -1161,7 +1161,7 @@ function exportCalibrationCSV() {
   const url=URL.createObjectURL(new Blob([calibrationToCSV(calibrationResults,calibrationMeasurements)],
     {type:'text/csv;charset=utf-8'}));
   const link=document.createElement('a');
-  link.href=url;link.download=`frame-calibration-v021-${el.cushionModel.value}.csv`;
+  link.href=url;link.download=`frame-calibration-v069-${el.cushionModel.value}.csv`;
   document.body.append(link);link.click();link.remove();
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
@@ -1183,11 +1183,15 @@ function updateCalibrationStats() {
   const speedBenchmarks=published.filter(r=>r.family==='published-ball');
   const speedMAE=speedBenchmarks.reduce((s,r)=>s+Math.abs(r.simulated-r.published),0)/
     Math.max(1,speedBenchmarks.length);
+  const poolRows=published.filter(r=>r.family==='pool-rail-component'||
+    (r.family==='pool-rail'&&!r.id.startsWith('alciatore')));
+  const poolRMSE=Math.sqrt(poolRows.reduce((sum,r)=>sum+(r.simulated-r.published)**2,0)/Math.max(1,poolRows.length));
   el.calibrationStats.replaceChildren();
   for(const [label,value] of [['ESSAIS',`${calibrationResults.length}`],
     ['ÉCART MAX. AUX RÈGLES',calibrationValue(maxTheory,'°')],
     ['MESURES / REPÈRES PUBLIÉS',`${published.length}`],
-    ['ÉCART MOYEN · COLLISIONS',calibrationValue(speedMAE,'m/s')],
+    ['RMSE · RÉGRESSION POOL',`${poolRMSE.toFixed(4).replace('.',',')} pt`],
+    ['REPÈRE · COLLISIONS SNOOKER',calibrationValue(speedMAE,'m/s')],
     ['MESURES PERSONNELLES',`${count} / ${calibrationResults.length}`]]) {
     const span=document.createElement('span');
     span.textContent=`${label} · `;
@@ -2281,7 +2285,9 @@ function bindControls() {
         'Banc de calibration · contact 3D couplé v0.20.':
       el.cushionModel.value==='coupled-v021'?
         'Banc de calibration · ajustement 3D prudent v0.21.':
-        'Banc de calibration · contact corrigé v0.68.';
+      el.cushionModel.value==='coupled-v068'?
+        'Banc de calibration · contact corrigé v0.68.':
+        'Banc de calibration · référence pool v0.69.';
     updateVisuals();
   });
   el.audioToggle.addEventListener('click',()=>{soundEnabled=!soundEnabled;el.audioLabel.textContent=soundEnabled?'ON':'OFF';});
