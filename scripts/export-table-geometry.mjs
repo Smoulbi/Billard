@@ -41,7 +41,7 @@ vm.runInNewContext(code.slice(begin,end)+`
 {filename:'table-preview-source.js'});
 scene.updateMatrixWorld(true);
 
-const materials=new Map(Object.entries(context.materialReferences).map(([name,mat])=>[mat,name]));
+const materials=new Map(Object.entries(context.materialReferences).map(([name,mat])=>[mat.uuid,name]));
 const meshes=[];
 for(const node of scene.children){
   if(!(node instanceof THREE.Mesh))continue;
@@ -49,7 +49,7 @@ for(const node of scene.children){
   const geometry=node.geometry.clone();geometry.applyMatrix4(node.matrixWorld);
   const position=geometry.getAttribute('position');
   const indices=geometry.getIndex();
-  const materialName=materials.get(node.material)||'brand';
+  const materialName=materials.get(node.material.userData.tableSourceMaterial||node.material.uuid)||'brand';
   const triangles=[];
   if(indices){
     for(let j=0;j<indices.count;j+=3)

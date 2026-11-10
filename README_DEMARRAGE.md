@@ -1,8 +1,8 @@
-# FRAME v0.65 — projet complet
+# FRAME v0.66 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.65 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.66 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -296,3 +296,13 @@ avec des espaces entre voisines compris théoriquement entre 0 et 0,114 mm.
 Ces paramètres sont une convention de simulation, pas une distribution mesurée
 sur une table réelle. Aucun réglage supplémentaire. Un nouveau triangle reçoit
 de nouvelles imperfections ; annuler/rétablir restaure les positions exactes.
+
+## Version 0.66 — visibilité près des bandes
+
+En première personne, une découpe locale de la bande derrière la blanche
+libère la vue sur la bille et le procédé lorsque la blanche est à moins de
+12 cm d’une bande. Le tapis, les billes et la queue restent entiers.
+La caméra conserve sa position et ses réglages. Le rendu normal revient
+avec les autres vues et dès le début du recul automatique après le tir.
+La découpe reste au point de tir pendant le bref délai avant ce recul.
+Cette modification est uniquement visuelle ; les collisions restent identiques.

@@ -1,3 +1,4 @@
+import {railCutaway} from './rail-visibility.js?v=0.66';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.65';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
@@ -152,6 +153,7 @@ const brushedAluminium = new THREE.MeshStandardMaterial({color:0x9cabb1,
 const lowerRevealMaterial = new THREE.MeshStandardMaterial({color:0x0a1216,
   roughness:0.62,metalness:0.28});
 const netThread = new THREE.LineBasicMaterial({color:0x68767b,transparent:true,opacity:0.45});
+const railVisibilityPlanes=Array.from({length:5},()=>new THREE.Plane(new THREE.Vector3(0,1,0),1e6));
 const RAIL_TOP=0.063;
 const CAP_BOTTOM=0.024;
 const OUTER_RAIL=0.172;
@@ -503,6 +505,7 @@ function makeCornerLeg(x,z,sx,sz) {
 }
 
 function makeTable() {
+  const existingObjects=new Set(scene.children);
   // Regulation 100 × 50 inch playing surface, built as a modern nine-foot tournament table.
   const graphite=createGraphiteMaps();
   for(const material of [woodMaterial,railMaterial,apronMaterial]){
@@ -610,6 +613,26 @@ function makeTable() {
   // integrated into the six rubber volumes above, without any detached ends.
   for(const p of getPockets())addPocketBasket(p);
   addTableBrand();
+  // Clone table materials so the cue (which shares wood/metal materials) and
+  // the balls never inherit the cutaway. Keep plane counts stable to avoid
+  // shader recompilation each time the player changes camera or aim.
+  const cutawayMaterials=new Map();
+  scene.updateMatrixWorld(true);
+  for(const object of scene.children){
+    if(existingObjects.has(object))continue;
+    object.traverse(mesh=>{
+      if(!mesh.isMesh||new THREE.Box3().setFromObject(mesh).max.y<=.0015)return;
+      const clipped=material=>{
+        if(!cutawayMaterials.has(material)){
+          const copy=material.clone();copy.userData.tableSourceMaterial=material.uuid;
+          copy.clippingPlanes=railVisibilityPlanes;copy.clipIntersection=true;copy.clipShadows=true;
+          cutawayMaterials.set(material,copy);
+        }
+        return cutawayMaterials.get(material);
+      };
+      mesh.material=Array.isArray(mesh.material)?mesh.material.map(clipped):clipped(mesh.material);
+    });
+  }
 }
 
 function numberTexture(number) {
@@ -1567,6 +1590,7 @@ function animateShotCamera(now) {
   const move=shotCameraTransition;
   if(!move)return;
   const progress=shotCameraProgress(now-move.start,move.duration);
+  if(progress>0)updateRailVisibility();
   camera.position.lerpVectors(move.position,move.destination,progress);
   camera.quaternion.slerpQuaternions(move.rotation,move.orientation,progress);
   camera.fov=move.fov+(40-move.fov)*progress;
@@ -1579,14 +1603,28 @@ function animateShotCamera(now) {
   }
 }
 
+function updateRailVisibility(cue=null,direction=aim) {
+  const planes=cameraMode==='first-person'&&cue?railCutaway(cue,direction,{
+    length:LENGTH,width:WIDTH,setback:Number(el.firstPersonSetbackSlider.value)/100
+  }):null;
+  for(let i=0;i<railVisibilityPlanes.length;i++){
+    const p=planes?.[i];
+    railVisibilityPlanes[i].normal.set(p?.x??0,p?.y??1,p?.z??0);
+    railVisibilityPlanes[i].constant=p?.constant??1e6;
+  }
+}
+
 function updateCamera() {
   if(shotCameraTransition)return;
+  updateRailVisibility();
   el.firstPersonSettings.hidden=cameraMode!=='first-person'||!!fallbackCtx;
   const fov=cameraMode==='first-person'?Number(el.firstPersonFovSlider.value):40;
   if(camera.fov!==fov){camera.fov=fov;camera.updateProjectionMatrix();}
   if(cameraMode==='first-person') {
     const cue=balls.find(b=>b.num===0);
     if(!cue)return;
+    const origin=shotActive&&firstPerson.shot?firstPerson.shot:{cue,aim};
+    updateRailVisibility(origin.cue,origin.aim);
     const pose=currentFirstPersonPose(firstPerson,cue,aim,shotActive,{
       height:Number(el.firstPersonHeightSlider.value)/100,
       setback:Number(el.firstPersonSetbackSlider.value)/100
@@ -2395,6 +2433,7 @@ function init() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
     renderer.outputColorSpace=THREE.SRGBColorSpace;
     renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;
+    renderer.localClippingEnabled=true;
     renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
     scene=new THREE.Scene();scene.background=new THREE.Color('#0c1619');
     scene.fog=new THREE.Fog(0x0c1619,5.3,11);
