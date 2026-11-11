@@ -34,7 +34,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let cameraMode='perspective';
@@ -1097,6 +1097,7 @@ function startShotReplay() {
   el.controlModeTitle.textContent='REPLAY';el.controlModeHint.textContent='Lecture du dernier tir · Échap pour revenir au jeu.';
   el.sceneHint.textContent='REPLAY DU DERNIER TIR · ÉCHAP : REVENIR AU JEU';
   el.replayProgress.max=Math.max(.001,lastShotReplay.duration);
+  el.replayResume.textContent='PAUSE';
   el.replayDialog.showModal();el.stopReplayButton.focus();
   animateShotReplay(replayPlayback.start);
 }
@@ -1116,7 +1117,7 @@ function stopShotReplay() {
 
 function animateShotReplay(now) {
   const playback=replayPlayback;if(!playback)return;
-  const elapsed=Math.max(0,(now-playback.start)/1000),record=playback.record;
+  const elapsed=playback.pausedAt??Math.max(0,(now-playback.start)/1000),record=playback.record;
   const {before,after,alpha}=record.sample(elapsed);
   for(let i=0;i<playback.meshes.length;i++){
     const mesh=playback.meshes[i],a=before.states[i],b=after.states[i];
@@ -1127,7 +1128,7 @@ function animateShotReplay(now) {
   }
   el.replayProgress.value=Math.min(elapsed,record.duration);
   el.replayTime.textContent=`${Math.min(elapsed,record.duration).toFixed(1)} / ${record.duration.toFixed(1)} s`;
-  if(elapsed>=record.duration+.65)stopShotReplay();
+  if(elapsed>=record.duration){playback.pausedAt=record.duration;el.replayResume.textContent='LECTURE';}
 }
 
 function replayLastShot() {
@@ -1960,6 +1961,19 @@ function setSpin(x,y) {
 function bindControls() {
   el.shotReplayButton.addEventListener('click',startShotReplay);
   el.stopReplayButton.addEventListener('click',stopShotReplay);
+  el.replayProgress.addEventListener('input',()=>{
+    if(!replayPlayback)return;
+    replayPlayback.pausedAt=Number(el.replayProgress.value);
+    el.replayResume.textContent='LECTURE';animateShotReplay(performance.now());
+  });
+  el.replayResume.addEventListener('click',()=>{
+    if(!replayPlayback)return;
+    if(replayPlayback.pausedAt!=null){
+      const time=replayPlayback.pausedAt>=replayPlayback.record.duration?0:replayPlayback.pausedAt;
+      replayPlayback.start=performance.now()-time*1000;delete replayPlayback.pausedAt;
+      el.replayResume.textContent='PAUSE';
+    }else{replayPlayback.pausedAt=Math.min(replayPlayback.record.duration,(performance.now()-replayPlayback.start)/1000);el.replayResume.textContent='LECTURE';}
+  });
   el.replayDialog.addEventListener('cancel',e=>{e.preventDefault();stopShotReplay();});
   bindCalibration();
   el.trainingEditButton.addEventListener('click',()=>{

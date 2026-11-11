@@ -1,8 +1,8 @@
-# FRAME v0.69 — projet complet
+# FRAME v0.70 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.69 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.70 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -345,3 +345,10 @@ archivés avec leur ancien protocole dans le rapport de sélection.
 
 Reproduire l’étude : `node scripts/study-pool-models.js`.
 Voir `docs/SELECTION_MODELE_POOL_v0.69.md` et les résultats JSON associés.
+
+## Version 0.70 — curseur de replay
+
+Le curseur permet de parcourir le tir dans les deux sens. Le déplacement met
+la lecture en pause ; Lecture reprend au point choisi. À la fin, le replay
+reste ouvert pour permettre de revenir en arrière. Échap ou Revenir au jeu
+ferme la lecture sans modifier la partie.
