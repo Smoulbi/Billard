@@ -1,8 +1,8 @@
-# FRAME v0.70 — projet complet
+# FRAME v0.71 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.70 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.71 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -352,3 +352,17 @@ Le curseur permet de parcourir le tir dans les deux sens. Le déplacement met
 la lecture en pause ; Lecture reprend au point choisi. À la fin, le replay
 reste ouvert pour permettre de revenir en arrière. Échap ou Revenir au jeu
 ferme la lecture sans modifier la partie.
+
+
+## Version 0.71 — audit des bandes avec effet
+
+Un audit reproductible séparé examine 36 états incidents sur une bande droite,
+avec effet latéral, miroirs, rotation de la géométrie locale et contrôles de
+convergence. Il distingue la sortie immédiate du premier roulement vérifié.
+Le modèle actif `reference-v069`, ses coefficients et les visuels restent inchangés.
+
+Reproduire : `node scripts/audit-pool-spin.js`, puis `npm test`.
+Voir `docs/AUDIT_BANDES_EFFET_v0.71.md` et
+`docs/SOURCES_BANDES_EFFET_v0.71.md` pour le protocole, les résultats et les limites.
+Ces diagnostics numériques ne constituent pas une validation expérimentale
+des bandes de pool avec effet.
