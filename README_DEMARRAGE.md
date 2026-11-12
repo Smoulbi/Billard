@@ -1,8 +1,8 @@
-# FRAME v0.71 — projet complet
+# FRAME v0.72 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.71 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.72 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -366,3 +366,15 @@ Voir `docs/AUDIT_BANDES_EFFET_v0.71.md` et
 `docs/SOURCES_BANDES_EFFET_v0.71.md` pour le protocole, les résultats et les limites.
 Ces diagnostics numériques ne constituent pas une validation expérimentale
 des bandes de pool avec effet.
+
+## Version 0.72 — matériaux et éclairage
+
+La table conserve son style graphite avec un grain et un relief plus discrets.
+Le tapis reçoit une microtrame plus sobre ; les billes et leurs numéros partagent
+une finition éclairée cohérente. Un environnement de reflets est généré
+localement, avec lumière plus neutre et ombres filtrées plus douces.
+Aucun modèle externe ni installation supplémentaire n'est nécessaire.
+La physique, les collisions et les dimensions sont inchangées.
+
+Voir `docs/RENDU_3D_v0.72.md` pour les captures et la relecture croisée par les
+deux agents.

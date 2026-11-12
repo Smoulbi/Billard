@@ -8,6 +8,7 @@ import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-
 import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js?v=0.65';
 import {createFirstPersonView,resetFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js?v=0.61';
 import * as THREE from './vendor/three.module.js';
+import {configureSceneLighting} from './scene-lighting.js?v=0.72';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
   simulatePhysics} from './physics.js?v=0.69';
@@ -125,11 +126,11 @@ const ballRotationQuaternion = new THREE.Quaternion();
 // Visual-only materials. None of these affect collision surfaces or damping.
 const feltMaterial = new THREE.MeshStandardMaterial({color:0xffffff,roughness:0.98,
   metalness:0,side:THREE.DoubleSide});
-const woodMaterial = new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.64,
-  metalness:0.015,clearcoat:0.09,clearcoatRoughness:0.62});
-const railMaterial = new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.45,
-  metalness:0.015,clearcoat:0.24,clearcoatRoughness:0.48});
-const innerRailMaterial = new THREE.MeshStandardMaterial({color:0x08739e,
+const woodMaterial = new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.48,
+  metalness:0,clearcoat:0.22,clearcoatRoughness:0.36,envMapIntensity:0.65});
+const railMaterial = new THREE.MeshPhysicalMaterial({color:0xffffff,roughness:0.38,
+  metalness:0,clearcoat:0.22,clearcoatRoughness:0.40,envMapIntensity:0.65});
+const innerRailMaterial = new THREE.MeshStandardMaterial({color:0x086d90,
   roughness:0.96,metalness:0,side:THREE.DoubleSide});
 const cushionSeam = new THREE.MeshStandardMaterial({color:0x075375,roughness:0.98});
 const leather = new THREE.MeshStandardMaterial({color:0x101719,roughness:0.90,
@@ -149,7 +150,7 @@ const sightInsetMaterial = new THREE.MeshStandardMaterial({color:0x0c1317,roughn
 const pearlMaterial = new THREE.MeshPhysicalMaterial({color:0xe6e9e5,roughness:0.2,
   metalness:0.08,clearcoat:0.75,clearcoatRoughness:0.2});
 const apronMaterial = new THREE.MeshPhysicalMaterial({color:0xffffff,
-  roughness:0.60,metalness:0.012,clearcoat:0.10,clearcoatRoughness:0.58});
+  roughness:0.48,metalness:0,clearcoat:0.22,clearcoatRoughness:0.36,envMapIntensity:0.65});
 const brushedAluminium = new THREE.MeshStandardMaterial({color:0x9cabb1,
   roughness:0.38,metalness:0.78,side:THREE.DoubleSide});
 const lowerRevealMaterial = new THREE.MeshStandardMaterial({color:0x0a1216,
@@ -188,18 +189,17 @@ function canvasMap(canvas,repeatX=1,repeatY=1,colour=true){
 
 function createGraphiteMaps(){
   const colour=seededTextureCanvas(1024,512,(x,y,noise)=>{
-    // Dark stained ash: long natural fibres, broad waves and occasional
-    // irregular dark pores. The photo shows discernible graphite wood grain.
-    const warp=20*Math.sin(x*.012)+7*Math.sin(x*.046)+
-      12*Math.sin(x*.004+y*.009);
-    const fibre=y+warp+3*Math.sin(x*.19+y*.004);
-    const broad=7*Math.sin(fibre*.044)+4*Math.sin(fibre*.108);
-    const latewood=-11*Math.pow(Math.max(0,Math.sin(fibre*.21)),12);
-    const variation=broad+latewood+noise*5.4;
-    return [38+variation*.89,42+variation*.93,47+variation];
+    // Stained, sealed timber: narrow low-contrast fibres rather than broad
+    // stone-like bands. Surface relief is independent of the varnish sheen.
+    const fibre=y+2.4*Math.sin(x*.009)+.7*Math.sin(x*.037);
+    const grain=1.7*Math.sin(fibre*.36)+.65*Math.sin(fibre*1.1);
+    const pores=-1.4*Math.pow(Math.max(0,Math.sin(fibre*.73)),10);
+    const variation=grain+pores+noise*2.2;
+    return [35+variation*.86,39+variation*.92,43+variation];
   });
   const relief=seededTextureCanvas(1024,512,(x,y,noise)=>{
-    const grain=126+16*Math.sin((y+19*Math.sin(x*.013))*.11)+noise*16;
+    const fibre=y+2.4*Math.sin(x*.009)+.7*Math.sin(x*.037);
+    const grain=127+2.2*Math.sin(fibre*.36)+noise*4;
     return [grain,grain,grain];
   });
   return {map:canvasMap(colour,1.4,1),bump:canvasMap(relief,1.4,1,false)};
@@ -207,14 +207,14 @@ function createGraphiteMaps(){
 
 function createClothMaps(){
   const colour=seededTextureCanvas(1024,512,(x,y,noise)=>{
-    const nap=2.3*Math.sin(x*.7+y*.18)+1.2*Math.cos(y*.96);
-    const weave=1.4*((x&1)?1:-1)+1.1*((y&1)?1:-1);
-    const n=nap+weave+noise*8;
-    return [11+n*.57,119+n*.85,165+n];
+    const nap=.6*Math.sin(x*.28+y*.11)+.4*Math.cos(y*.53);
+    const weave=.7*((x&1)?1:-1)+.55*((y&1)?1:-1);
+    const n=nap+weave+noise*3.4;
+    return [10+n*.42,109+n*.75,147+n];
   });
   const relief=seededTextureCanvas(1024,512,(x,y,noise)=>{
-    const weave=7*((x&1)?1:-1)+5*((y&1)?1:-1);
-    const grey=127+weave+noise*11;
+    const weave=4*((x&1)?1:-1)+3*((y&1)?1:-1);
+    const grey=127+weave+noise*5;
     return [grey,grey,grey];
   });
   return {map:canvasMap(colour,2.4,1.2),bump:canvasMap(relief,2.4,1.2,false)};
@@ -512,11 +512,11 @@ function makeTable() {
   const graphite=createGraphiteMaps();
   for(const material of [woodMaterial,railMaterial,apronMaterial]){
     material.map=graphite.map;material.bumpMap=graphite.bump;
-    material.bumpScale=0.00045;material.needsUpdate=true;
+    material.bumpScale=0.00010;material.needsUpdate=true;
   }
   const felt=createClothMaps();
   feltMaterial.map=felt.map;feltMaterial.bumpMap=felt.bump;
-  feltMaterial.bumpScale=0.00019;feltMaterial.needsUpdate=true;
+  feltMaterial.bumpScale=0.00010;feltMaterial.needsUpdate=true;
 
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(200,200),
     new THREE.MeshStandardMaterial({color:0x101719,roughness:0.97}));
@@ -651,26 +651,28 @@ function numberTexture(number) {
 function ballMesh(number) {
   const group=new THREE.Group();
   const color=BALL_COLORS[number];
+  // Pigment and number printing sit under the same polished resin finish.
+  // Keep the patches lit like the sphere rather than glowing independently.
+  const resin={roughness:0.18,metalness:0,clearcoat:1,clearcoatRoughness:0.085};
   let body;
   if(number>=9) {
     body = new THREE.Mesh(sharedSphere,new THREE.MeshPhysicalMaterial({color:0xf5f4e9,
-      roughness:0.18,metalness:0,clearcoat:1,clearcoatRoughness:0.085}));
+      ...resin}));
     const band=new THREE.Mesh(new THREE.SphereGeometry(RADIUS*1.001,56,24,
       0,Math.PI*2,Math.PI*0.35,Math.PI*0.30),
-    new THREE.MeshPhysicalMaterial({color:new THREE.Color(color),roughness:0.18,
-      clearcoat:1,clearcoatRoughness:0.085}));
+    new THREE.MeshPhysicalMaterial({color:new THREE.Color(color),...resin}));
     band.castShadow=true;group.add(band);
   } else {
     body=new THREE.Mesh(sharedSphere,new THREE.MeshPhysicalMaterial({color:new THREE.Color(color),
-      roughness:0.18,metalness:0,clearcoat:1,clearcoatRoughness:0.085}));
+      ...resin}));
   }
   body.castShadow=true;body.receiveShadow=true;group.add(body);
   if(number!==0) {
-    const decal=new THREE.MeshBasicMaterial({map:numberTexture(number),transparent:true,
-      depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,side:THREE.DoubleSide});
+    const decal=new THREE.MeshPhysicalMaterial({map:numberTexture(number),...resin,
+      alphaTest:0.5,polygonOffset:true,polygonOffsetFactor:-1,side:THREE.DoubleSide});
     for(const turn of [0,Math.PI]){
       const patch=new THREE.Mesh(sharedNumberPatch,decal);
-      patch.rotation.x=turn;group.add(patch);
+      patch.rotation.x=turn;patch.receiveShadow=true;group.add(patch);
     }
   }
   scene.add(group);return group;
@@ -2528,26 +2530,11 @@ function init() {
     renderer=new THREE.WebGLRenderer({canvas:el.gameCanvas,antialias:true,alpha:false,powerPreference:'high-performance'});
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
     renderer.outputColorSpace=THREE.SRGBColorSpace;
-    renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;
     renderer.localClippingEnabled=true;
-    renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
     scene=new THREE.Scene();scene.background=new THREE.Color('#0c1619');
     scene.fog=new THREE.Fog(0x0c1619,5.3,11);
     camera=new THREE.PerspectiveCamera(40,1,0.01,100);updateCamera();
-    // The original cool tournament-room palette with physically continuous
-    // rail-to-apron shadows instead of a floating top plate.
-    scene.add(new THREE.HemisphereLight(0xc8e3dd,0x26332c,1.75));
-    const mainLight=new THREE.DirectionalLight(0xf7fff4,3.0);
-    mainLight.position.set(-1.8,4.6,2.2);mainLight.castShadow=true;
-    mainLight.shadow.mapSize.set(2048,2048);
-    mainLight.shadow.camera.left=-3;mainLight.shadow.camera.right=3;
-    mainLight.shadow.camera.top=3;mainLight.shadow.camera.bottom=-3;
-    mainLight.shadow.normalBias=0.004;mainLight.shadow.bias=-0.00009;
-    scene.add(mainLight);
-    const fill=new THREE.DirectionalLight(0x84c6b5,0.82);
-    fill.position.set(3,2,-3);scene.add(fill);
-    const edge=new THREE.DirectionalLight(0x9bb7c0,0.32);
-    edge.position.set(0.7,1.8,-2.8);scene.add(edge);
+    configureSceneLighting(renderer,scene);
     makeTable();makeCueAndGuides();newGame();setPower(el.powerSlider.value);bindControls();resize();
     new ResizeObserver(resize).observe(el.gameCanvas);
     renderer.setAnimationLoop(animate);
