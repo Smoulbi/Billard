@@ -125,9 +125,9 @@ test('v0.54 has a single graphite insert per corner and no detached rubber patch
     assert.ok(mesh.vertices.every(v=>v[1]>=-.760001));
   const largeLegs=group('woodMaterial').filter(mesh=>{
     const ys=mesh.vertices.map(v=>v[1]);
-    return Math.min(...ys)<-.74&&Math.max(...ys)>-.34;
+    return Math.min(...ys)<-.65&&Math.max(...ys)>-.34;
   });
-  assert.equal(largeLegs.length,4,'four massive corner legs replace the trestles');
+  assert.equal(largeLegs.length,4,'four structural corner legs support the cabinet');
 });
 
 test('facing joins have no vertical fin above the nose and taper toward the pocket',()=>{
@@ -242,29 +242,129 @@ test('v0.49 construction stays bilaterally symmetric',()=>{
   }
 });
 
-test('v0.49 slate, sills, cabinet and foot supports form a connected vertical stack',()=>{
+test('the cabinet and levellers connect all four ground supports to the slate',()=>{
   const meshes=productionMeshes();
   const byMaterial=name=>meshes.filter(mesh=>mesh.material===name).map(bounds);
   const base=byMaterial('baseMaterial');
-  assert.equal(base.length,8,'one bed, one central beam, six interrupted rail sills');
   const slate=byMaterial('slateMaterial')[0];
   const underbed=base.find(b=>b.size[0]>2.5&&b.size[1]<.09);
   const center=base.find(b=>b.size[0]>2.2&&b.size[0]<2.4);
   const sills=base.filter(b=>b.size[1]>.21&&b.size[1]<.22);
-  const cabinet=byMaterial('woodMaterial').find(b=>b.size[0]>2.65&&b.size[0]<2.7);
-  const reveal=byMaterial('lowerRevealMaterial').find(b=>b.size[0]>2.5);
-  assert.ok(slate&&underbed&&center&&cabinet&&reveal);
-  assert.equal(sills.length,6);
+  const cabinet=byMaterial('apronMaterial').find(b=>b.size[0]>2.5&&b.min[1]<-.30&&b.max[1]<-.10);
+  assert.ok(slate&&underbed&&center&&cabinet&&sills.length);
 
   const touches=(upper,lower,tolerance=.011)=>
     upper.min[1]<=lower.max[1]+tolerance&&
     upper.min[1]>=lower.max[1]-tolerance;
   assert.ok(touches(slate,underbed,.0001),'slate rests on the under-bed');
   assert.ok(touches(underbed,center,.003),'under-bed rests on central beam');
-  assert.ok(touches(center,cabinet,.004),'central beam transfers load to cabinet');
-  assert.ok(touches(cabinet,reveal,.004),'cabinet joins its lower finishing reveal');
   for(const sill of sills){
     assert.ok(sill.max[1]>underbed.min[1]);
-    assert.ok(sill.min[1]<cabinet.max[1]);
+    assert.ok(sill.min[1]<cabinet.max[1]&&sill.max[1]>cabinet.min[1],
+      'the sill intersects the cabinet vertically');
+  }
+
+  // AABB adjacency detects disconnected furniture components. It is a visual
+  // assembly check, not a claim about the load-bearing strength of the table.
+  const materials=new Set(['slateMaterial','baseMaterial','woodMaterial',
+    'apronMaterial','lowerRevealMaterial','darkMetal']);
+  const components=meshes.filter(m=>materials.has(m.material)).map(m=>({mesh:m,...bounds(m)}));
+  const touches3d=(a,b)=>a.min.every((v,k)=>v<=b.max[k]+1e-4&&a.max[k]>=b.min[k]-1e-4);
+  const pads=components.filter(c=>Math.abs(c.min[1]+.760)<1e-6&&c.max[1]<-.70);
+  assert.equal(pads.length,4,'each corner has its own leveller on the ground');
+  for(const pad of pads){
+    const seen=new Set([pad]),queue=[pad];
+    for(let i=0;i<queue.length;i++)for(const other of components)
+      if(!seen.has(other)&&touches3d(queue[i],other)){seen.add(other);queue.push(other);}
+    assert.ok([...seen].some(c=>c.mesh.material==='slateMaterial'),
+      'every leveller has an uninterrupted assembly path up to the slate');
+  }
+});
+
+test('leveller pads sit below tapered posts and support the four cabinet corners',()=>{
+  const meshes=productionMeshes();
+  const pads=meshes.filter(m=>m.material==='lowerRevealMaterial'&&
+    Math.abs(bounds(m).min[1]+.760)<1e-6);
+  const legs=meshes.filter(m=>m.material==='woodMaterial'&&bounds(m).min[1]<-.65);
+  const quadrants=new Set();
+  for(const pad of pads){
+    const p=bounds(pad),x=(p.min[0]+p.max[0])/2,z=(p.min[2]+p.max[2])/2;
+    quadrants.add(`${Math.sign(x)}:${Math.sign(z)}`);
+    const leg=legs.find(m=>{const b=bounds(m);return x>b.min[0]&&x<b.max[0]&&z>b.min[2]&&z<b.max[2];});
+    assert.ok(leg,'each ground pad is directly under a post');
+    const l=bounds(leg),bottom=leg.vertices.filter(v=>Math.abs(v[1]-l.min[1])<1e-6);
+    for(const axis of [0,2]){
+      assert.ok(p.min[axis]>=Math.min(...bottom.map(v=>v[axis]))-1e-6);
+      assert.ok(p.max[axis]<=Math.max(...bottom.map(v=>v[axis]))+1e-6,
+        'the pad stays within the bottom footprint of its post');
+    }
+    assert.ok(p.max[1]<l.min[1],'a visible spindle separates pad and post');
+    assert.ok(meshes.some(m=>m.material==='darkMetal'&&(()=>{
+      const b=bounds(m);return x>b.min[0]&&x<b.max[0]&&z>b.min[2]&&z<b.max[2]&&
+        b.min[1]<=p.max[1]+1e-6&&b.max[1]>=l.min[1]-1e-6;
+    })()),'a spindle bridges the space without a floating gap');
+  }
+  assert.equal(quadrants.size,4,'the supports surround the centre in all four quadrants');
+});
+
+test('rounded cabinet and posts remain closed finite furniture volumes',()=>{
+  const furniture=productionMeshes().filter(m=>
+    (m.material==='apronMaterial'||m.material==='woodMaterial')&&
+    bounds(m).min[1]<-.30&&bounds(m).max[1]<-.10);
+  assert.ok(furniture.length>0);
+  for(const mesh of furniture){
+    const edges=new Map();let volume=0;
+    for(const t of mesh.triangles){
+      const [a,b,c]=t.map(i=>mesh.vertices[i]);
+      assert.ok([...a,...b,...c].every(Number.isFinite));
+      const u=b.map((v,k)=>v-a[k]),v=c.map((n,k)=>n-a[k]);
+      assert.ok(Math.hypot(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0])>1e-12);
+      volume+=(a[0]*(b[1]*c[2]-b[2]*c[1])+a[1]*(b[2]*c[0]-b[0]*c[2])+a[2]*(b[0]*c[1]-b[1]*c[0]))/6;
+      for(const [i,j] of [[t[0],t[1]],[t[1],t[2]],[t[2],t[0]]]){
+        const key=[i,j].sort((a,b)=>a-b).join(':');edges.set(key,(edges.get(key)||0)+1);
+      }
+    }
+    assert.ok([...edges.values()].every(n=>n===2),'no open seam in a post or cabinet shell');
+    assert.ok(volume>0,'the visible faces have outward winding');
+  }
+});
+
+test('post tops stay within the actual rounded cabinet silhouette through their overlap',()=>{
+  const meshes=productionMeshes();
+  const cabinet=meshes.find(m=>m.material==='apronMaterial'&&
+    bounds(m).min[1]<-.30&&bounds(m).max[1]<-.10&&bounds(m).size[0]>2.5);
+  const legs=meshes.filter(m=>m.material==='woodMaterial'&&bounds(m).min[1]<-.65);
+  assert.ok(cabinet&&legs.length);
+  const section=(mesh,y)=>{
+    const points=[];
+    for(const t of mesh.triangles)for(let i=0;i<3;i++){
+      const a=mesh.vertices[t[i]],b=mesh.vertices[t[(i+1)%3]];
+      if((a[1]-y)*(b[1]-y)>=0)continue;
+      const f=(y-a[1])/(b[1]-a[1]);
+      points.push([a[0]+f*(b[0]-a[0]),a[2]+f*(b[2]-a[2])]);
+    }
+    return points;
+  };
+  const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
+  const hull=points=>{
+    const sorted=[...new Map(points.map(p=>[p.join(':'),p])).values()]
+      .sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
+    const half=list=>{const out=[];for(const p of list){
+      while(out.length>1&&cross(out.at(-2),out.at(-1),p)<=1e-12)out.pop();out.push(p);
+    }return out;};
+    return half(sorted).slice(0,-1).concat(half(sorted.toReversed()).slice(0,-1));
+  };
+  const c=bounds(cabinet);
+  for(const leg of legs){
+    const l=bounds(leg),bottom=Math.max(c.min[1],l.min[1])+1e-5,
+      top=Math.min(c.max[1],l.max[1])-1e-5;
+    assert.ok(top>bottom,'the post really enters the cabinet');
+    for(let i=0;i<=12;i++){
+      const y=bottom+(top-bottom)*i/12,outline=hull(section(cabinet,y));
+      assert.ok(outline.length>=3);
+      for(const point of section(leg,y))for(let j=0;j<outline.length;j++)
+        assert.ok(cross(outline[j],outline[(j+1)%outline.length],point)>=-1e-7,
+          'a post must not protrude through the rounded cabinet corner');
+    }
   }
 });

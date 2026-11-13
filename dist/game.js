@@ -518,42 +518,116 @@ function addSightInlay(x,z,rotated=false){
 }
 
 function addTableBrand() {
+  // A thin rounded maker's plate is seated on the real short-end fascia.
+  // Lettering and the four discreet screw-head marks share one local texture.
   const canvas=document.createElement('canvas');canvas.width=768;canvas.height=150;
   const ctx=canvas.getContext('2d');ctx.clearRect(0,0,768,150);
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillStyle='#edf1f2';ctx.font='italic 800 79px Georgia';ctx.letterSpacing='2px';ctx.fillText('FRAME',384,73);
-  ctx.fillStyle='#b7c5c7';ctx.font='600 17px Arial';ctx.letterSpacing='7px';ctx.fillText('TOURNAMENT',384,122);
-  const t=new THREE.CanvasTexture(canvas);t.colorSpace=THREE.SRGBColorSpace;
-  const mat=new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false,side:THREE.DoubleSide});
-  // Like the supplied photo, the wordmark belongs to the short end fascia.
-  const front=new THREE.Mesh(new THREE.PlaneGeometry(0.86,0.167),mat);
-  front.rotation.y=Math.PI/2;
-  front.position.set(LENGTH+OUTER_RAIL+.003, -.226,0);scene.add(front);
-  const back=new THREE.Mesh(new THREE.PlaneGeometry(0.86,0.167),mat);
-  back.rotation.y=-Math.PI/2;
-  back.position.set(-LENGTH-OUTER_RAIL-.003,-.226,0);scene.add(back);
+  ctx.fillStyle='#e0e5e5';ctx.font='italic 800 104px Georgia';ctx.letterSpacing='2px';ctx.fillText('FRAME',384,57);
+  ctx.fillStyle='#a6b4b8';ctx.font='600 24px Arial';ctx.letterSpacing='4px';ctx.fillText('TOURNAMENT',384,119);
+  ctx.fillStyle='#8d999d';ctx.font='20px Arial';ctx.letterSpacing='0px';
+  for(const x of [30,738])for(const y of [27,123])ctx.fillText('⊖',x,y);
+  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+  const finish={roughness:.48,clearcoat:.16,clearcoatRoughness:.40};
+  const plateMaterial=new THREE.MeshPhysicalMaterial({color:0x263137,metalness:.30,...finish});
+  const printMaterial=new THREE.MeshPhysicalMaterial({map:texture,metalness:0,
+    ...finish,alphaTest:.5,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-2});
+  const width=.42,height=.082,r=.006;
+  const outline=new THREE.Shape();
+  outline.moveTo(-width/2+r,-height/2);outline.lineTo(width/2-r,-height/2);
+  outline.quadraticCurveTo(width/2,-height/2,width/2,-height/2+r);
+  outline.lineTo(width/2,height/2-r);outline.quadraticCurveTo(width/2,height/2,width/2-r,height/2);
+  outline.lineTo(-width/2+r,height/2);outline.quadraticCurveTo(-width/2,height/2,-width/2,height/2-r);
+  outline.lineTo(-width/2,-height/2+r);outline.quadraticCurveTo(-width/2,-height/2,-width/2+r,-height/2);
+  const geometry=new THREE.ExtrudeGeometry(outline,{depth:.0024,
+    bevelEnabled:true,bevelThickness:.0003,bevelSize:.0003,bevelSegments:2,steps:1,curveSegments:5});
+  for(const sign of [-1,1]){
+    const plate=new THREE.Mesh(geometry,plateMaterial);
+    plate.rotation.y=sign*Math.PI/2;
+    // Back of the bevel touches the facade; the front finishes 3 mm out.
+    plate.position.set(sign*(FURNITURE_FACE_X+.0003),FURNITURE_BRAND_Y,0);
+    plate.castShadow=true;plate.receiveShadow=true;scene.add(plate);
+    const lettering=new THREE.Mesh(new THREE.PlaneGeometry(width-.001,height-.001),printMaterial);
+    lettering.rotation.y=sign*Math.PI/2;
+    lettering.position.set(sign*(FURNITURE_FACE_X+.0033),FURNITURE_BRAND_Y,0);
+    lettering.receiveShadow=true;scene.add(lettering);
+  }
+}
+
+const FURNITURE_FACE_X=1.425;
+const FURNITURE_BRAND_Y=-.225;
+
+function furnitureContour({w,d,r,x=0,z=0}){
+  const points=[];
+  for(let corner=0;corner<4;corner++){
+    const cx=x+(corner===0||corner===3?1:-1)*(w/2-r);
+    const cz=z+(corner<2?1:-1)*(d/2-r);
+    for(let step=0;step<=6;step++){
+      const angle=(corner+step/6)*Math.PI/2;
+      points.push([cx+r*Math.cos(angle),cz+r*Math.sin(angle)]);
+    }
+  }
+  return points;
+}
+
+function addFurnitureShell(layers,material,wall=0){
+  const vertices=[],uvs=[],indices=[],count=furnitureContour(layers[0]).length;
+  const addRings=inner=>{
+    for(const layer of layers){
+      const shape=inner?{...layer,w:layer.w-2*wall,d:layer.d-2*wall,r:Math.max(.012,layer.r-wall)}:layer;
+      for(const [i,[x,z]] of furnitureContour(shape).entries()){
+        vertices.push(x,layer.y,z);uvs.push(i/count*4,(layer.y+.76)*3);
+      }
+    }
+  };
+  addRings(false);if(wall)addRings(true);
+  const quad=(a,b,c,d,reverse=false)=>{
+    if(reverse)indices.push(a,c,b,a,d,c);else indices.push(a,b,c,a,c,d);
+  };
+  for(let inner=0;inner<(wall?2:1);inner++){
+    const offset=inner*layers.length*count;
+    for(let row=0;row<layers.length-1;row++)for(let i=0;i<count;i++){
+      const j=(i+1)%count,a=offset+row*count+i,b=offset+row*count+j;
+      quad(a,b,b+count,a+count,inner===1);
+    }
+  }
+  const last=(layers.length-1)*count;
+  if(wall){
+    const inside=layers.length*count;
+    for(let i=0;i<count;i++){
+      const j=(i+1)%count;
+      quad(i,inside+i,inside+j,j);
+      quad(last+i,last+j,inside+last+j,inside+last+i);
+    }
+  }else for(let i=1;i<count-1;i++){
+    indices.push(0,i+1,i,last,last+i,last+i+1);
+  }
+  const geometry=new THREE.BufferGeometry();
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));
+  geometry.setIndex(indices);geometry.computeVertexNormals();
+  const mesh=new THREE.Mesh(geometry,material);
+  mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);return mesh;
 }
 
 function makeCornerLeg(x,z,sx,sz) {
-  // Massive four-post Diamond-style construction from the reference photo:
-  // each tapered square leg is directly beneath a cabinet corner, with its
-  // top concealed inside the apron and its foot seated on the ground.
-  const height=.411,topY=-.331,bottomY=topY-height;
-  const geometry=new THREE.BoxGeometry(1,height,1,1,4,1);
-  const positions=geometry.getAttribute('position');
-  for(let i=0;i<positions.count;i++){
-    const t=(height/2-positions.getY(i))/height;
-    const w=.254-.052*t,d=.212-.023*t;
-    const cx=x-sx*.012*t,cz=z-sz*.012*t;
-    positions.setXYZ(i,cx+positions.getX(i)*w,positions.getY(i),
-      cz+positions.getZ(i)*d);
-  }
-  geometry.computeVertexNormals();
-  const leg=new THREE.Mesh(geometry,woodMaterial);
-  leg.position.y=(topY+bottomY)/2;
-  leg.castShadow=true;leg.receiveShadow=true;scene.add(leg);
-  const fx=x-sx*.012,fz=z-sz*.012;
-  box(.204,.018,.191,fx,-.751,fz,lowerRevealMaterial);
+  // A rounded, tapered post enters the cabinet wall at its top. The bottom
+  // leaves room for a visible adjustment spindle and a rubber-soled leveller.
+  const top=-.31,bottom=-.708;
+  const layers=[[-.31,.220,.200,.028],[-.335,.220,.200,.028],
+    [-.678,.156,.146,.017],[-.708,.150,.140,.016]].map(([y,w,d,r])=>{
+    const rake=.024*(top-y)/(top-bottom);
+    return {y,w,d,r,x:x-sx*rake,z:z-sz*rake};
+  });
+  addFurnitureShell(layers,woodMaterial);
+  const fx=x-sx*.024,fz=z-sz*.024;
+  const spindle=new THREE.Mesh(new THREE.CylinderGeometry(.019,.019,.032,20),darkMetal);
+  spindle.position.set(fx,-.724,fz);spindle.castShadow=true;spindle.receiveShadow=true;scene.add(spindle);
+  const foot=new THREE.Mesh(new THREE.LatheGeometry([
+    new THREE.Vector2(0,-.760),new THREE.Vector2(.056,-.760),
+    new THREE.Vector2(.062,-.757),new THREE.Vector2(.062,-.742),
+    new THREE.Vector2(.050,-.736),new THREE.Vector2(0,-.736)],24),lowerRevealMaterial);
+  foot.position.set(fx,0,fz);foot.castShadow=true;foot.receiveShadow=true;scene.add(foot);
 }
 
 function makeTable() {
@@ -586,26 +660,19 @@ function makeTable() {
   for(const sx of [-1,1])
     box(.110,.215,2*(WIDTH-.080),sx*(LENGTH+.050),-.205,0,baseMaterial);
   box(2.30,.193,1.12,0,-.209,0,baseMaterial);
-  box(2.68,.105,1.40,0,-.355,0,woodMaterial);
-  box(2.60,.019,1.32,0,-.414,0,lowerRevealMaterial);
+  // One hollow cabinet wraps the hidden structure. Rounded corners and a
+  // sloping lower edge replace stacked slabs; the pocket liners stay clear.
+  addFurnitureShell([
+    {y:-.115,w:2.80,d:1.53,r:.070},
+    {y:-.132,w:2.85,d:1.58,r:.080},
+    {y:-.153,w:2.85,d:1.58,r:.080},
+    {y:-.305,w:2.85,d:1.58,r:.080},
+    {y:-.350,w:2.77,d:1.50,r:.070},
+    {y:-.360,w:2.77,d:1.50,r:.070}],apronMaterial,.060);
 
-  // Continuous furniture aprons: the upper ends overlap the rail skirts and
-  // the lower ends are fastened over the structural frame (no floating gaps).
-  for(const sign of [-1,1]){
-    const longZ=sign*(WIDTH+OUTER_RAIL-.027);
-    box(2.74,.213,.054,0,-.235,longZ,apronMaterial);
-    box(2.72,.010,.057,0,-.345,longZ,lowerRevealMaterial);
-    const shortX=sign*(LENGTH+OUTER_RAIL-.027);
-    box(.054,.213,1.48,shortX,-.235,0,apronMaterial);
-    box(.057,.010,1.46,shortX,-.345,0,lowerRevealMaterial);
-  }
-  // Four solid corner posts bridge both apron runs below the pocket castings.
+  // Each post overlaps a cabinet corner and terminates at its own leveller.
   for(const sx of [-1,1])for(const sz of [-1,1])
-    box(.103,.214,.113,sx*1.393,-.235,sz*.753,apronMaterial);
-
-  // No exposed trestle: four sturdy legs rise into the corner cabinet posts.
-  for(const sx of [-1,1])for(const sz of [-1,1])
-    makeCornerLeg(sx*1.315,sz*.695,sx,sz);
+    makeCornerLeg(sx*1.267,sz*.637,sx,sz);
 
   // The six holes are genuinely cut out of the cloth mesh.
   const cloth=new THREE.Mesh(new THREE.ShapeGeometry(clothCutoutShape(.0012),20),feltMaterial);

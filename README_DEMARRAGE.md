@@ -1,8 +1,8 @@
-# FRAME v0.73 — projet complet
+# FRAME v0.74 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.73 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.74 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -389,3 +389,15 @@ La physique et les ouvertures utilisées par les collisions restent inchangées.
 
 Voir `docs/JOINTURES_BANDES_v0.73.md` pour les gros plans avant/après et les
 vérifications effectuées par les deux agents.
+
+## Version 0.74 — meuble de la table
+
+La caisse devient un volume creux continu à coins arrondis, avec chants et
+partie basse profilés. Les quatre pieds effilés reçoivent des tiges et patins
+circulaires de mise à niveau. Une petite plaque de marque éclairée, fixée à la
+façade, remplace le grand marquage précédent.
+Les bandes et leurs raccords, le tapis, les poches et toute la physique restent
+inchangés.
+
+Voir `docs/MEUBLE_TABLE_v0.74.md` pour les captures avant/après et les contrôles
+croisés des deux agents.
