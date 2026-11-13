@@ -4,7 +4,7 @@ import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
-import {LENGTH,WIDTH,CORNER_CUT,SIDE_CUT,getPockets,getCushionSegments} from '../dist/physics.js';
+import {LENGTH,WIDTH,RADIUS,CORNER_CUT,SIDE_CUT,getPockets,getCushionSegments} from '../dist/physics.js';
 import {tableClothBoundary,pocketWellOutline} from '../dist/table-pocket-geometry.js';
 
 const cwd=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
@@ -86,8 +86,9 @@ test('v0.54 has a single graphite insert per corner and no detached rubber patch
       'both physics facing endpoints belong to precisely ONE continuous rail');
   }
   for(const mesh of mainRubber){
-    assert.equal(mesh.vertices.length,40,
-      'both 7-vertex jaw rings share their nose point, leaving 40 unique vertices');
+    const uniquePositions=new Set(mesh.vertices.map(v=>v.join(':')));
+    assert.equal(uniquePositions.size,mesh.vertices.length,
+      'adjacent rubber surfaces share welded vertices rather than duplicate seam positions');
     assert.ok(mesh.triangles.length>=48,
       'each integrated rail volume has closed sidewalls and endpoint caps');
     const edges=new Map();
@@ -127,6 +128,36 @@ test('v0.54 has a single graphite insert per corner and no detached rubber patch
     return Math.min(...ys)<-.74&&Math.max(...ys)>-.34;
   });
   assert.equal(largeLegs.length,4,'four massive corner legs replace the trestles');
+});
+
+test('facing joins have no vertical fin above the nose and taper toward the pocket',()=>{
+  const rubber=productionMeshes().filter(mesh=>mesh.material==='innerRailMaterial');
+  for(const face of getCushionSegments().filter(f=>f.kind==='facing')){
+    const mesh=rubber.find(m=>m.vertices.some(v=>
+      Math.hypot(v[0]-face.x0,v[2]-face.z0)<1e-6)&&m.vertices.some(v=>
+      Math.hypot(v[0]-face.x1,v[2]-face.z1)<1e-6));
+    assert.ok(mesh,'every facing remains connected to its original rail');
+    const dx=face.x1-face.x0,dz=face.z1-face.z0,length=Math.hypot(dx,dz);
+    const tx=dx/length,tz=dz/length;
+    // Cross-sections must be perpendicular to the actual visual jaw segment,
+    // not a copy of a collision response direction. Nose points stay fixed.
+    const section=(x,z)=>mesh.vertices.filter(v=>
+      Math.abs((v[0]-x)*tx+(v[2]-z)*tz)<1e-6);
+    const jawNose=mesh.vertices.filter(v=>
+      Math.hypot(v[0]-face.x0,v[2]-face.z0)<1e-6);
+    assert.equal(jawNose.length,1,
+      'one shared nose vertex replaces the incompatible zero-length profile strip');
+    assert.ok(jawNose.every(v=>v[1]<=2*RADIUS*.635+1e-6),
+      'no raised vertical fin may sit directly above the physical jaw nose');
+    const end=section(face.x1,face.z1);
+    assert.ok(Math.abs(Math.max(...end.map(v=>v[1]))-.054)<1e-6,
+      'the narrow facing still descends toward the pocket');
+    assert.ok(end.some(v=>Math.hypot(v[0]-face.x1,v[2]-face.z1)>.009&&v[1]>.04),
+      'the facing has a real shoulder normal to its segment, not a collapsed fin');
+    for(const [x,z] of [[face.x0,face.z0],[face.x1,face.z1]])
+      assert.ok(mesh.vertices.some(v=>Math.hypot(v[0]-x,v[2]-z)<1e-6&&
+        Math.abs(v[1]-2*RADIUS*.635)<1e-6),'the physical nose endpoints stay fixed');
+  }
 });
 
 test('v0.54 rail caps, complete graphite inserts and integrated rubber stay off playable felt',()=>{

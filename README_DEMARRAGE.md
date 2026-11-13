@@ -1,8 +1,8 @@
-# FRAME v0.72 — projet complet
+# FRAME v0.73 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.72 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.73 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -378,3 +378,14 @@ La physique, les collisions et les dimensions sont inchangées.
 
 Voir `docs/RENDU_3D_v0.72.md` pour les captures et la relecture croisée par les
 deux agents.
+
+## Version 0.73 — raccords des bandes
+
+Les raccords bleus aux mâchoires utilisent une section commune pour supprimer
+les pointes et les cassures de profil. Les capots graphite et les pièces de poche
+se rejoignent sans chevauchement des biseaux ni double face interne sur les
+jointures. Les arrondis extérieurs et les matériaux de la 0.72 sont conservés.
+La physique et les ouvertures utilisées par les collisions restent inchangées.
+
+Voir `docs/JOINTURES_BANDES_v0.73.md` pour les gros plans avant/après et les
+vérifications effectuées par les deux agents.

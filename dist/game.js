@@ -226,7 +226,37 @@ function box(w, h, d, x, y, z, material, cast = true) {
   scene.add(mesh); return mesh;
 }
 
-function prism(points, bottom, height, material, bevel=0, holes=[]) {
+function trimMatingBevel(geometry,bounds){
+  // ExtrudeGeometry expands every bevel beyond its outline. At a butt joint,
+  // trim only that expansion to the common plane; exposed edges stay rounded.
+  const source=geometry.getAttribute('position'),uv=geometry.getAttribute('uv');
+  const positions=[],texcoords=[];
+  const clamp=(n,min=-Infinity,max=Infinity)=>Math.max(min,Math.min(max,n));
+  for(let i=0;i<source.count;i+=3){
+    const points=[0,1,2].map(j=>[
+      clamp(source.getX(i+j),bounds.minX,bounds.maxX),
+      -clamp(-source.getY(i+j),bounds.minZ,bounds.maxZ),
+      source.getZ(i+j)]);
+    const [a,b,c]=points,u=b.map((v,k)=>v-a[k]),v=c.map((n,k)=>n-a[k]);
+    const area=Math.hypot(u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]);
+    if(area<1e-12)continue;
+    // The neighbouring cap closes this cross-section. Keeping two coincident
+    // internal walls would cast a dotted self-shadow along their flush top.
+    const internalWall=Object.entries(bounds).some(([key,value])=>{
+      const axis=key.endsWith('X')?0:1,plane=axis===0?value:-value;
+      return points.every(p=>Math.abs(p[axis]-plane)<1e-7);
+    });
+    if(internalWall)continue;
+    for(let j=0;j<3;j++){
+      positions.push(...points[j]);texcoords.push(uv.getX(i+j),uv.getY(i+j));
+    }
+  }
+  geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(texcoords,2));
+  geometry.deleteAttribute('normal');geometry.clearGroups();geometry.computeVertexNormals();
+}
+
+function prism(points, bottom, height, material, bevel=0, holes=[],joinBounds=null) {
   // A cap or cushion with mitred jaws, defined in the horizontal playing plane.
   const outline = new THREE.Shape();
   points.forEach(([x,z],i)=>i===0?outline.moveTo(x,-z):outline.lineTo(x,-z));
@@ -240,15 +270,17 @@ function prism(points, bottom, height, material, bevel=0, holes=[]) {
   // the visible rail/casting top remains exactly at RAIL_TOP and the inlaid
   // diamonds are flush, rather than unexpectedly recessed by the bevel.
   const bevelDepth=Math.min(bevel*.35,height*.15);
-  const mesh=new THREE.Mesh(new THREE.ExtrudeGeometry(outline,{depth:height-2*bevelDepth,
+  const geometry=new THREE.ExtrudeGeometry(outline,{depth:height-2*bevelDepth,
     bevelEnabled:bevel>0,bevelThickness:bevelDepth,bevelSize:bevel,
-    bevelSegments:bevel>0?4:0,steps:1,curveSegments:12}),material);
+    bevelSegments:bevel>0?4:0,steps:1,curveSegments:12});
+  if(joinBounds)trimMatingBevel(geometry,joinBounds);
+  const mesh=new THREE.Mesh(geometry,material);
   mesh.rotation.x=-Math.PI/2;
   mesh.position.y=bottom+bevelDepth;
   mesh.castShadow=true;mesh.receiveShadow=true;scene.add(mesh);return mesh;
 }
 
-// Six-sided, K55-like *visual* cross-section. The nose is placed on the exact
+// Seven-sided, K55-like *visual* cross-section. The nose is placed on the exact
 // unchanged physics rail line at the WPA nose height; only the rear shoulder
 // rises to meet the timber cap. This geometry is never used for collisions.
 const cushionNoseHeight=2*RADIUS*.635;
@@ -262,16 +294,17 @@ const pocketFacingProfile=[
   [.002,.019]
 ];
 // One closed swept volume per rail. Each corner facing is an extension of the
-// rail's own mesh, connected by two profile rings at the SAME physical jaw.
-// There is no detached wedge and no separate triangular patch: at every join
-// the seven cross-section vertices are shared by adjacent surface strips.
+// rail's own mesh, sharing ONE common miter ring at each physical jaw.
+// There is no zero-length strip between incompatible profiles at a jaw;
+// adjacent surfaces share the same seven cross-section vertices.
 function addCushionSweep(stations){
   const count=basicCushionProfile.length,vertices=[],indices=[];
   const welded=[],unique=new Map();
   for(const s of stations){
-    if(s.profile.length!==count)throw new Error('Cushion profile mismatch');
-    for(const [distance,y] of s.profile){
-      const x=s.x+s.nx*distance,z=s.z+s.nz*distance;
+    const ring=s.points||s.profile.map(([distance,y])=>[
+      s.x+s.nx*distance,y,s.z+s.nz*distance]);
+    if(ring.length!==count)throw new Error('Cushion profile mismatch');
+    for(const [x,y,z] of ring){
       const key=[x,y,z].map(n=>Math.round(n*1e9)).join(':');
       if(!unique.has(key)){
         unique.set(key,vertices.length/3);
@@ -314,17 +347,30 @@ function addContinuousRail(x0,z0,x1,z1,outX,outZ){
   const start=matchFace(x0,z0),end=matchFace(x1,z1);
   if(!start||!end)throw new Error('Unconnected rail facing');
   const stations=[];
-  const facing=(x,z,face)=>({x,z,nx:-face.nx,nz:-face.nz,
-    profile:pocketFacingProfile});
-  const main=(x,z)=>({x,z,nx:outX,nz:outZ,
-    profile:basicCushionProfile});
+  const facing=(x,z,face)=>{
+    // The collision reference normal is not the extrusion direction of a
+    // rendered facing. Build the visual normal from its actual segment,
+    // choosing the side behind the cushion rather than inside the opening.
+    const dx=face.x1-face.x0,dz=face.z1-face.z0,length=Math.hypot(dx,dz);
+    let nx=-dz/length,nz=dx/length;
+    if(nx*outX+nz*outZ<0){nx=-nx;nz=-nz;}
+    return {x,z,nx,nz,profile:pocketFacingProfile};
+  };
+  const miter=(x,z,face)=>{
+    const f=facing(x,z,face),tx=-outZ,tz=outX;
+    const dot=outX*f.nx+outZ*f.nz,denominator=tx*f.nx+tz*f.nz;
+    if(Math.abs(denominator)<1e-8)throw new Error('Parallel visual rail/facing joint');
+    return {points:basicCushionProfile.map(([distance,y],i)=>{
+      const along=(pocketFacingProfile[i][0]-distance*dot)/denominator;
+      return [x+outX*distance+tx*along,y,z+outZ*distance+tz*along];
+    })};
+  };
   if(start){
     stations.push(facing(start.x1,start.z1,start));
-    stations.push(facing(x0,z0,start));
+    stations.push(miter(x0,z0,start));
   }
-  stations.push(main(x0,z0),main(x1,z1));
+  stations.push(miter(x1,z1,end));
   if(end){
-    stations.push(facing(x1,z1,end));
     stations.push(facing(end.x1,end.z1,end));
   }
   return addCushionSweep(stations);
@@ -349,7 +395,11 @@ function addPocketCasting(p){
   prism(points,CAP_BOTTOM-.005,.005,lowerRevealMaterial);
   // Rounded black upper cap; a slightly broader moulded edge takes the
   // sharpness off the pocket/rail transition without changing the cut-out.
-  prism(points,CAP_BOTTOM,RAIL_TOP-CAP_BOTTOM,railMaterial,.009);
+  const joinBounds=p.kind==='side'?
+    {minX:Math.min(...points.map(q=>q[0])),maxX:Math.max(...points.map(q=>q[0]))}:
+    {[p.sx>0?'minX':'maxX']:(p.sx>0?Math.min:Math.max)(...points.map(q=>q[0])),
+     [p.sz>0?'minZ':'maxZ']:(p.sz>0?Math.min:Math.max)(...points.map(q=>q[1]))};
+  prism(points,CAP_BOTTOM,RAIL_TOP-CAP_BOTTOM,railMaterial,.007,[],joinBounds);
   if(p.kind==='corner'){
     // A thin, flat graphite plate at the rail TOP, not a tall metallic wall.
     // The dark structural backing below it merges into the black cup liner.
@@ -577,7 +627,7 @@ function makeTable() {
         [capX1,sign*(WIDTH+OUTER_RAIL)],
         [capX0,sign*(WIDTH+OUTER_RAIL)]],
       CAP_BOTTOM,RAIL_TOP-CAP_BOTTOM,railMaterial,.007,
-      xSights.map(x=>sightDiamond(x,zSight,false,1.18)));
+      xSights.map(x=>sightDiamond(x,zSight,false,1.18)),{minX:capX0,maxX:capX1});
       for(const x of xSights)addSightInlay(x,zSight);
       // A structural rail core closes the underside beneath the top cap;
       // the exposed outer plank is a true apron, not a floating strip.
@@ -600,7 +650,7 @@ function makeTable() {
       [sign*(LENGTH+OUTER_RAIL),capZ1],
       [sign*(LENGTH+OUTER_RAIL),capZ0]],
     CAP_BOTTOM,RAIL_TOP-CAP_BOTTOM,railMaterial,.007,
-    shortSightZs.map(z=>sightDiamond(sign*(LENGTH+.092),z,true,1.18)));
+    shortSightZs.map(z=>sightDiamond(sign*(LENGTH+.092),z,true,1.18)),{minZ:capZ0,maxZ:capZ1});
     for(const z of shortSightZs)addSightInlay(sign*(LENGTH+.092),z,true);
     box(.120,.125,capWidth,sign*(LENGTH+.112),-.0385,
       0,woodMaterial);
