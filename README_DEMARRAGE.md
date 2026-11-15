@@ -1,8 +1,8 @@
-# FRAME v0.74 — projet complet
+# FRAME v0.75 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.74 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.75 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -401,3 +401,11 @@ inchangés.
 
 Voir `docs/MEUBLE_TABLE_v0.74.md` pour les captures avant/après et les contrôles
 croisés des deux agents.
+
+## Version 0.75 — queue américaine
+
+La queue reçoit un modèle de 1,47 m : érable clair, bois sombre et quatre
+incrustations courbes, poignée tressée, bagues fines, virole ivoire, procédé
+bleu bombé et talon en caoutchouc. Ses textures sont générées localement.
+Le point de contact, les commandes et la physique sont conservés.
+Voir `docs/QUEUE_v0.75.md` pour les comparaisons et la validation.

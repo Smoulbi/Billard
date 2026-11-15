@@ -9,6 +9,8 @@ import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision
 import {createFirstPersonView,resetFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js?v=0.61';
 import * as THREE from './vendor/three.module.js';
 import {configureSceneLighting} from './scene-lighting.js?v=0.72';
+import {createCueModel} from './cue-model.js?v=0.75';
+import {createCueMaterials} from './cue-materials.js?v=0.75';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
   simulatePhysics} from './physics.js?v=0.69';
@@ -1444,24 +1446,11 @@ function setStatus(title,description,rolling=false) {
   el.statusIndicator.classList.toggle('rolling',rolling);
 }
 
-function makeCylinder(length,r1,r2,center,mat) {
-  const m=new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,length,12),mat);
-  m.rotation.z=Math.PI/2;m.position.set(center,0,0);m.castShadow=true;cueGroup.add(m);return m;
-}
-
 function makeCueAndGuides() {
-  cueGroup=new THREE.Group();scene.add(cueGroup);
+  cueGroup=createCueModel(createCueMaterials());scene.add(cueGroup);
   spinImpactMarker=new THREE.Mesh(new THREE.SphereGeometry(.0025,20,16),
     new THREE.MeshBasicMaterial({color:0xff2538,depthTest:false,depthWrite:false,toneMapped:false}));
   spinImpactMarker.renderOrder=20;spinImpactMarker.visible=false;scene.add(spinImpactMarker);
-  const shaft = new THREE.MeshStandardMaterial({color:0xdcc69b,roughness:0.55});
-  const grip = new THREE.MeshStandardMaterial({color:0x20292c,roughness:0.8});
-  const blue = new THREE.MeshStandardMaterial({color:0x376a8b,roughness:0.55});
-  makeCylinder(0.78,0.013,0.006,-0.445,shaft);
-  makeCylinder(0.39,0.015,0.013,-1.03,grip);
-  makeCylinder(0.02,0.007,0.007,-0.045,blue);
-  makeCylinder(0.012,0.012,0.012,-0.84,brass);
-  makeCylinder(0.018,0.013,0.013,-1.225,woodMaterial);
 
   aimLine=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineDashedMaterial({color:0xf1f9dd,dashSize:0.039,gapSize:0.026,transparent:true,opacity:0.88,depthTest:false}));
   aimLine.renderOrder=5;scene.add(aimLine);
