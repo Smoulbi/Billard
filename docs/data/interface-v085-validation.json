@@ -1,0 +1,307 @@
+{
+  "version": "0.85",
+  "measuredAt": "2026-11-16T14:04:23.825923+00:00",
+  "tests": {
+    "total": 289,
+    "passed": 289,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": "Chromium 156 headless with WebGL2/SwiftShader",
+  "welcome": {
+    "taglineElementPresent": false,
+    "reviewedText": "Game name, mode choice, call setting, breaker, start/options, factual rules only."
+  },
+  "hud": {
+    "playerNumbers": [
+      [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    ],
+    "pigments": "Same BALL_COLORS array as 3D table",
+    "numberPatch": "Ivory #faf8ed and black #171717, same as numberTexture",
+    "stripeBody": "Ivory #f5f4e9 with central colored band",
+    "desktopHeaderHeight": 74,
+    "pottedBall": {
+      "num": 2,
+      "opacity": 0.26,
+      "numberPatchRetained": true
+    }
+  },
+  "nineBall": {
+    "numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "eightSolid": true,
+    "nineStriped": true
+  },
+  "responsive": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "scroll": [
+        390,
+        390
+      ],
+      "header": {
+        "x": 9,
+        "y": 10,
+        "width": 372,
+        "height": 60,
+        "top": 10,
+        "right": 381,
+        "bottom": 70,
+        "left": 9
+      },
+      "balls": [
+        {
+          "num": "1",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "2",
+          "ballSize": 17.10000228881836,
+          "patchWidth": 7.9453125,
+          "patchHeight": 7.9453125,
+          "inside": true
+        },
+        {
+          "num": "3",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "4",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "5",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "6",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "7",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "9",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "10",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "11",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "12",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "13",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "14",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        },
+        {
+          "num": "15",
+          "ballSize": 19,
+          "patchWidth": 8.828125,
+          "patchHeight": 8.828125,
+          "inside": true
+        }
+      ],
+      "errors": []
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "scroll": [
+        844,
+        844
+      ],
+      "header": {
+        "x": 97,
+        "y": 9,
+        "width": 650,
+        "height": 63,
+        "top": 9,
+        "right": 747,
+        "bottom": 72,
+        "left": 97
+      },
+      "balls": [
+        {
+          "num": "1",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "2",
+          "ballSize": 20.70001220703125,
+          "patchWidth": 9.81561279296875,
+          "patchHeight": 9.815628051757812,
+          "inside": true
+        },
+        {
+          "num": "3",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "4",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "5",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "6",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "7",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "9",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "10",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "11",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "12",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "13",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "14",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        },
+        {
+          "num": "15",
+          "ballSize": 23,
+          "patchWidth": 10.90625,
+          "patchHeight": 10.90625,
+          "inside": true
+        }
+      ],
+      "errors": []
+    }
+  ],
+  "runtimeErrors": [],
+  "method": "Welcome checked in production. Group assignments and pocketed status set with temporary inspection fixture; HUD and table use real game renderer, reduced resolution and stopped rendering loop. Responsive checks validate ball/patch geometry and row bounds. No tracked test hooks."
+}
