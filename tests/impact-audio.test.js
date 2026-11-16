@@ -49,7 +49,7 @@ test('preparation is context-free and shares exactly three downloads and decodes
     assert.equal(r.audio.play(kind,0.12),true);
     assert.equal(r.sources[index].buffer.data,r.decoded[index]);
     assert.equal(r.sources[index].playbackRate.value,1);
-    assert.equal(r.gains[index+1].gain.value,kind==='cushion'?0.1*10**(-8/20):0.1);
+    assert.equal(r.gains[index+1].gain.value,kind==='cushion'?0.1*10**(-6/20):0.1);
   }
   assert.equal(r.gains[0].gain.value,0.24);
   assert.equal(r.compressors[0].threshold.value,-12);
@@ -142,14 +142,46 @@ test('dispose during decoding discards late buffers and contains decoding failur
 });
 
 
-test('only cushion voices are reduced by eight decibels at quiet and strong speeds',async()=>{
+test('only cushion voices are reduced by six decibels at quiet and strong speeds',async()=>{
   const r=rig();await r.audio.unlock();
   for(const speed of [0.045,0.12,6,12,24]){
     for(const kind of ['cue','ball','cushion']){
       r.audio.play(kind,speed);
       const applied=r.gains.at(-1).gain.value;
-      assert.equal(applied,impactGain(speed)*(kind==='cushion'?10**(-8/20):1));
+      assert.equal(applied,impactGain(speed)*(kind==='cushion'?10**(-6/20):1));
     }
   }
   r.audio.playPocket();assert.equal(r.gains.at(-1).gain.value,0.105);
+});
+
+
+test('volume is retained before unlock without creating a context and adjusts the shared master',async()=>{
+  const r=rig();
+  assert.equal(r.audio.setVolume(0.5),0.5);assert.equal(r.factories,0);
+  await r.audio.unlock();assert.equal(r.gains[0].gain.value,0.12);
+  r.audio.play('cue',12);r.audio.play('ball',12);r.audio.play('cushion',12);r.audio.playPocket();
+  assert.ok(r.gains.slice(1).every(gain=>gain.to===r.gains[0]));
+  assert.equal(r.audio.setVolume(0.25),0.25);assert.equal(r.gains[0].gain.value,0.06);
+  assert.ok(r.sources.every(source=>!source.stopped),'changing volume retains current voices');
+  assert.equal(r.audio.setVolume(0),0);assert.equal(r.gains[0].gain.value,0);
+  assert.equal(r.audio.setVolume(1),1);assert.equal(r.gains[0].gain.value,0.24);
+});
+
+test('volume clamps finite values and maps invalid values to silence',async()=>{
+  const r=rig();await r.audio.unlock();
+  for(const [value,expected] of [[-1,0],[2,1],[0.35,0.35],[NaN,0],[Infinity,0],[-Infinity,0],[undefined,0],[null,0],['0.5',0]]){
+    assert.equal(r.audio.setVolume(value),expected);
+    assert.equal(r.gains[0].gain.value,0.24*expected);
+  }
+  await r.audio.dispose();assert.doesNotThrow(()=>r.audio.setVolume(0.8));
+});
+
+test('changing volume never unmutes audio or restarts stopped voices',async()=>{
+  const r=rig();await r.audio.unlock();r.audio.play('cue',12);r.audio.playPocket();
+  r.audio.setMuted(true);assert.ok(r.sources.every(source=>source.stopped&&source.disconnected));
+  r.audio.setVolume(0);r.audio.setVolume(0.75);
+  assert.equal(r.audio.play('cue',12),false);assert.equal(r.audio.playPocket(),false);
+  assert.equal(r.sources.length,2);
+  r.audio.setMuted(false);assert.equal(r.audio.play('ball',12),true);
+  assert.equal(r.gains[0].gain.value,0.18);
 });

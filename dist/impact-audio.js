@@ -6,8 +6,8 @@ export function impactGain(speed) {
   return level<1 ? Math.sqrt(level) : level;
 }
 
-// Cushion-only trim (-8 dB total); keep the supplied WAV untouched.
-const CUSHION_GAIN=10**(-8/20);
+// Cushion-only trim (-6 dB total); keep the supplied WAV untouched.
+const CUSHION_GAIN=10**(-6/20);
 
 const sampleURLs=Object.fromEntries(['cue','ball','cushion'].map(kind=>
   [kind,new URL(`./audio/${kind}.wav${kind==='cushion'?'?v=0.78':''}`,import.meta.url).href]));
@@ -23,7 +23,7 @@ export function createImpactAudio({
 }={}) {
   const budget=Number.isFinite(maxVoices) ? Math.max(1,Math.min(12,Math.floor(maxVoices))) : 12;
   const downloads=new Map(),decodes=new Map(),buffers=new Map(),voices=[];
-  let context=null,master=null,compressor=null,muted=false,disposed=false;
+  let context=null,master=null,compressor=null,muted=false,disposed=false,volume=1;
 
   function download(kind) {
     if(!downloads.has(kind))downloads.set(kind,Promise.resolve().then(()=>fetcher(urls[kind]))
@@ -54,7 +54,7 @@ export function createImpactAudio({
       if(!context) {
         context=contextFactory();
         if(!context)return Promise.resolve(false);
-        master=context.createGain();master.gain.value=0.24;
+        master=context.createGain();master.gain.value=0.24*volume;
         compressor=context.createDynamicsCompressor();
         for(const [key,value] of Object.entries({threshold:-12,knee:0,ratio:20,attack:0,release:0.05}))
           compressor[key].value=value;
@@ -118,11 +118,16 @@ export function createImpactAudio({
   }
   function stop() {for(const voice of [...voices])release(voice,true);}
   function setMuted(value) {muted=!!value;if(muted)stop();}
+  function setVolume(value) {
+    volume=Number.isFinite(value) ? Math.max(0,Math.min(1,value)) : 0;
+    if(master&&!disposed)master.gain.value=0.24*volume;
+    return volume;
+  }
   function dispose() {
     if(disposed)return Promise.resolve();
     disposed=true;stop();buffers.clear();downloads.clear();decodes.clear();
     try {master?.disconnect();compressor?.disconnect();}catch {}
     try {return Promise.resolve(context?.close()).catch(()=>{});}catch {return Promise.resolve();}
   }
-  return {prepare,unlock,play,playPocket,setMuted,stop,dispose};
+  return {prepare,unlock,play,playPocket,setMuted,setVolume,stop,dispose};
 }
