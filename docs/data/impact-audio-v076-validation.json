@@ -1,0 +1,258 @@
+{
+  "measuredAt": "2026-11-16T11:56:44.461Z",
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+  "sampleRate": 48000,
+  "method": "Production createImpactAudio with native OfflineAudioContext nodes; scheduling-only state adapter; decoded same-origin WAVs; no subjective audition.",
+  "isolated": [
+    {
+      "kind": "cue",
+      "speeds": [
+        0.03,
+        0.06
+      ],
+      "peaks": [
+        0.00052223214879632,
+        0.00104446429759264
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cue",
+      "speeds": [
+        0.75,
+        1.5
+      ],
+      "peaks": [
+        0.013055804185569286,
+        0.026111608371138573
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cue",
+      "speeds": [
+        6,
+        12
+      ],
+      "peaks": [
+        0.10444643348455429,
+        0.20889286696910858
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cue",
+      "speeds": [
+        12,
+        24
+      ],
+      "peaks": [
+        0.20889286696910858,
+        0.41778573393821716
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "ball",
+      "speeds": [
+        0.03,
+        0.06
+      ],
+      "peaks": [
+        0.00011609592183958739,
+        0.00023219184367917478
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "ball",
+      "speeds": [
+        0.75,
+        1.5
+      ],
+      "peaks": [
+        0.002902398118749261,
+        0.005804796237498522
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "ball",
+      "speeds": [
+        6,
+        12
+      ],
+      "peaks": [
+        0.023219184949994087,
+        0.046438369899988174
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "ball",
+      "speeds": [
+        12,
+        24
+      ],
+      "peaks": [
+        0.046438369899988174,
+        0.09287673979997635
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cushion",
+      "speeds": [
+        0.03,
+        0.06
+      ],
+      "peaks": [
+        0.0006056385464034975,
+        0.001211277092806995
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cushion",
+      "speeds": [
+        0.75,
+        1.5
+      ],
+      "peaks": [
+        0.015140963718295097,
+        0.030281927436590195
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cushion",
+      "speeds": [
+        6,
+        12
+      ],
+      "peaks": [
+        0.12112770974636078,
+        0.24225541949272156
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    },
+    {
+      "kind": "cushion",
+      "speeds": [
+        12,
+        24
+      ],
+      "peaks": [
+        0.24225541949272156,
+        0.4845108389854431
+      ],
+      "peakRatio": 2,
+      "maxSampleError": 0
+    }
+  ],
+  "bursts": [
+    {
+      "kinds": [
+        "cue"
+      ],
+      "count": 12,
+      "requestedMaxVoices": 100,
+      "peak": 0.8999947905540466,
+      "rms": 0.34736848218245425,
+      "starts": 12,
+      "evicted": 0
+    },
+    {
+      "kinds": [
+        "cue"
+      ],
+      "count": 100,
+      "requestedMaxVoices": 100,
+      "peak": 0.8999947905540466,
+      "rms": 0.34736848218245425,
+      "starts": 100,
+      "evicted": 88
+    },
+    {
+      "kinds": [
+        "ball"
+      ],
+      "count": 12,
+      "requestedMaxVoices": 100,
+      "peak": 0.9298263788223267,
+      "rms": 0.03349037231044511,
+      "starts": 12,
+      "evicted": 0
+    },
+    {
+      "kinds": [
+        "ball"
+      ],
+      "count": 100,
+      "requestedMaxVoices": 100,
+      "peak": 0.9298263788223267,
+      "rms": 0.03349037231044511,
+      "starts": 100,
+      "evicted": 88
+    },
+    {
+      "kinds": [
+        "cushion"
+      ],
+      "count": 12,
+      "requestedMaxVoices": 100,
+      "peak": 0.8147448301315308,
+      "rms": 0.11769159371160903,
+      "starts": 12,
+      "evicted": 0
+    },
+    {
+      "kinds": [
+        "cushion"
+      ],
+      "count": 100,
+      "requestedMaxVoices": 100,
+      "peak": 0.8147448301315308,
+      "rms": 0.11769159371160903,
+      "starts": 100,
+      "evicted": 88
+    },
+    {
+      "kinds": [
+        "cue",
+        "ball",
+        "cushion"
+      ],
+      "count": 12,
+      "requestedMaxVoices": 100,
+      "peak": 0.7590872645378113,
+      "rms": 0.21107301373959453,
+      "starts": 12,
+      "evicted": 0
+    },
+    {
+      "kinds": [
+        "cue",
+        "ball",
+        "cushion"
+      ],
+      "count": 100,
+      "requestedMaxVoices": 100,
+      "peak": 0.7590872645378113,
+      "rms": 0.2110730149626412,
+      "starts": 100,
+      "evicted": 88
+    }
+  ]
+}
