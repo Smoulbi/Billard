@@ -1,8 +1,8 @@
-# FRAME v0.75 — projet complet
+# FRAME v0.76 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.75 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.76 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -409,3 +409,11 @@ incrustations courbes, poignée tressée, bagues fines, virole ivoire, procédé
 bleu bombé et talon en caoutchouc. Ses textures sont générées localement.
 Le point de contact, les commandes et la physique sont conservés.
 Voir `docs/QUEUE_v0.75.md` pour les comparaisons et la validation.
+
+
+## Version 0.76 — sons d’impact
+
+Trois échantillons locaux distincts accompagnent la queue, les collisions entre
+billes et les bandes. Leur amplitude suit la vitesse d’impact, sans plancher.
+Le bouton SON coupe immédiatement les voix ; le replay reste silencieux.
+Voir `docs/SONS_v0.76.md` pour les sources, licences et validations.

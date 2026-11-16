@@ -1,3 +1,4 @@
+import {createImpactAudio} from './impact-audio.js?v=0.76';
 import {ShotReplay} from './shot-replay.js?v=0.69';
 import {railCutaway} from './rail-visibility.js?v=0.66';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
@@ -65,8 +66,12 @@ let scratchedThisShot = false;
 let pocketsThisShot = 0;
 let miscuedThisShot = false;
 let soundEnabled = true;
-let audioContext = null;
-let lastSoundAt = 0;
+const impactAudio = createImpactAudio();
+void impactAudio.prepare();
+window.addEventListener('pagehide',event=>{
+  if(event.persisted)impactAudio.stop();
+  else void impactAudio.dispose();
+});
 let orbit = { azimuth: 0.29, elevation: 0.69, distance: 3.97, topDown: false,
   targetX: 0, targetZ: 0, dragMode: null, pointerId: null, x: 0, y: 0 };
 let accumulator = 0;
@@ -1034,6 +1039,7 @@ function showMatchSetup() {
 }
 
 function startMatch() {
+  void impactAudio.unlock();
   if(shotActive)return;
   const mode=document.querySelector('input[name=gameMode]:checked')?.value;
   const nine=mode==='nine';
@@ -1568,24 +1574,8 @@ function updateVisuals() {
   }
 }
 
-function sound(strength=0.4,low=false) {
-  if(!soundEnabled)return;
-  const now=performance.now();if(now-lastSoundAt<45)return;lastSoundAt=now;
-  try {
-    audioContext=audioContext||new (window.AudioContext||window.webkitAudioContext)();
-    if(audioContext.state==='suspended')audioContext.resume();
-    const osc=audioContext.createOscillator();const gain=audioContext.createGain();
-    osc.type=low?'triangle':'sine';
-    osc.frequency.setValueAtTime(low?155:420,audioContext.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(low?65:170,audioContext.currentTime+.075);
-    gain.gain.setValueAtTime(Math.min(.07,.015+strength*.017),audioContext.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.0001,audioContext.currentTime+.09);
-    osc.connect(gain);gain.connect(audioContext.destination);
-    osc.start();osc.stop(audioContext.currentTime+.1);
-  }catch(_error){/* audio is optional */}
-}
-
 function shoot(source='gauge') {
+  void impactAudio.unlock();
   if(replayPlayback)return false;
   if(strokePhase==='spin'||training?.editing)return false;
   if(powerInputMode==='mouse'&&source==='gauge'){prepareMouseAim();return false;}
@@ -1634,7 +1624,7 @@ function shoot(source='gauge') {
   el.shootButton.disabled=true;el.shotState.textContent='EN MOUVEMENT';
   if(impact.miscue)setStatus('Fausse queue','Procédé trop loin du centre : perte de force et déviation brutale.',true);
   else setStatus('Billes en mouvement','Glissement, roulement et rotations calculés en temps réel.',true);
-  updateCounters();updateVisuals();sound(power*(impact.miscue?0.5:2),!impact.miscue);
+  updateCounters();updateVisuals();impactAudio.play('cue',Math.hypot(impact.vx,impact.vz));
   return true;
 }
 
@@ -1663,7 +1653,7 @@ function pocketBall(b) {
   b.active=false;stopBall(b);b.mesh.visible=false;
   if(b.num===0) scratchedThisShot=true;
   else pocketsThisShot++;
-  sound(0.6,true);
+  impactAudio.playPocket();
   updateCounters();
 }
 
@@ -1725,7 +1715,7 @@ function physicsStep(dt) {
           shotEvents.railAfterContact=true;
       }
     },
-    onCushion:(_ball,speed)=>{telemetry?.onCushion();sound(Math.min(2,speed));},
+    onCushion:(_ball,speed)=>{telemetry?.onCushion();impactAudio.play('cushion',speed);},
     onBallContact:(a,b,_speed,time)=>{
       if(shotEvents&&shotEvents.firstContact===null){
         if(a.num===0&&b.num>0){shotEvents.firstContact=b.num;shotEvents.contactTime=shotSimTime+(time??dt);}
@@ -1734,7 +1724,7 @@ function physicsStep(dt) {
     },
     onCollision:(a,b,speed,time)=>{
       telemetry?.onCollision(a,b,shotSimTime+(time??dt));
-      sound(Math.min(2,speed));
+      impactAudio.play('ball',speed);
     }
   });
   shotSimTime+=dt;
@@ -2412,7 +2402,7 @@ function bindControls() {
         'Banc de calibration · référence pool v0.69.';
     updateVisuals();
   });
-  el.audioToggle.addEventListener('click',()=>{soundEnabled=!soundEnabled;el.audioLabel.textContent=soundEnabled?'ON':'OFF';});
+  el.audioToggle.addEventListener('click',()=>{soundEnabled=!soundEnabled;impactAudio.setMuted(!soundEnabled);if(soundEnabled)void impactAudio.unlock();el.audioLabel.textContent=soundEnabled?'ON':'OFF';});
   el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').addEventListener('toggle',()=>requestAnimationFrame(resize));
   el.fullscreenButton.addEventListener('click',()=>{
     toggleSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document).finally(()=>{requestAnimationFrame(resize);el.gameCanvas.focus();});
