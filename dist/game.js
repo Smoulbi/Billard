@@ -43,6 +43,7 @@ const ids = ['optionsButton','optionsDialog','closeOptions','resumeGame','mainMe
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
+let menuReplayTime=null,menuOpenedAt=0;
 let menu=null;
 let sessionSettings=null;
 let pointerWasLocked=false,programmaticPointerUnlock=false;
@@ -1911,7 +1912,7 @@ function refreshPowerInput() {
   if(fallbackCtx)powerInputMode='gauge';
   const mouse=powerInputMode==='mouse';
   el.gameCanvas.closest('.scene-frame').dataset.inputMode=powerInputMode;
-  el.powerModeButton.closest('.shot-dock').dataset.powerMode=mouse?'mouse':'gauge';
+  el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').dataset.powerMode=mouse?'mouse':'gauge';
   el.powerModeButton.textContent=mouse?'MODE : GESTE SOURIS':'MODE : JAUGE';
   el.powerModeButton.setAttribute('aria-pressed',String(mouse));
   el.powerModeButton.disabled=shotActive||!!fallbackCtx;
@@ -2130,6 +2131,9 @@ function bindGameMenu() {
   menu=createGameMenu({dialog:el.optionsDialog,
     canOpen:()=>el.decisionOverlay.hidden&&el.victoryOverlay.hidden,
     onOpen:()=>{
+      menuOpenedAt=performance.now();
+      menuReplayTime=replayPlayback&&replayPlayback.pausedAt==null?
+        Math.min(replayPlayback.record.duration,(performance.now()-replayPlayback.start)/1000):null;
       gamePaused=true;releaseAimMouse();impactAudio.stop();
       el.restartMatchButton.disabled=!sessionSettings;
       el.resumeGame.textContent=el.matchOverlay.hidden?'REPRENDRE LA PARTIE':'RETOUR À L’ACCUEIL';
@@ -2137,7 +2141,9 @@ function bindGameMenu() {
     },
     onClose:()=>{
       gamePaused=false;lastFrame=performance.now();
-      if(replayPlayback){replayPlayback.start=performance.now()-(replayPlayback.pausedAt||0)*1000;}
+      if(shotCameraTransition)shotCameraTransition.start+=lastFrame-menuOpenedAt;
+      if(replayPlayback&&menuReplayTime!==null)replayPlayback.start=performance.now()-menuReplayTime*1000;
+      menuReplayTime=null;
       el.optionsButton.setAttribute('aria-expanded','false');
       requestAnimationFrame(resize);
       (el.matchOverlay.hidden?el.gameCanvas:el.startMatch).focus({preventScroll:true});
