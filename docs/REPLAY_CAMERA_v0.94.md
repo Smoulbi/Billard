@@ -12,9 +12,22 @@ La caméra, le mode et l’orbite sont sauvegardés et restaurés à la sortie ;
 capture de pointeur encore active est relâchée. Ouvrir le menu pause bloque
 les commandes de caméra jusqu’à la reprise.
 
-## Point de reprise
+## Validation terminée
 
-Les quatre tests de navigation et de restauration passent, ainsi que les tests
-existants ciblés. Restent : suite complète, vérification réelle des gestes dans
-le navigateur, validation visuelle et recherche approfondie sur le frottement
-des billes en vol.
+- Suite complète : **321 tests réussis**, zéro échec ni test ignoré.
+- Les quatre nouveaux tests exécutent les gestionnaires réels de navigation,
+  le blocage pendant le menu pause et la restauration d’orbite/capture.
+- Chromium/SwiftShader, événements souris et clavier CDP : rotation, déplacement,
+  zoom, V, sortie du dessus par rotation, navigation en pause et en fin de lecture.
+  La lecture reprend aussi pendant que la caméra est libre.
+- Images différentes avant/après navigation ; positions réelles, visée et
+  enregistrement inchangés. Sortie avec bouton droit encore appuyé : caméra
+  et orbite restaurées. Retour à la première personne également vérifié.
+- Panneau contenu dans 390 × 844 et 844 × 390, canvas sur toute la largeur.
+  Aucune erreur JavaScript pendant le parcours.
+
+Le contrôle navigateur emploie uniquement des accès QA ajoutés par le serveur
+temporaire pour créer un enregistrement déterministe. Aucun accès QA n’est
+livré dans le jeu. DPR 0,6 pour les vérifications, capture finale DPR 1.
+
+[Mesures](data/replay-camera-v094-validation.json) · [Capture](data/replay-camera-v094.png)

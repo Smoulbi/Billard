@@ -1,0 +1,823 @@
+{
+  "tests": {
+    "passed": 321,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "initial": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": 0.29,
+        "elevation": 0.69,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": 0,
+        "targetZ": 0,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 0,
+        "y": 0
+      },
+      "camera": {
+        "p": [
+          0.8755418709438902,
+          2.5270526134212123,
+          2.9339958284266685
+        ],
+        "q": [
+          -0.33464760948310956,
+          0.13597827868804843,
+          0.04886685961556006,
+          0.9311997182256816
+        ],
+        "fov": 40
+      },
+      "time": "0.17",
+      "paused": 0.17,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": true,
+      "cameraRestored": true,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "rotated": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.43,
+        "elevation": 0.84,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": 0,
+        "targetZ": 0,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 570,
+        "y": 310
+      },
+      "camera": {
+        "p": [
+          -1.1046356822865346,
+          2.9562331862843116,
+          2.408602366047719
+        ],
+        "q": [
+          -0.39837233713029546,
+          -0.1948051772255174,
+          -0.08699464402302115,
+          0.8920663404964839
+        ],
+        "fov": 40
+      },
+      "time": "0.17",
+      "paused": 0.17,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "panned": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.43,
+        "elevation": 0.84,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 530,
+        "y": 240
+      },
+      "camera": {
+        "p": [
+          -1.4482126083523612,
+          2.9562331862843116,
+          2.4645124754370897
+        ],
+        "q": [
+          -0.39837233713029546,
+          -0.1948051772255174,
+          -0.08699464402302115,
+          0.8920663404964839
+        ],
+        "fov": 40
+      },
+      "time": "0.17",
+      "paused": 0.17,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "zoomed": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.43,
+        "elevation": 0.84,
+        "distance": 2.990476599793731,
+        "topDown": false,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 530,
+        "y": 240
+      },
+      "camera": {
+        "p": [
+          -1.1756643717018629,
+          2.2268378254702506,
+          1.8702347980224987
+        ],
+        "q": [
+          -0.39837233713029546,
+          -0.1948051772255175,
+          -0.08699464402302118,
+          0.8920663404964839
+        ],
+        "fov": 40
+      },
+      "time": "0.17",
+      "paused": 0.17,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "overhead": {
+      "open": true,
+      "modal": false,
+      "mode": "overhead",
+      "orbit": {
+        "azimuth": -0.43,
+        "elevation": 0.84,
+        "distance": 2.990476599793731,
+        "topDown": true,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 530,
+        "y": 240
+      },
+      "camera": {
+        "p": [
+          -0.3435769260658266,
+          2.990476599793731,
+          0.05691010938937094
+        ],
+        "q": [
+          -0.7069885448718414,
+          0,
+          0,
+          0.7072249977340991
+        ],
+        "fov": 40
+      },
+      "time": "0.17",
+      "paused": 0.17,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "detached": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.19,
+        "elevation": 0.74,
+        "distance": 2.990476599793731,
+        "topDown": false,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 410,
+        "y": 260
+      },
+      "camera": {
+        "p": [
+          -0.7606478000722288,
+          2.016442221247751,
+          2.2245416936698463
+        ],
+        "q": [
+          -0.3599848692008736,
+          -0.08843793224476076,
+          -0.03430181601075868,
+          0.9281233816174794
+        ],
+        "fov": 40
+      },
+      "time": "0.17",
+      "paused": 0.17,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "playing": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.19,
+        "elevation": 0.74,
+        "distance": 2.990476599793731,
+        "topDown": false,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 410,
+        "y": 260
+      },
+      "camera": {
+        "p": [
+          -0.7606478000722288,
+          2.016442221247751,
+          2.2245416936698463
+        ],
+        "q": [
+          -0.3599848692008736,
+          -0.08843793224476076,
+          -0.03430181601075868,
+          0.9281233816174794
+        ],
+        "fov": 40
+      },
+      "time": "0.999",
+      "paused": 0.9999999999999977,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "atEnd": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.19,
+        "elevation": 0.74,
+        "distance": 2.990476599793731,
+        "topDown": false,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 410,
+        "y": 260
+      },
+      "camera": {
+        "p": [
+          -0.7606478000722288,
+          2.016442221247751,
+          2.2245416936698463
+        ],
+        "q": [
+          -0.3599848692008736,
+          -0.08843793224476076,
+          -0.03430181601075868,
+          0.9281233816174794
+        ],
+        "fov": 40
+      },
+      "time": "0.999",
+      "paused": 0.999,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "endRotated": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": -0.43,
+        "elevation": 0.815,
+        "distance": 2.990476599793731,
+        "topDown": false,
+        "targetX": -0.3435769260658266,
+        "targetZ": 0.05591010938937094,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 490,
+        "y": 295
+      },
+      "camera": {
+        "p": [
+          -1.1986095323155646,
+          2.176246373682841,
+          1.9202655629432095
+        ],
+        "q": [
+          -0.3871906758244042,
+          -0.19587736300115177,
+          -0.08455284635228119,
+          0.8969761732577314
+        ],
+        "fov": 40
+      },
+      "time": "0.999",
+      "paused": 0.999,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": false,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 504.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 504.5,
+        "right": 820,
+        "bottom": 736,
+        "left": 380
+      }
+    },
+    "responsive": [
+      {
+        "viewport": [
+          390,
+          844
+        ],
+        "panel": {
+          "x": 16,
+          "y": 548.5,
+          "width": 358,
+          "height": 231.5,
+          "top": 548.5,
+          "right": 374,
+          "bottom": 780,
+          "left": 16
+        },
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 844,
+          "top": 0,
+          "right": 390,
+          "bottom": 844,
+          "left": 0
+        }
+      },
+      {
+        "viewport": [
+          844,
+          390
+        ],
+        "panel": {
+          "x": 202,
+          "y": 94.5,
+          "width": 440,
+          "height": 231.5,
+          "top": 94.5,
+          "right": 642,
+          "bottom": 326,
+          "left": 202
+        },
+        "canvas": {
+          "x": 0,
+          "y": 0,
+          "width": 844,
+          "height": 390,
+          "top": 0,
+          "right": 844,
+          "bottom": 390,
+          "left": 0
+        }
+      }
+    ],
+    "restored": {
+      "open": false,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": 0.29,
+        "elevation": 0.69,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": 0,
+        "targetZ": 0,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 0,
+        "y": 0
+      },
+      "camera": {
+        "p": [
+          0.8755418709438902,
+          2.5270526134212123,
+          2.9339958284266685
+        ],
+        "q": [
+          -0.33464760948310956,
+          0.13597827868804843,
+          0.04886685961556006,
+          0.9311997182256816
+        ],
+        "fov": 40
+      },
+      "time": "0.999",
+      "paused": null,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": true,
+      "cameraRestored": true,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 800,
+        "top": 0,
+        "right": 1200,
+        "bottom": 800,
+        "left": 0
+      },
+      "panel": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      }
+    },
+    "beforeHash": "246ba3242332655e88baa7873cd7882a87eb78ebc0577ff880c0af8f7515b8dd",
+    "afterHash": "e6798aab626381e26f93e0b358f417275433f45e96b195f2e590ff6c29215a80",
+    "errors": []
+  },
+  "firstPersonRestore": {
+    "before": {
+      "open": false,
+      "modal": false,
+      "mode": "first-person",
+      "orbit": {
+        "azimuth": 0.29,
+        "elevation": 0.69,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": 0,
+        "targetZ": 0,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 0,
+        "y": 0
+      },
+      "camera": {
+        "p": [
+          0.4773504401198596,
+          0.23,
+          0
+        ],
+        "q": [
+          -0.035769789436966314,
+          -0.7062014742009785,
+          -0.035769789436966314,
+          0.7062014742009783
+        ],
+        "fov": 60
+      },
+      "time": "0.999",
+      "paused": null,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": true,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 657,
+        "top": 0,
+        "right": 1200,
+        "bottom": 657,
+        "left": 0
+      },
+      "panel": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      }
+    },
+    "during": {
+      "open": true,
+      "modal": false,
+      "mode": "perspective",
+      "orbit": {
+        "azimuth": 0.29,
+        "elevation": 0.69,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": 0,
+        "targetZ": 0,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 0,
+        "y": 0
+      },
+      "camera": {
+        "p": [
+          0.8755418709438902,
+          2.5270526134212123,
+          2.9339958284266685
+        ],
+        "q": [
+          -0.33464760948310956,
+          0.13597827868804843,
+          0.04886685961556006,
+          0.9311997182256816
+        ],
+        "fov": 40
+      },
+      "time": "0",
+      "paused": null,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": true,
+      "cameraRestored": false,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 657,
+        "top": 0,
+        "right": 1200,
+        "bottom": 657,
+        "left": 0
+      },
+      "panel": {
+        "x": 380,
+        "y": 361.5,
+        "width": 440,
+        "height": 231.5,
+        "top": 361.5,
+        "right": 820,
+        "bottom": 593,
+        "left": 380
+      }
+    },
+    "after": {
+      "open": false,
+      "modal": false,
+      "mode": "first-person",
+      "orbit": {
+        "azimuth": 0.29,
+        "elevation": 0.69,
+        "distance": 3.97,
+        "topDown": false,
+        "targetX": 0,
+        "targetZ": 0,
+        "dragMode": null,
+        "pointerId": null,
+        "x": 0,
+        "y": 0
+      },
+      "camera": {
+        "p": [
+          0.4773504401198596,
+          0.23,
+          0
+        ],
+        "q": [
+          -0.035769789436966314,
+          -0.7062014742009785,
+          -0.035769789436966314,
+          0.7062014742009783
+        ],
+        "fov": 60
+      },
+      "time": "0",
+      "paused": null,
+      "recordUnchanged": true,
+      "liveUnchanged": true,
+      "aimUnchanged": true,
+      "orbitRestored": true,
+      "cameraRestored": true,
+      "canvas": {
+        "x": 0,
+        "y": 0,
+        "width": 1200,
+        "height": 657,
+        "top": 0,
+        "right": 1200,
+        "bottom": 657,
+        "left": 0
+      },
+      "panel": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      }
+    }
+  },
+  "method": "Real DOM handlers in headless Chromium/SwiftShader; CDP input events; fixture-only accessors for recording and state inspection."
+}
