@@ -22,11 +22,12 @@ test('fullscreen targets only the game scene and toggles back on F',async()=>{
   const doc={fullscreenElement:null,
     exitFullscreen(){calls.push('exit');this.fullscreenElement=null;return Promise.resolve();}};
   const stage={...stageWithClassList(),requestFullscreen(){calls.push('enter');doc.fullscreenElement=stage;return Promise.resolve();}};
-  await toggleSceneFullscreen(stage,doc);
+  const keyboard={lock:async keys=>calls.push(keys.join(',')),unlock:()=>calls.push('unlock')};
+  await toggleSceneFullscreen(stage,doc,{keyboard});
   assert.equal(doc.fullscreenElement,stage);
-  await toggleSceneFullscreen(stage,doc);
+  await toggleSceneFullscreen(stage,doc,{keyboard});
   assert.equal(doc.fullscreenElement,null);
-  assert.deepEqual(calls,['enter','exit']);
+  assert.deepEqual(calls,['enter','Escape','unlock','exit']);
 });
 
 test('fullscreen does not exit another application element',async()=>{
@@ -39,7 +40,7 @@ test('fullscreen does not exit another application element',async()=>{
 test('fullscreen fallback is reversible when embedded browser denies permission',async()=>{
   const stage={...stageWithClassList(),requestFullscreen(){return Promise.reject(new Error('not granted'));}};
   const doc={fullscreenElement:null};
-  await toggleSceneFullscreen(stage,doc);
+  await toggleSceneFullscreen(stage,doc,{keyboard:{lock:async()=>{}}});
   assert.equal(stage.classList.contains(IMMERSIVE_CLASS),true);
   await toggleSceneFullscreen(stage,doc);
   assert.equal(stage.classList.contains(IMMERSIVE_CLASS),false);
@@ -49,6 +50,33 @@ test('fullscreen fallback is reversible when embedded browser denies permission'
 test('starting a game keeps viewport fallback on repeated denied fullscreen requests',async()=>{
   const stage={...stageWithClassList(),requestFullscreen(){return Promise.reject(new Error('denied'));}};
   const doc={fullscreenElement:null};
-  await requestSceneFullscreen(stage,doc);await requestSceneFullscreen(stage,doc);
+  const options={keyboard:{lock:async()=>{}}};
+  await requestSceneFullscreen(stage,doc,options);await requestSceneFullscreen(stage,doc,options);
   assert.equal(stage.classList.contains(IMMERSIVE_CLASS),true);
+});
+
+
+test('without Keyboard Lock immersion never requests native fullscreen that would consume Escape',async()=>{
+  let requested=false;
+  const stage={...stageWithClassList(),requestFullscreen(){requested=true;return Promise.resolve();}};
+  const doc={fullscreenElement:null};
+  await requestSceneFullscreen(stage,doc,{keyboard:null});
+  assert.equal(requested,false);assert.ok(stage.classList.contains(IMMERSIVE_CLASS));
+  assert.equal(doc.fullscreenElement,null);
+});
+test('a denied Escape lock rolls native fullscreen back while preserving viewport immersion',async()=>{
+  let exits=0;
+  const doc={fullscreenElement:null,async exitFullscreen(){exits++;this.fullscreenElement=null;}};
+  const stage={...stageWithClassList(),async requestFullscreen(){doc.fullscreenElement=stage;}};
+  await requestSceneFullscreen(stage,doc,{keyboard:{lock:async()=>{throw new Error('denied');}}});
+  assert.equal(exits,1);assert.equal(doc.fullscreenElement,null);
+  assert.ok(stage.classList.contains(IMMERSIVE_CLASS));
+});
+test('F during a pending native request does not allow a late result to re-enter fullscreen',async()=>{
+  let finish;
+  const doc={fullscreenElement:null,async exitFullscreen(){this.fullscreenElement=null;}};
+  const stage={...stageWithClassList(),requestFullscreen(){return new Promise(resolve=>{finish=()=>{doc.fullscreenElement=stage;resolve();};});}};
+  const pending=requestSceneFullscreen(stage,doc,{keyboard:{lock:async()=>assert.fail('must not lock after F')}});
+  await toggleSceneFullscreen(stage,doc);finish();await pending;
+  assert.equal(doc.fullscreenElement,null);assert.equal(stage.classList.contains(IMMERSIVE_CLASS),false);
 });
