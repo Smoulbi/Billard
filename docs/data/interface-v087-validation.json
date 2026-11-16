@@ -1,0 +1,168 @@
+{
+  "version": "0.87",
+  "measuredAt": "2026-11-16T14:47:42.071944+00:00",
+  "tests": {
+    "passed": 289,
+    "failed": 0,
+    "skipped": 0
+  },
+  "production": {
+    "startup": "loading overlay hidden, WebGL game rendered",
+    "legacyStoredInputMode": "gauge",
+    "actualInputModeAfterReload": "mouse",
+    "pauseOrder": [
+      "REPRENDRE",
+      "OPTIONS",
+      "RECOMMENCER",
+      "MENU PRINCIPAL"
+    ],
+    "firstPauseFocus": "resumeGame",
+    "playerBackgrounds": [
+      "rgba(0, 0, 0, 0)",
+      "rgba(0, 0, 0, 0)"
+    ],
+    "backgroundImages": [
+      "none",
+      "none"
+    ],
+    "font": "Arial, sans-serif",
+    "externalFontLinks": 0,
+    "modeLabels": [
+      "ENTRAÎNEMENT",
+      "JOUER AU 8",
+      "JOUER AU 9"
+    ],
+    "centerDeltaPixels": {
+      "maxX": 0.0078125,
+      "maxY": 0
+    },
+    "radioOpacity": 0,
+    "capturedRuntimeErrors": []
+  },
+  "resumeDuringShot": {
+    "initialMode": "mouse",
+    "chosenMode": "gauge",
+    "paused": true,
+    "shotActive": true,
+    "resumed": true,
+    "menuClosed": true,
+    "advanced": true,
+    "finish": {
+      "steps": 2225,
+      "shotActive": false,
+      "shotSimTime": 9.320833333333125
+    },
+    "errors": []
+  },
+  "responsive": [
+    {
+      "home": {
+        "viewport": [
+          390,
+          844
+        ],
+        "scroll": [
+          390,
+          390
+        ],
+        "font": "Arial, sans-serif",
+        "choices": [
+          {
+            "label": "ENTRAÎNEMENT",
+            "deltaX": 0,
+            "deltaY": 0,
+            "radioOpacity": "0"
+          },
+          {
+            "label": "JOUER AU 8",
+            "deltaX": 0.0078125,
+            "deltaY": 0,
+            "radioOpacity": "0"
+          },
+          {
+            "label": "JOUER AU 9",
+            "deltaX": 0.0078125,
+            "deltaY": 0,
+            "radioOpacity": "0"
+          }
+        ]
+      },
+      "pause": {
+        "rect": {
+          "x": 21,
+          "y": 293,
+          "width": 348,
+          "height": 258,
+          "top": 293,
+          "right": 369,
+          "bottom": 551,
+          "left": 21
+        },
+        "buttons": [
+          "REPRENDRE",
+          "OPTIONS",
+          "RECOMMENCER",
+          "MENU PRINCIPAL"
+        ],
+        "focus": "resumeGame",
+        "paused": true
+      },
+      "resumed": true
+    },
+    {
+      "home": {
+        "viewport": [
+          844,
+          390
+        ],
+        "scroll": [
+          844,
+          844
+        ],
+        "font": "Arial, sans-serif",
+        "choices": [
+          {
+            "label": "ENTRAÎNEMENT",
+            "deltaX": 0.0078125,
+            "deltaY": 0,
+            "radioOpacity": "0"
+          },
+          {
+            "label": "JOUER AU 8",
+            "deltaX": 0.0078125,
+            "deltaY": 0,
+            "radioOpacity": "0"
+          },
+          {
+            "label": "JOUER AU 9",
+            "deltaX": 0.0078125,
+            "deltaY": 0,
+            "radioOpacity": "0"
+          }
+        ]
+      },
+      "pause": {
+        "rect": {
+          "x": 247,
+          "y": 66,
+          "width": 350,
+          "height": 258,
+          "top": 66,
+          "right": 597,
+          "bottom": 324,
+          "left": 247
+        },
+        "buttons": [
+          "REPRENDRE",
+          "OPTIONS",
+          "RECOMMENCER",
+          "MENU PRINCIPAL"
+        ],
+        "focus": "resumeGame",
+        "paused": true
+      },
+      "resumed": true
+    }
+  ],
+  "method": "Production welcome/game/pause captured in Chromium156 WebGL/SwiftShader. Detailed physics and responsive checks use temporary state-inspection fixture with stopped rendering loop; shot stepped by original physics. Group assignments injected only for HUD screenshot; no tracked test hooks."
+}
