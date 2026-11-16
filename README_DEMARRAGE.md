@@ -1,8 +1,8 @@
-# FRAME v0.78 — projet complet
+# FRAME v0.79 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.78 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.79 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -432,3 +432,10 @@ Voir `docs/SONS_v0.77.md`.
 Le son des bandes utilise le WAV retouché et approuvé par l’utilisateur, conservé
 tel quel. Les autres sons et la courbe de volume de la 0.77 sont conservés.
 Voir `docs/SONS_v0.78.md`.
+
+
+## Version 0.79 — bandes légèrement atténuées
+
+Le son des bandes est baissé de 1 dB (amplitude ×0,89125 environ).
+Le WAV fourni reste intact ; les autres sons gardent leur niveau.
+Voir `docs/SONS_v0.79.md`.

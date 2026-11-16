@@ -1,4 +1,4 @@
-import {createImpactAudio} from './impact-audio.js?v=0.78';
+import {createImpactAudio} from './impact-audio.js?v=0.79';
 import {ShotReplay} from './shot-replay.js?v=0.69';
 import {railCutaway} from './rail-visibility.js?v=0.66';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
@@ -143,7 +143,7 @@ const cushionSeam = new THREE.MeshStandardMaterial({color:0x075375,roughness:0.9
 const leather = new THREE.MeshStandardMaterial({color:0x101719,roughness:0.90,
   metalness:0,side:THREE.DoubleSide});
 const matteBlack = new THREE.MeshStandardMaterial({color:0x030709,roughness:0.99});
-const brass = new THREE.MeshStandardMaterial({color:0xaab3b5,roughness:0.34,metalness:0.78});
+const brass = new THREE.MeshStandardMaterial({color:0xaab3b5,roughness:0.34,metalness:0.79});
 const darkMetal = new THREE.MeshStandardMaterial({color:0x263238,roughness:0.46,metalness:0.55});
 // Distinct graphite joint replacing the gold corner plate of a real table.
 // It abuts the wooden cap, without being merged into its oversized cutout.
@@ -159,7 +159,7 @@ const pearlMaterial = new THREE.MeshPhysicalMaterial({color:0xe6e9e5,roughness:0
 const apronMaterial = new THREE.MeshPhysicalMaterial({color:0xffffff,
   roughness:0.48,metalness:0,clearcoat:0.22,clearcoatRoughness:0.36,envMapIntensity:0.65});
 const brushedAluminium = new THREE.MeshStandardMaterial({color:0x9cabb1,
-  roughness:0.38,metalness:0.78,side:THREE.DoubleSide});
+  roughness:0.38,metalness:0.79,side:THREE.DoubleSide});
 const lowerRevealMaterial = new THREE.MeshStandardMaterial({color:0x0a1216,
   roughness:0.62,metalness:0.28});
 const netThread = new THREE.LineBasicMaterial({color:0x68767b,transparent:true,opacity:0.45});
@@ -1462,7 +1462,7 @@ function makeCueAndGuides() {
   aimLine.renderOrder=5;scene.add(aimLine);
   deflectionLine=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineDashedMaterial({color:0xa6dd7a,dashSize:0.021,gapSize:0.012,transparent:true,opacity:0.98,depthTest:false}));
   deflectionLine.renderOrder=6;scene.add(deflectionLine);
-  objectLine=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineDashedMaterial({color:0xe9ce80,dashSize:0.028,gapSize:0.02,transparent:true,opacity:0.78,depthTest:false}));
+  objectLine=new THREE.Line(new THREE.BufferGeometry(),new THREE.LineDashedMaterial({color:0xe9ce80,dashSize:0.028,gapSize:0.02,transparent:true,opacity:0.79,depthTest:false}));
   objectLine.renderOrder=5;scene.add(objectLine);
   ghostMarker=new THREE.Mesh(new THREE.TorusGeometry(RADIUS*1.05,0.0023,6,40),new THREE.MeshBasicMaterial({color:0xc6f0a2,transparent:true,opacity:0.8,depthTest:false}));
   ghostMarker.rotation.x=Math.PI/2;ghostMarker.renderOrder=5;scene.add(ghostMarker);

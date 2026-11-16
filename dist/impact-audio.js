@@ -6,6 +6,9 @@ export function impactGain(speed) {
   return level<1 ? Math.sqrt(level) : level;
 }
 
+// Slight cushion-only trim (-1 dB); keep the supplied WAV untouched.
+const CUSHION_GAIN=10**(-1/20);
+
 const sampleURLs=Object.fromEntries(['cue','ball','cushion'].map(kind=>
   [kind,new URL(`./audio/${kind}.wav${kind==='cushion'?'?v=0.78':''}`,import.meta.url).href]));
 
@@ -90,7 +93,7 @@ export function createImpactAudio({
   }
   function available() {return !disposed&&!muted&&context?.state==='running'&&master;}
   function play(kind,speed) {
-    const amplitude=impactGain(speed);
+    const amplitude=impactGain(speed)*(kind==='cushion'?CUSHION_GAIN:1);
     if(!available()||!amplitude||!buffers.has(kind))return false;
     try {
       const source=context.createBufferSource();source.buffer=buffers.get(kind);
