@@ -2030,7 +2030,7 @@ function refreshPlacementUI() {
       'CAMÉRA FIXE AU POINT DE TIR · V : CHANGER DE VUE':
       document.pointerLockElement===el.gameCanvas?
       (powerInputMode==='mouse'?(strokePhase==='spin'?'DÉPLACEZ LE POINT ROUGE · CLIC DROIT : PRÉCISION · S : VALIDER · ÉCHAP : OPTIONS':strokePhase==='stroke'?'BAS : RECULER · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':'SOURIS : VISER · CLIC GAUCHE : GESTE DE TIR · S : EFFET · ÉCHAP : RÉGLAGES'):
-      'SOURIS ↔ : VISER · ↕ : HAUTEUR · CLIC DROIT : PRÉCISION · CLIC GAUCHE / S / ÉCHAP : OPTIONS'):
+      'SOURIS ↔ : VISER · ↕ : HAUTEUR · CLIC DROIT : PRÉCISION · CLIC GAUCHE / S : LIBÉRER LA SOURIS · ÉCHAP : OPTIONS'):
       'VISÉE FIGÉE · RÉGLEZ LE COUP · CLIQUEZ SUR LA TABLE OU REPRENDRE LA VISÉE POUR VISER';
   }
   if(training?.editing)el.sceneHint.textContent=training.addNumber!==null?

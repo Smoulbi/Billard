@@ -24,14 +24,49 @@ Le son des bandes remonte de 2 dB : facteur total `10 ** (-6 / 20)` par rapport
 au WAV utilisateur. Le volume général multiplie le bus audio existant, sans
 démuter un son coupé. Le WAV et les autres gains par famille sont conservés.
 
-## Point de reprise
+## Validation et limites
 
-Suite complète exécutée : **283 tests réussis, 0 échec, 0 ignoré**. Les essais
-navigateur confirment pause/reprise, sortie de capture par Échap, volume et mode
-mémorisés, redémarrage et retour à l’accueil. Le jeu de la 9 conserve sa cible
-et le joueur de casse. Les options tiennent dans les fenêtres 390×844 et 844×390
-sans débordement horizontal. Relectures audio, HTML/CSS et intégration exécutées.
-Les résultats audio natifs sont dans `data/impact-audio-v082-validation.json`.
+Suite complète : **283 tests réussis, 0 échec, 0 ignoré**. Les tests ajoutés
+couvrent la pause/reprise du dialogue, les groupes du HUD, le plein écran de
+repli et le volume partagé, y compris mute et valeurs invalides. Les autres
+moteurs, règles et paramètres n’ont pas été modifiés.
 
-À terminer avant main : derniers contrôles visuels après ajustement des boutons
-sur téléphone, sauvegarde des preuves et relecture finale du diff.
+Essais navigateur exécutés : accueil/options, pause pendant un tir (positions
+et temps simulé figés), reprise par Échap, redémarrage avec les mêmes réglages,
+retour à l’accueil pendant un tir, 8/9/entraînement, visée souris accessible
+sans ouvrir le dock, capture réelle du pointeur et options par Échap, volume
+et mode conservés après rechargement. Les groupes pleines/rayées et les billes
+empochées ont été contrôlés avec une position de test du HUD.
+
+Les 57 lignes de calibration sont produites depuis les options et l’export est
+activé. Le scénario de laboratoire « Bande + effet » charge une table prête et
+ferme les options pour jouer. Aucun événement error/unhandledrejection observé
+dans les essais instrumentés. Relectures indépendantes HTML/CSS, intégration,
+menus et audio terminées, y compris corrections vérifiées avant livraison.
+
+Les options tiennent dans des fenêtres 390×844 et 844×390 sans débordement
+horizontal ; caméra, placement et options restent cliquables à côté du panneau
+jauge. Sur téléphone, le panneau latéral reste repliable pour dégager la table.
+Les captures bureau proviennent du jeu de production avec WebGL 2. Pour les
+contrôles détaillés, un harnais temporaire expose les états sans modifier les
+sources suivies, arrête le rendu logiciel et avance le moteur par ses pas fixes.
+Les captures mobiles vérifient la disposition avec ce harnais. Aucune mesure
+de performance sur GPU ni écoute subjective n’est revendiquée.
+
+L’entrée effective en plein écran natif n’a pas été établie dans Chromium sans
+interface ; les tests vérifient la demande sur lancement/reprise, le repli sur
+la fenêtre et le menu Échap. Le navigateur garde le contrôle de sa permission.
+
+Les rendus Web Audio natifs confirment la hausse de 2 dB des bandes à huit
+niveaux, des pics isolés queue/bille identiques et huit rafales sans saturation
+dans les cas testés. Méthode hors ligne et limites : `SONS_v0.76.md`.
+
+Preuves : `data/interface-v082-validation.json` et
+`data/impact-audio-v082-validation.json`.
+
+## Captures
+
+- [Accueil](data/interface-v082-home.png)
+- [Jauge latérale et HUD](data/interface-v082-gauge.png)
+- [Options](data/interface-v082-options.png)
+- [Options sur téléphone](data/interface-v082-options-mobile.png)

@@ -1,0 +1,228 @@
+{
+  "version": "0.82",
+  "measuredAt": "2026-11-16T13:19:07.484586+00:00",
+  "browser": "Chromium 156 headless, WebGL 2 via SwiftShader",
+  "production": {
+    "startup": "loading overlay hidden, perspective camera, stage1440x857 matches viewport",
+    "capturedRuntimeErrors": [],
+    "calibration": {
+      "rows": 57,
+      "exportEnabled": true
+    },
+    "laboratory": {
+      "scenario": "bank",
+      "state": "SCÉNARIO PRÊT",
+      "optionsClosed": true
+    }
+  },
+  "functionalHarness": "Actual game with temporary inspection helpers; renderer loop stopped, physics advanced by original fixed-step function for shot completion; no tracked source hooks added.",
+  "checks": [
+    {
+      "name": "options accueil, volume et mode",
+      "opened": true,
+      "paused": true,
+      "closed": true,
+      "mode": "gauge",
+      "volume": "0.42",
+      "volumeLabel": "42 %"
+    },
+    {
+      "name": "pause pendant tir",
+      "shotActive": true,
+      "paused": true,
+      "timeBefore": 0,
+      "timeAfter": 0,
+      "positionsUnchanged": true,
+      "shotsUnchanged": true
+    },
+    {
+      "name": "reprise Échap et fin du tir",
+      "resumed": true,
+      "menu": false,
+      "finish": {
+        "steps": 2296,
+        "shotActive": false,
+        "shotSimTime": 9.566666666666444
+      }
+    },
+    {
+      "name": "recommencer mêmes réglages",
+      "settings": {
+        "mode": "training",
+        "callPocket": true,
+        "breaker": "0"
+      },
+      "shots": 0,
+      "balls": 1,
+      "menu": false,
+      "home": false
+    },
+    {
+      "name": "menu principal pendant tir",
+      "shotActive": false,
+      "paused": false,
+      "home": true,
+      "restartSettings": null
+    },
+    {
+      "name": "Échap depuis souris capturée",
+      "open": true,
+      "paused": true
+    },
+    {
+      "name": "jeu de la 9 et redémarrage",
+      "mode": "nine",
+      "current": 1,
+      "target": "TOUCHER LA 1 EN PREMIER",
+      "settingsPreserved": true,
+      "errors": []
+    }
+  ],
+  "persistenceAfterReload": {
+    "volumePercent": 42,
+    "inputMode": "gauge",
+    "gaugeDockOpen": true
+  },
+  "finalNineBallLayout": {
+    "target": "TOUCHER LA 1 EN PREMIER",
+    "position": "static"
+  },
+  "directMouseAim": {
+    "visibleFromPerspective": true,
+    "capturedPointerElement": "gameCanvas",
+    "escapeOpensOptions": true
+  },
+  "responsive": [
+    {
+      "orientation": "portrait",
+      "options": {
+        "viewport": [
+          390,
+          844
+        ],
+        "dialog": {
+          "x": 19,
+          "y": 19,
+          "width": 352,
+          "height": 806,
+          "top": 19,
+          "right": 371,
+          "bottom": 825,
+          "left": 19
+        },
+        "scroll": [
+          390,
+          390
+        ],
+        "errors": []
+      },
+      "gauge": {
+        "viewport": [
+          390,
+          844
+        ],
+        "dock": {
+          "x": 126,
+          "y": 225,
+          "width": 252,
+          "height": 607,
+          "top": 225,
+          "right": 378,
+          "bottom": 832,
+          "left": 126
+        },
+        "powerVisible": true,
+        "spinVisible": true,
+        "controls": [
+          {
+            "id": "viewButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "placeCueButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "optionsButton",
+            "visible": true,
+            "unobstructed": true
+          }
+        ],
+        "scroll": [
+          390,
+          390
+        ]
+      }
+    },
+    {
+      "orientation": "landscape",
+      "options": {
+        "viewport": [
+          844,
+          390
+        ],
+        "dialog": {
+          "x": 52,
+          "y": 20,
+          "width": 740,
+          "height": 350,
+          "top": 20,
+          "right": 792,
+          "bottom": 370,
+          "left": 52
+        },
+        "scroll": [
+          844,
+          844
+        ],
+        "errors": []
+      },
+      "gauge": {
+        "viewport": [
+          844,
+          390
+        ],
+        "dock": {
+          "x": 570,
+          "y": 123,
+          "width": 260,
+          "height": 255,
+          "top": 123,
+          "right": 830,
+          "bottom": 378,
+          "left": 570
+        },
+        "powerVisible": true,
+        "spinVisible": true,
+        "controls": [
+          {
+            "id": "viewButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "placeCueButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "optionsButton",
+            "visible": true,
+            "unobstructed": true
+          }
+        ],
+        "scroll": [
+          844,
+          844
+        ]
+      }
+    }
+  ],
+  "limits": [
+    "Native fullscreen entry not established in headless browser; viewport fallback and Escape options exercised. Request is made on launch/resume user gesture.",
+    "HUD assigned groups fixture uses a test state; group assignment and game rules covered by existing suites.",
+    "No subjective listening or GPU performance claim."
+  ]
+}
