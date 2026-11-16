@@ -14,4 +14,5 @@ les pics isolés queue/bille-bille sont identiques. Les WAV restent inchangés.
 Résultats : `data/impact-audio-v081-validation.json`. Méthode et limites :
 `SONS_v0.76.md` (adaptateur d’état hors ligne, aucune écoute subjective revendiquée).
 
-Suite complète et relecture à terminer avant livraison.
+Suite complète : **276 tests réussis, 0 échec, 0 ignoré**. Relecture indépendante
+terminée sans défaut bloquant.
