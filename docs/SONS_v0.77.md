@@ -23,6 +23,14 @@ utilisateur.
 
 ## Validation
 
-Dix tests audio ciblés réussis. Mesures Web Audio et suite complète à terminer
-avant livraison sur main. Le script `scripts/validate-impact-audio.mjs` vérifie
-la nouvelle loi ; les résultats 0.76 restent archivés sans réécriture.
+Dix tests audio ciblés réussis. Douze comparaisons de signaux rendus par le
+lecteur réel avec OfflineAudioContext natif vérifient la nouvelle courbe, avec
+une erreur maximale par échantillon de 3,46 × 10⁻⁸. Les huit rafales de douze et
+cent demandes restent sous le niveau de saturation (pic maximal : 0,92983),
+avec douze voix au plus. Les résultats sont conservés dans
+`data/impact-audio-v077-validation.json`.
+
+Le script `scripts/validate-impact-audio.mjs` vérifie désormais la nouvelle loi ;
+les résultats 0.76 restent archivés sans réécriture. La méthode et l’adaptateur
+d’état d’OfflineAudioContext sont décrits dans `SONS_v0.76.md`.
+Suite complète à terminer avant livraison sur main.
