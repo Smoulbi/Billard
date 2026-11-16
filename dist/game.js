@@ -2552,12 +2552,13 @@ function bindControls() {
       else if(el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu.open();
       return;
     }
-    const editingText=e.target instanceof HTMLTextAreaElement||e.target instanceof HTMLSelectElement||
+    const typingText=e.target instanceof HTMLTextAreaElement||
       (e.target instanceof HTMLInputElement&&!['range','checkbox','radio','button'].includes(e.target.type))||e.target?.isContentEditable;
-    if(!editingText&&isFullscreenShortcut(e)){
+    const editingText=typingText||e.target instanceof HTMLSelectElement;
+    if(!typingText&&isFullscreenShortcut(e)){
       e.preventDefault();toggleSceneFullscreen(stage,document).finally(()=>requestAnimationFrame(resize));return;
     }
-    if(!editingText&&isCameraSettingsShortcut(e)&&
+    if((!editingText||menu.dialog===el.cameraDialog)&&isCameraSettingsShortcut(e)&&
       (el.matchOverlay.hidden||menu.isOpen)&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden){
       e.preventDefault();if(replayPlayback)stopShotReplay();openCameraSettings();return;
     }
