@@ -1,6 +1,9 @@
 // The chosen samples are documented, together with their licences, in audio/.
 export function impactGain(speed) {
-  return Number.isFinite(speed) && speed > 0 ? Math.min(speed,24)/12 : 0;
+  if(!Number.isFinite(speed)||speed<=0)return 0;
+  const level=Math.min(speed,24)/12;
+  // Lift quiet impacts smoothly without changing full-speed hits or the cap.
+  return level<1 ? Math.sqrt(level) : level;
 }
 
 const sampleURLs=Object.fromEntries(['cue','ball','cushion'].map(kind=>

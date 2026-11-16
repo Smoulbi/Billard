@@ -1,8 +1,8 @@
-# FRAME v0.76 — projet complet
+# FRAME v0.77 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.76 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.77 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -417,3 +417,11 @@ Trois échantillons locaux distincts accompagnent la queue, les collisions entre
 billes et les bandes. Leur amplitude suit la vitesse d’impact, sans plancher.
 Le bouton SON coupe immédiatement les voix ; le replay reste silencieux.
 Voir `docs/SONS_v0.76.md` pour les sources, licences et validations.
+
+
+## Version 0.77 — petits impacts plus présents
+
+Le niveau des impacts doux est relevé progressivement afin de conserver un petit
+son à faible vitesse. Les impacts forts gardent leur niveau. Les échantillons,
+le bouton SON, le replay silencieux et la physique sont conservés.
+Voir `docs/SONS_v0.77.md`.

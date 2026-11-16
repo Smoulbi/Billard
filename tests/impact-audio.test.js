@@ -22,9 +22,18 @@ function rig(options={}) {
   return {audio,context,sources,gains,requests,decoded,compressors,get factories(){return factories;}};
 }
 
-test('impact amplitude is linear for quiet impacts and capped only at 24 m/s',()=>{
+test('quiet impacts are lifted smoothly while strong impacts retain their gain and cap',()=>{
   for(const invalid of [0,-1,NaN,Infinity,-Infinity,undefined,null,'12'])assert.equal(impactGain(invalid),0);
-  for(const speed of [0.0001,0.045,0.1,1,6,12])assert.equal(impactGain(speed*2),impactGain(speed)*2);
+  let previous=0;
+  for(const speed of [0.0001,0.045,0.1,0.5,1,6,12,18,24]){
+    const gain=impactGain(speed);
+    assert.ok(gain>previous);previous=gain;
+    if(speed<12)assert.ok(gain>speed/12);
+    else assert.equal(gain,speed/12);
+  }
+  assert.ok(impactGain(0.045)>0.06,'threshold-level collisions receive the intended quiet-impact boost');
+  assert.ok(impactGain(1e-12)<1e-6,'no artificial minimum or sound at rest');
+  assert.ok(Math.abs(impactGain(12-1e-8)-impactGain(12+1e-8))<1e-8);
   assert.equal(impactGain(12),1);assert.equal(impactGain(24),2);assert.equal(impactGain(100),2);
 });
 
@@ -40,7 +49,7 @@ test('preparation is context-free and shares exactly three downloads and decodes
     assert.equal(r.audio.play(kind,0.12),true);
     assert.equal(r.sources[index].buffer.data,r.decoded[index]);
     assert.equal(r.sources[index].playbackRate.value,1);
-    assert.equal(r.gains[index+1].gain.value,0.01);
+    assert.equal(r.gains[index+1].gain.value,0.1);
   }
   assert.equal(r.gains[0].gain.value,0.24);
   assert.equal(r.compressors[0].threshold.value,-12);
