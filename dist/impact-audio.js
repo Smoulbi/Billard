@@ -6,8 +6,8 @@ export function impactGain(speed) {
   return level<1 ? Math.sqrt(level) : level;
 }
 
-// Cushion-only trim (-3 dB total); keep the supplied WAV untouched.
-const CUSHION_GAIN=10**(-3/20);
+// Cushion-only trim (-8 dB total); keep the supplied WAV untouched.
+const CUSHION_GAIN=10**(-8/20);
 
 const sampleURLs=Object.fromEntries(['cue','ball','cushion'].map(kind=>
   [kind,new URL(`./audio/${kind}.wav${kind==='cushion'?'?v=0.78':''}`,import.meta.url).href]));

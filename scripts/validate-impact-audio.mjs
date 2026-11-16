@@ -10,7 +10,7 @@ const socket=new WebSocket(page.webSocketDebuggerUrl);
 await new Promise(resolve=>socket.addEventListener('open',resolve,{once:true}));
 try {
  const expression=`(${async function validate() {
-  const {createImpactAudio}=await import(new URL('./impact-audio.js?v=0.80',location.href));
+  const {createImpactAudio}=await import(new URL('./impact-audio.js?v=0.81',location.href));
   const rate=48000;
   async function render(kinds,speed,count,maxVoices=12) {
    const offline=new OfflineAudioContext(2,rate,rate);
