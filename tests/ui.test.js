@@ -1,3 +1,4 @@
+import {runInNewContext} from 'node:vm';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -37,4 +38,29 @@ test('victory dialog is wired to the match-ending state and restart controls',()
   assert.match(html,/id="victoryNewMatch"/);
   assert.match(game,/if\(isWon\)showVictoryScreen\(\)/);
   assert.match(game,/el\.victoryNewMatch\.addEventListener\('click',showMatchSetup\)/);
+});
+
+
+test('the pre-shot call panel is visible only in eight-ball playing with calls enabled',()=>{
+  const source=readFileSync(new URL('../dist/game.js',import.meta.url),'utf8');
+  const functionSource=source.slice(source.indexOf('function refreshCallUI()'),source.indexOf('function captureTrainingSnapshot()'));
+  for(const [match,expected] of [
+    [null,false],
+    [{mode:'eight',phase:'playing',callPocket:false},false],
+    [{mode:'eight',phase:'playing',callPocket:true},true],
+    [{mode:'eight',phase:'break',callPocket:true},false],
+    [{mode:'eight',phase:'finished',callPocket:true},false],
+    [{mode:'nine',phase:'playing',callPocket:true},false]
+  ]){
+    const classes={toggle(){}};
+    const el={callPanel:{hidden:true,classList:classes},
+      calledBall:{value:'',replaceChildren(){}},
+      safetyButton:{classList:classes,setAttribute(){}},
+      calledPockets:{querySelectorAll:()=>[]},callHint:{}};
+    runInNewContext(functionSource+';refreshCallUI();',{
+      match:match?{...match,groups:[null,null],current:0}:null,el,
+      balls:[],safetyCalled:false,chosenPocket:null,groupOf:()=>null,Option:class {}
+    });
+    assert.equal(!el.callPanel.hidden,expected,JSON.stringify(match));
+  }
 });

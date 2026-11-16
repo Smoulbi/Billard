@@ -926,7 +926,7 @@ function refreshMatchUI() {
 }
 
 function refreshCallUI() {
-  const visible=Boolean(match&&match.mode==='eight'&&match.phase==='playing');
+  const visible=Boolean(match&&match.mode==='eight'&&match.phase==='playing'&&match.callPocket);
   el.callPanel.hidden=!visible;
   if(!visible)return;
   el.callPanel.classList.toggle('auto-mode',!match.callPocket);

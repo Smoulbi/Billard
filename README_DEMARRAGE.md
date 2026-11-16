@@ -1,8 +1,8 @@
-# FRAME v0.83 — projet complet
+# FRAME v0.84 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.83 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.84 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -476,3 +476,9 @@ le mode geste souris n’affiche aucun panneau de puissance/effet. Le bandeau de
 joueurs est réduit et les compteurs, messages de statut et libellés superflus
 sont retirés de la vue. Seul le jeu de la 9 affiche les billes restantes au centre.
 Voir `docs/INTERFACE_v0.83.md`.
+
+
+## Version 0.84 — partie sans annonce
+
+Le bloc « Annonce avant le coup » est entièrement masqué dans une partie sans
+annonce. Il reste disponible en jeu de la 8 avec annonce obligatoire.
