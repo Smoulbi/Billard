@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Peskin, 2020",
+    "url": "https://math.nyu.edu/~peskin/Collision_of_Billiard_Balls_in_3D_with_Spin_and_Friction.pdf",
+    "sha256": "56bdc789f2d1fa54d498322430332234cdd134ee895b0ff3c584933dc4edc429",
+    "consulted": "2026-11-16",
+    "scope": "Note théorique, p. 1–10, restriction au glissement p. 10."
+  },
+  {
+    "title": "Alciatore, TP A-14",
+    "url": "https://drdavepoolinfo.com/technical_proofs/new/TP_A-14.pdf",
+    "sha256": "285c74fc2387abc405e0aeacbb78c750bc57e614f9df6f0c97cba7a088a154e3",
+    "consulted": "2026-11-16",
+    "scope": "Equations 3–15 ; ajustement Marlow p. 4. Livre original non consulté."
+  },
+  {
+    "title": "Kim, 2024",
+    "url": "https://arxiv.org/abs/2402.13258",
+    "sha256": "3e984df0682d2c22bf493e85c7fc4f19a12eef7a65d3bf3319c3cd17443a74d9",
+    "consulted": "2026-11-16",
+    "scope": "Prépublication théorique, notamment introduction et rôle du support."
+  },
+  {
+    "title": "Mathavan et al., 2014",
+    "url": "https://doi.org/10.1007/s12283-014-0158-y",
+    "sha256": "1b4e6eb2e5cba338bdf33021b5a945c057782f7b84ff605c05b5681418dd4df9",
+    "consulted": "2026-11-16",
+    "scope": "Métadonnées seulement, pas de texte intégral obtenu ni de données utilisées."
+  }
+]

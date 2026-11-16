@@ -551,3 +551,5 @@ Les recherches pour les prochaines améliorations (collisions en vol, bandes 3D,
 ## Version 0.94 — caméra libre pendant le replay
 
 Le replay démarre en perspective. Clic droit pour tourner, molette enfoncée pour déplacer et défilement pour zoomer, y compris en pause et à la fin de la lecture. V ou le bouton de vue alterne entre dessus et vue libre. Quitter le replay restaure la caméra et les réglages d’orbite du jeu. Les commandes de partie sont masquées pendant la lecture.
+
+La recherche approfondie sur le frottement en vol est dans [FROTTEMENT_EN_VOL_v0.94.md](docs/FROTTEMENT_EN_VOL_v0.94.md). Elle inclut une formulation pour deux sphères libres et 500 contrôles synthétiques, séparés du moteur du jeu et des validations expérimentales restant à faire.
