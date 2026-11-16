@@ -17,9 +17,41 @@ ne peut plus prendre le pas sur la blanche de la première préparation suivante
 La transition vers le dessus désactive la découpe ; les autres vues restent
 intactes. Aucun paramètre physique n’est modifié.
 
-## Point de reprise
+## Validation et limites
 
-Gestion plein écran sauvegardée puis intégration caméra/découpe réalisée.
-Trente et un contrôles ciblés passent. Restent : suite complète, navigateur,
-Échap/F dans les menus, C et réglages, première préparation près d’une bande
-après casse ; captures et bilan final avant main.
+- Suite complète : **295 tests réussis, 0 échec, 0 ignoré**. Trente et un contrôles
+  ciblés UI/menus/plein écran/caméra/bandes repassés après les derniers ajustements.
+- Tests plein écran : capture d’Échap acceptée, refusée ou absente ; F pendant
+  une demande encore en cours ; absence de sortie d’un autre élément ; repli
+  immersif réversible. Les sorties de sécurité du navigateur ne sont pas bloquées.
+- Dans Chromium sans interface, Échap ouvre la pause et conserve une scène
+  immersive 1440×857. F, même depuis le menu, crée une vue fenêtrée avec marges
+  de 16 px ; Reprendre conserve ce choix, et F restaure l’immersion. L’entrée
+  native n’a pas été établie dans cet environnement : les chemins Keyboard Lock
+  sont vérifiés avec des doublures de test. Un navigateur sans autorisation
+  de capture d’Échap utilise la vue immersive dans sa fenêtre.
+- C ouvre et ferme la caméra, y compris avec le sélecteur focalisé. La sélection
+  première personne et les réglages FOV, hauteur et recul sont effectifs. Depuis
+  Options, le retour caméra conserve la page Options et la pause ; Échap depuis
+  un accès direct caméra ouvre le menu pause.
+- Une casse d’entraînement complète a été exécutée. Ensuite, un état de test place
+  la blanche à une bande, conserve une ancienne origine et désactive les plans :
+  dès la première image, les plans sont réactivés et le point derrière la blanche
+  appartient bien à la zone découpée. Les tests couvrent aussi les quatre bandes,
+  les angles, le tapis préservé et le désengagement vers le dessus.
+- Fenêtres 390×844 et 844×390 : réglages caméra dans l’écran, sans débordement
+  horizontal ; défilement disponible dans l’orientation courte. Aucun événement
+  error/unhandledrejection observé pendant les essais instrumentés.
+
+Le contrôle de découpe est une reproduction d’état, pas un enregistrement du
+bug original de l’utilisateur. Il vérifie la mise à jour qui manquait aux images
+sans interaction caméra. Les contrôles détaillés utilisent un harnais temporaire
+non livré, avec rendu réduit/arrêté entre les pas. Aucune mesure de performance GPU
+n’est revendiquée. Les règles, sons et paramètres physiques sont inchangés.
+
+Preuves : `data/interface-v088-validation.json`.
+
+## Captures
+
+- [Caméra](data/interface-v088-camera.png)
+- [Caméra sur téléphone](data/interface-v088-camera-mobile.png)

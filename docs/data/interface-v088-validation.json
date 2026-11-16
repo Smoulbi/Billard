@@ -1,0 +1,137 @@
+{
+  "version": "0.88",
+  "measuredAt": "2026-11-16T15:14:43.019139+00:00",
+  "tests": {
+    "passed": 295,
+    "failed": 0,
+    "skipped": 0,
+    "finalTargetedPassed": 31
+  },
+  "fullscreenLive": {
+    "keyboardLockAPIAvailable": true,
+    "nativeFullscreenObserved": false,
+    "escape": {
+      "pauseOpen": true,
+      "immersive": true,
+      "rect": [
+        0,
+        0,
+        1440,
+        857
+      ]
+    },
+    "f": {
+      "windowed": true,
+      "rect": [
+        16,
+        16,
+        1408,
+        825
+      ],
+      "pauseRetained": true
+    },
+    "resumeRespectsWindowedChoice": true,
+    "secondFImmersive": true
+  },
+  "nativePolicyTests": [
+    "Native fullscreen + Escape lock granted, F releases lock and exits",
+    "Lock rejected: exit native, retain viewport immersion",
+    "Keyboard Lock absent: do not enter unsafe native fullscreen",
+    "F while native entry pending: late result cannot restore fullscreen"
+  ],
+  "cameraLive": {
+    "cOpens": true,
+    "cClosesWithSelectFocused": true,
+    "escapeFromCameraOpensPause": true,
+    "immersiveRetained": true,
+    "fovChangedTo": "70°",
+    "runtimeErrors": []
+  },
+  "cameraFixture": {
+    "opened": {
+      "open": true,
+      "paused": true
+    },
+    "labels": [
+      "75°",
+      "35 cm",
+      "70 cm"
+    ],
+    "fromOptions": true,
+    "backToOptions": true,
+    "resumed": true,
+    "immersive": true,
+    "errors": []
+  },
+  "firstViewAfterBreakFixture": {
+    "fired": true,
+    "finish": {
+      "steps": 1949,
+      "shotActive": false,
+      "shotSimTime": 8.120833333333193
+    },
+    "mode": "first-person",
+    "oldPlanesDisabled": true,
+    "firstFrameActivated": true,
+    "rearRailCut": true,
+    "cue": {
+      "num": 0,
+      "x": -1.241425,
+      "z": 0.1,
+      "vx": 0,
+      "vz": 0
+    },
+    "errors": []
+  },
+  "responsive": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "rect": {
+        "x": 19,
+        "y": 158.25,
+        "width": 352,
+        "height": 527.5,
+        "top": 158.25,
+        "right": 371,
+        "bottom": 685.75,
+        "left": 19
+      },
+      "scroll": [
+        390,
+        390
+      ],
+      "paused": true,
+      "settingsVisible": true,
+      "scrollable": false,
+      "errors": []
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "rect": {
+        "x": 187,
+        "y": 16,
+        "width": 470,
+        "height": 358,
+        "top": 16,
+        "right": 657,
+        "bottom": 374,
+        "left": 187
+      },
+      "scroll": [
+        844,
+        844
+      ],
+      "paused": true,
+      "settingsVisible": true,
+      "scrollable": true,
+      "errors": []
+    }
+  ],
+  "method": "Production Chromium156 WebGL startup verifies keyboard/UI and viewport immersion. Native fullscreen success not established headless; permission/lock success, rejection and races covered by test doubles. Physics/cutaway fixture plays a full training break, then puts the cue near a rail with disabled clip planes and stale origin; first animation frame must refresh all planes. Fixture rendering reduced/stopped between steps; no tracked hooks."
+}
