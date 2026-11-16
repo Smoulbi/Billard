@@ -1,4 +1,5 @@
-import {createImpactAudio} from './impact-audio.js?v=0.81';
+import {createGameMenu,playerBallState} from './game-menu.js?v=0.82';
+import {createImpactAudio} from './impact-audio.js?v=0.82';
 import {ShotReplay} from './shot-replay.js?v=0.69';
 import {railCutaway} from './rail-visibility.js?v=0.66';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
@@ -24,7 +25,7 @@ import {newEightBallMatch,adjudicateEightBall,resolveEightBallDecision,
 import {predictTrajectory} from './trajectory.js?v=0.69';
 import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.69';
 import {panCameraTarget,zoomCamera} from './camera-controls.js';
-import {isFullscreenShortcut,toggleSceneFullscreen,IMMERSIVE_CLASS} from './fullscreen.js';
+import {isFullscreenShortcut,toggleSceneFullscreen,requestSceneFullscreen} from './fullscreen.js';
 import {pocketCollectorRadii,
   pocketMouthTrimOutline,pocketCastingOutline,
   cornerPocketInsertOutline,
@@ -38,9 +39,14 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
+let gamePaused=false;
+let menu=null;
+let sessionSettings=null;
+let pointerWasLocked=false,programmaticPointerUnlock=false;
+let fullscreenWasActive=false,ignoreFullscreenMenuUntil=0;
 let cameraMode='perspective';
 let shotCameraTransition=null;
 let powerInputMode='mouse';
@@ -862,8 +868,24 @@ function newGame() {
 const groupLabel = group => group === 'solid' ? 'PLEINES 1–7' :
   group === 'stripe' ? 'RAYÉES 9–15' : 'TABLE OUVERTE';
 
+function refreshPlayerBalls() {
+  for(let player=0;player<2;player++){
+    const row=player===0?el.playerOneBalls:el.playerTwoBalls;
+    row.replaceChildren(...playerBallState(match,balls,player).map(({num,potted,target})=>{
+      const badge=document.createElement('span');
+      badge.className='mini-ball'+(potted?' potted':'')+(target?' target':'');
+      badge.style.setProperty('--ball-color',BALL_COLORS[num]);
+      badge.style.background=num>=9?`linear-gradient(#f1f1e8 25%,${BALL_COLORS[num]} 25%,${BALL_COLORS[num]} 75%,#f1f1e8 75%)`:BALL_COLORS[num];
+      badge.textContent=String(num);badge.title=`Bille ${num} · ${potted?'empochée':target?'à jouer pour gagner':'sur table'}`;
+      badge.setAttribute('aria-label',badge.title);
+      return badge;
+    }));
+  }
+}
+
 function refreshMatchUI() {
   refreshControlMode();
+  refreshPlayerBalls();
   el.matchPanel.hidden=!match;
   el.modeChip.textContent=training?'ENTRAÎNEMENT':match?(match.mode==='nine'?'JEU DE LA 9':'JEU DE LA 8'):'PRÉPARATION';
   for(let player=0;player<2;player++){
@@ -1040,8 +1062,10 @@ function showMatchSetup() {
 
 function startMatch() {
   void impactAudio.unlock();
+  void requestSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document).then(()=>requestAnimationFrame(resize));
   if(shotActive)return;
   const mode=document.querySelector('input[name=gameMode]:checked')?.value;
+  sessionSettings={mode,callPocket:el.requireCall.checked,breaker:el.breakerSelect.value};
   const nine=mode==='nine';
   training=mode==='training'?createTrainingSession():null;trainingDrag=null;el.trainingEditor.open=false;
   if(training){el.aimAssist.checked=false;el.showTraces.checked=false;}
@@ -1435,6 +1459,7 @@ function updateCounters() {
   const potted=balls.filter(b=>b.num!==0&&!b.active).length;
   el.pottedCount.textContent=String(potted).padStart(2,'0');
   el.ballTotal.textContent=String(balls.filter(b=>b.num!==0).length).padStart(2,'0');
+  refreshPlayerBalls();
   el.ballsProgress.replaceChildren();
   for(let n=1;n<=15;n++) {
     const ball=balls.find(b=>b.num===n);
@@ -1576,7 +1601,7 @@ function updateVisuals() {
 
 function shoot(source='gauge') {
   void impactAudio.unlock();
-  if(replayPlayback)return false;
+  if(gamePaused||replayPlayback)return false;
   if(strokePhase==='spin'||training?.editing)return false;
   if(powerInputMode==='mouse'&&source==='gauge'){prepareMouseAim();return false;}
   const cue=balls.find(b=>b.num===0);
@@ -1833,11 +1858,11 @@ function releaseAimMouse() {
   resetAimSmoothing(aimSmoothing,aim);
   strokePhase='aim';mouseStroke=null;
   firstPerson.locked=true;
-  if(document.pointerLockElement===el.gameCanvas)document.exitPointerLock();
+  if(document.pointerLockElement===el.gameCanvas){programmaticPointerUnlock=true;document.exitPointerLock();}
 }
 
 function captureAimMouse() {
-  if(cameraMode!=='first-person'||shotActive||shotCameraTransition||training?.editing||placementMode||needsCuePlacement||
+  if(gamePaused||cameraMode!=='first-person'||shotActive||shotCameraTransition||training?.editing||placementMode||needsCuePlacement||
     !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
   resetAimSmoothing(aimSmoothing,aim);
   strokePhase='aim';mouseStroke=null;
@@ -1863,7 +1888,7 @@ function toggleSpinSelection() {
 }
 
 function beginMouseStroke() {
-  if(powerInputMode!=='mouse'||cameraMode!=='first-person'||shotActive||
+  if(gamePaused||powerInputMode!=='mouse'||cameraMode!=='first-person'||shotActive||
     document.pointerLockElement!==el.gameCanvas)return;
   if(match?.phase==='playing'&&match.callPocket&&!safetyCalled&&(!el.calledBall.value||chosenPocket===null)){
     releaseAimMouse();setStatus('Annonce incomplète','Annoncez la bille et la poche avant de préparer le geste.',false);return;
@@ -1874,7 +1899,7 @@ function beginMouseStroke() {
 }
 
 function prepareMouseAim() {
-  if(shotActive||training?.editing||needsCuePlacement||placementMode||shotCameraTransition||fallbackCtx||match?.phase==='decision'||match?.phase==='finished'||
+  if(gamePaused||shotActive||training?.editing||needsCuePlacement||placementMode||shotCameraTransition||fallbackCtx||match?.phase==='decision'||match?.phase==='finished'||
     !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
   if(cameraMode!=='first-person'){
     cameraMode='first-person';orbit.topDown=false;updateCamera();updateVisuals();
@@ -1885,6 +1910,7 @@ function prepareMouseAim() {
 function refreshPowerInput() {
   if(fallbackCtx)powerInputMode='gauge';
   const mouse=powerInputMode==='mouse';
+  el.gameCanvas.closest('.scene-frame').dataset.inputMode=powerInputMode;
   el.powerModeButton.closest('.shot-dock').dataset.powerMode=mouse?'mouse':'gauge';
   el.powerModeButton.textContent=mouse?'MODE : GESTE SOURIS':'MODE : JAUGE';
   el.powerModeButton.setAttribute('aria-pressed',String(mouse));
@@ -1901,6 +1927,7 @@ function refreshPowerInput() {
 }
 
 function toggleCamera() {
+  if(gamePaused)return;
   shotCameraTransition=null;
   if(fallbackCtx)return;
   if(training?.editing||placementMode||needsCuePlacement||placementPointer){forcePlacementCamera();return;}
@@ -2056,7 +2083,78 @@ function setSpin(x,y) {
   updateVisuals();
 }
 
+function abandonCurrentShot() {
+  stopShotReplay();releaseAimMouse();impactAudio.stop();
+  shotActive=false;shotEvents=null;shotCameraTransition=null;accumulator=0;
+  for(const ball of balls)stopBall(ball);
+}
+
+function returnToMainMenu() {
+  abandonCurrentShot();menu.close();
+  sessionSettings=null;
+  showMatchSetup();
+}
+
+function restartCurrentMatch() {
+  if(!sessionSettings)return;
+  const settings={...sessionSettings};
+  abandonCurrentShot();menu.close();
+  const choice=document.querySelector(`input[name=gameMode][value="${settings.mode}"]`);
+  choice.checked=true;choice.dispatchEvent(new Event('change'));
+  el.requireCall.checked=settings.callPocket;el.breakerSelect.value=settings.breaker;
+  startMatch();
+}
+
+function bindGameMenu() {
+  const readPreference=key=>{try{return localStorage.getItem(key);}catch{return null;}};
+  const savePreference=(key,value)=>{try{localStorage.setItem(key,String(value));}catch{/* Storage is optional. */}};
+  const volumePreference=readPreference('frame.audio.volume');
+  const volume=volumePreference===null?1:Number(volumePreference);
+  el.volumeSlider.value=String(impactAudio.setVolume(volume)*100);
+  const updateVolume=()=>{
+    const level=impactAudio.setVolume(Number(el.volumeSlider.value)/100);
+    el.volumeValue.textContent=`${Math.round(level*100)} %`;
+    savePreference('frame.audio.volume',level);
+  };
+  updateVolume();
+  el.volumeSlider.addEventListener('input',()=>{updateVolume();void impactAudio.unlock();});
+  soundEnabled=readPreference('frame.audio.muted')!=='true';
+  impactAudio.setMuted(!soundEnabled);el.audioLabel.textContent=soundEnabled?'ON':'OFF';
+  // The main audioToggle listener is registered below; persist after it runs.
+  el.audioToggle.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.audio.muted',!soundEnabled)));
+  const savedMode=readPreference('frame.powerInputMode');
+  if(savedMode==='gauge'||savedMode==='mouse')powerInputMode=savedMode;
+  el.spinSettings.open=powerInputMode==='gauge';
+  refreshPowerInput();
+  el.powerModeButton.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.powerInputMode',powerInputMode)));
+  menu=createGameMenu({dialog:el.optionsDialog,
+    canOpen:()=>el.decisionOverlay.hidden&&el.victoryOverlay.hidden,
+    onOpen:()=>{
+      gamePaused=true;releaseAimMouse();impactAudio.stop();
+      el.restartMatchButton.disabled=!sessionSettings;
+      el.resumeGame.textContent=el.matchOverlay.hidden?'REPRENDRE LA PARTIE':'RETOUR À L’ACCUEIL';
+      el.optionsButton.setAttribute('aria-expanded','true');
+    },
+    onClose:()=>{
+      gamePaused=false;lastFrame=performance.now();
+      if(replayPlayback){replayPlayback.start=performance.now()-(replayPlayback.pausedAt||0)*1000;}
+      el.optionsButton.setAttribute('aria-expanded','false');
+      requestAnimationFrame(resize);
+      (el.matchOverlay.hidden?el.gameCanvas:el.startMatch).focus({preventScroll:true});
+    }
+  });
+  for(const button of [el.optionsButton,el.homeOptionsButton])button.addEventListener('click',()=>menu.open());
+  el.closeOptions.addEventListener('click',()=>menu.close());
+  el.resumeGame.addEventListener('click',()=>{
+    if(el.matchOverlay.hidden)void requestSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document);
+    menu.close();
+  });
+  el.mainMenuButton.addEventListener('click',returnToMainMenu);
+  el.restartMatchButton.addEventListener('click',restartCurrentMatch);
+}
+
 function bindControls() {
+  bindGameMenu();
   el.shotReplayButton.addEventListener('click',startShotReplay);
   el.stopReplayButton.addEventListener('click',stopShotReplay);
   el.replayProgress.addEventListener('input',()=>{
@@ -2134,21 +2232,28 @@ function bindControls() {
     if(powerInputMode==='gauge'){gaugePower=Number(el.powerSlider.value);powerInputMode='mouse';}
     else{powerInputMode='gauge';setPower(gaugePower);}
     el.spinSettings.open=powerInputMode==='gauge';
+    el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').open=true;
     updateVisuals();
-    if(powerInputMode==='mouse')prepareMouseAim();
+    // Switching mode happens in Options; capture starts after resuming the game.
+    requestAnimationFrame(resize);
   });
   el.aimMouseButton.addEventListener('click',captureAimMouse);
   document.addEventListener('pointerlockchange',()=>{
+    const locked=document.pointerLockElement===el.gameCanvas;
+    const escaped=pointerWasLocked&&!locked&&!programmaticPointerUnlock;
+    pointerWasLocked=locked;programmaticPointerUnlock=false;
     if(document.pointerLockElement===el.gameCanvas&&(cameraMode!=='first-person'||shotActive||placementMode||needsCuePlacement||
       !el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden))releaseAimMouse();
     if(document.pointerLockElement!==el.gameCanvas){resetAimSmoothing(aimSmoothing,aim);strokePhase='aim';mouseStroke=null;}
     firstPerson.locked=document.pointerLockElement!==el.gameCanvas||strokePhase==='stroke'||strokePhase==='spin';
     if(document.pointerLockElement===el.gameCanvas)el.gameCanvas.focus({preventScroll:true});
     updateVisuals();
+    if(escaped&&!replayPlayback&&el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu?.open();
   });
   document.addEventListener('pointerlockerror',()=>{strokePhase='aim';mouseStroke=null;firstPerson.locked=true;updateVisuals();});
   window.addEventListener('blur',releaseAimMouse);
   document.addEventListener('mousemove',e=>{
+    if(gamePaused)return;
     if(document.pointerLockElement!==el.gameCanvas||cameraMode!=='first-person'||shotActive||
       placementMode||needsCuePlacement||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
     if(powerInputMode==='mouse'&&strokePhase==='spin'){
@@ -2193,7 +2298,7 @@ function bindControls() {
   el.victoryNewMatch.addEventListener('click',showMatchSetup);
   el.victoryInspect.addEventListener('click',()=>{
     el.victoryOverlay.hidden=true;
-    el.resetButton.focus();
+    el.optionsButton.focus();
   });
   el.calledBall.addEventListener('change',()=>{safetyCalled=false;refreshCallUI();});
   el.calledPockets.querySelectorAll('button').forEach(button=>{
@@ -2205,6 +2310,7 @@ function bindControls() {
   el.gameCanvas.addEventListener('contextmenu',e=>e.preventDefault());
   el.gameCanvas.addEventListener('auxclick',e=>{if(e.button===1)e.preventDefault();});
   el.gameCanvas.addEventListener('pointerdown',e=>{
+    if(gamePaused)return;
     el.gameCanvas.focus({preventScroll:true});
     if(training?.editing&&e.button===0){beginTrainingPlacement(e);return;}
     if(cameraMode==='first-person') {
@@ -2375,12 +2481,12 @@ function bindControls() {
   el.elevationSlider.addEventListener('input',()=>setElevation(el.elevationSlider.value));
   el.shootButton.addEventListener('click',()=>shoot());
   el.resetButton.addEventListener('click',showMatchSetup);
-  el.labLoad.addEventListener('click',loadLabScenario);
-  el.labReplay.addEventListener('click',replayLastShot);
+  el.labLoad.addEventListener('click',()=>{if(shotActive)return;loadLabScenario();if(activeLabScenario){el.matchOverlay.hidden=true;menu.close();}});
+  el.labReplay.addEventListener('click',()=>{if(shotActive)return;menu.close();replayLastShot();});
   el.labExport.addEventListener('click',exportLabCSV);
-  el.showTraces.addEventListener('change',syncTrailLines);
+  el.showTraces.addEventListener('change',()=>{el.trainingTraces.checked=el.showTraces.checked;syncTrailLines();});
   el.viewButton.addEventListener('click',toggleCamera);
-  el.aimAssist.addEventListener('change',updateVisuals);
+  el.aimAssist.addEventListener('change',()=>{el.trainingAssist.checked=el.aimAssist.checked;updateVisuals();});
   el.cushionModel.addEventListener('change',()=>{
     if(shotActive)return;
     previewKey='';previewCache=null;
@@ -2407,18 +2513,23 @@ function bindControls() {
   el.fullscreenButton.addEventListener('click',()=>{
     toggleSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document).finally(()=>{requestAnimationFrame(resize);el.gameCanvas.focus();});
   });
-  document.addEventListener('fullscreenchange',()=>requestAnimationFrame(resize));
+  document.addEventListener('fullscreenchange',()=>{
+    const active=document.fullscreenElement===el.gameCanvas.closest('.scene-frame');
+    if(fullscreenWasActive&&!active&&performance.now()>ignoreFullscreenMenuUntil&&
+      el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu.open();
+    fullscreenWasActive=active;requestAnimationFrame(resize);
+  });
   window.addEventListener('keydown',e=>{
-    if(replayPlayback){if(e.key==='Escape'){e.preventDefault();stopShotReplay();}return;}
     const stage=el.gameCanvas.closest('.scene-frame');
-    if(!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
-    if(e.key==='Escape'&&document.pointerLockElement===el.gameCanvas){releaseAimMouse();return;}
-    if(e.key==='Escape'&&stage.classList.contains(IMMERSIVE_CLASS)){
-      stage.classList.remove(IMMERSIVE_CLASS);
-      requestAnimationFrame(resize);
+    if(e.key==='Escape'){
+      if(e.repeat)return;
       e.preventDefault();
+      if(replayPlayback)stopShotReplay();
+      if(menu.isOpen){ignoreFullscreenMenuUntil=performance.now()+300;menu.close();}
+      else if(el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu.open();
       return;
     }
+    if(gamePaused||replayPlayback||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
     if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement||
       e.target instanceof HTMLButtonElement||e.target?.isContentEditable)return;
     if(isFullscreenShortcut(e)){
@@ -2448,6 +2559,7 @@ function resize() {
 }
 
 function animate(t) {
+  if(gamePaused){lastFrame=t;return;}
   if(replayPlayback){lastFrame=t;animateShotReplay(t);renderer.render(scene,camera);return;}
   const elapsed=Math.max(0,(t-lastFrame)/1000);
   const delta=Math.min(MAX_DT,elapsed);lastFrame=t;

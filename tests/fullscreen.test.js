@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {isFullscreenShortcut,toggleSceneFullscreen,IMMERSIVE_CLASS} from '../dist/fullscreen.js';
+import {isFullscreenShortcut,toggleSceneFullscreen,requestSceneFullscreen,IMMERSIVE_CLASS} from '../dist/fullscreen.js';
 
 const stageWithClassList=()=>{
   const classes=new Set();
@@ -43,4 +43,12 @@ test('fullscreen fallback is reversible when embedded browser denies permission'
   assert.equal(stage.classList.contains(IMMERSIVE_CLASS),true);
   await toggleSceneFullscreen(stage,doc);
   assert.equal(stage.classList.contains(IMMERSIVE_CLASS),false);
+});
+
+
+test('starting a game keeps viewport fallback on repeated denied fullscreen requests',async()=>{
+  const stage={...stageWithClassList(),requestFullscreen(){return Promise.reject(new Error('denied'));}};
+  const doc={fullscreenElement:null};
+  await requestSceneFullscreen(stage,doc);await requestSceneFullscreen(stage,doc);
+  assert.equal(stage.classList.contains(IMMERSIVE_CLASS),true);
 });

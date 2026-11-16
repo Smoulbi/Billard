@@ -1,8 +1,8 @@
-# FRAME v0.81 — projet complet
+# FRAME v0.82 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.81 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.82 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -453,3 +453,16 @@ Voir `docs/SONS_v0.80.md`.
 Le son des bandes baisse encore de 5 dB : atténuation totale de 8 dB par rapport
 au WAV fourni. Les autres sons et le fichier audio sont conservés.
 Voir `docs/SONS_v0.81.md`.
+
+
+## Version 0.82 — interface immersive
+
+La table occupe toute la fenêtre. Le lancement d’une partie demande le plein écran
+natif ; si le navigateur le refuse, la vue reste adaptée à toute la fenêtre.
+Le bandeau supérieur affiche les joueurs, leur groupe, les billes et l’état du jeu.
+Échap ou le bouton Options ouvre le menu et met le jeu en pause. On y trouve le
+volume, le mode de tir, l’assistance, le modèle de bande, le laboratoire et la
+calibration, ainsi que Recommencer et Menu principal. Les commandes puissance/effet
+sont latérales en jauge et masquées en geste souris.
+Les bandes remontent de 2 dB (atténuation totale de 6 dB).
+Voir `docs/INTERFACE_v0.82.md`.

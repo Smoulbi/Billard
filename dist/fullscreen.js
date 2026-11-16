@@ -28,3 +28,16 @@ export function toggleSceneFullscreen(stage, doc) {
   }
   return Promise.resolve();
 }
+
+// Starting/resuming a game requests native fullscreen during its user gesture.
+// Unlike the F toggle, repeated starts never remove the viewport fallback.
+export function requestSceneFullscreen(stage,doc) {
+  if(doc.fullscreenElement)return Promise.resolve();
+  const fallback=()=>stage.classList.add(IMMERSIVE_CLASS);
+  try {
+    if(!stage.requestFullscreen){fallback();return Promise.resolve();}
+    return Promise.resolve(stage.requestFullscreen()).then(()=>{
+      stage.classList.remove(IMMERSIVE_CLASS);
+    }).catch(fallback);
+  }catch {fallback();return Promise.resolve();}
+}
