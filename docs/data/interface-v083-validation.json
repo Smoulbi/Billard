@@ -1,0 +1,205 @@
+{
+  "version": "0.83",
+  "measuredAt": "2026-11-16T13:40:12.848627+00:00",
+  "productionBrowser": "Chromium 156 headless, WebGL 2 via SwiftShader",
+  "production": {
+    "startup": "loading overlay hidden, rendered 3D table",
+    "mouse": {
+      "gaugeVisible": false,
+      "removedLabelsOrCountersVisible": [],
+      "playerHeaderHeight": 62
+    },
+    "pauseButtons": [
+      "MENU PRINCIPAL",
+      "RECOMMENCER LA PARTIE",
+      "OPTIONS"
+    ],
+    "gauge": {
+      "container": "ASIDE",
+      "summary": false,
+      "powerVisible": true,
+      "spinVisible": true,
+      "canvasWidth": 1188,
+      "viewportWidth": 1440
+    },
+    "nineBall": {
+      "centralRowVisible": true,
+      "numbers": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "countersVisible": []
+    }
+  },
+  "functionalHarness": "Actual game with temporary state inspection helpers, rendering loop stopped; original fixed-step physics used to finish the shot. No hooks added to tracked game source.",
+  "checks": [
+    {
+      "name": "options accueil",
+      "closed": true,
+      "home": true,
+      "paused": false
+    },
+    {
+      "name": "pause maintenue pendant options",
+      "shotActive": true,
+      "paused": true,
+      "timeUnchanged": true,
+      "ballsUnchanged": true
+    },
+    {
+      "name": "reprise après pause",
+      "resumed": true,
+      "finish": {
+        "steps": 2237,
+        "shotActive": false,
+        "shotSimTime": 9.320833333333125
+      }
+    },
+    {
+      "name": "navigation menus",
+      "options": true,
+      "pause": true,
+      "resumed": true
+    }
+  ],
+  "runtimeErrors": [],
+  "responsive": [
+    {
+      "orientation": "portrait",
+      "options": {
+        "viewport": [
+          390,
+          844
+        ],
+        "dialog": {
+          "x": 19,
+          "y": 19,
+          "width": 352,
+          "height": 806,
+          "top": 19,
+          "right": 371,
+          "bottom": 825,
+          "left": 19
+        },
+        "scroll": [
+          390,
+          390
+        ],
+        "errors": []
+      },
+      "gauge": {
+        "viewport": [
+          390,
+          844
+        ],
+        "dock": {
+          "x": 212,
+          "y": 77,
+          "width": 169,
+          "height": 705,
+          "top": 77,
+          "right": 381,
+          "bottom": 782,
+          "left": 212
+        },
+        "powerVisible": true,
+        "spinVisible": true,
+        "forbiddenVisible": [],
+        "summary": false,
+        "controls": [
+          {
+            "id": "viewButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "shotReplayButton",
+            "visible": true,
+            "unobstructed": true
+          }
+        ],
+        "scroll": [
+          390,
+          390
+        ]
+      }
+    },
+    {
+      "orientation": "landscape",
+      "options": {
+        "viewport": [
+          844,
+          390
+        ],
+        "dialog": {
+          "x": 52,
+          "y": 20,
+          "width": 740,
+          "height": 350,
+          "top": 20,
+          "right": 792,
+          "bottom": 370,
+          "left": 52
+        },
+        "scroll": [
+          844,
+          844
+        ],
+        "errors": []
+      },
+      "gauge": {
+        "viewport": [
+          844,
+          390
+        ],
+        "dock": {
+          "x": 651,
+          "y": 68,
+          "width": 180,
+          "height": 264,
+          "top": 68,
+          "right": 831,
+          "bottom": 332,
+          "left": 651
+        },
+        "powerVisible": true,
+        "spinVisible": true,
+        "forbiddenVisible": [],
+        "summary": false,
+        "controls": [
+          {
+            "id": "viewButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "shotReplayButton",
+            "visible": true,
+            "unobstructed": true
+          }
+        ],
+        "scroll": [
+          844,
+          844
+        ]
+      }
+    }
+  ],
+  "tests": {
+    "total": 288,
+    "passed": 288,
+    "failed": 0,
+    "skipped": 0
+  },
+  "limits": [
+    "Mobile layout checked with stopped software rendering; no GPU performance claim.",
+    "Native fullscreen behavior inherited from v0.82; not revalidated as a new feature."
+  ]
+}

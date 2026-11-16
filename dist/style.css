@@ -514,3 +514,7 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
 
 /* The gauge is a fixed aside now; its width no longer depends on details[open]. */
 @media(min-width:900px){.scene-frame:has(aside.shot-dock[data-power-mode=gauge]:not([hidden])) #gameCanvas{width:calc(100% - 252px)}}
+@media(max-width:700px){
+ .scene-frame[data-input-mode=gauge] .context-controls{max-width:calc(100% - 215px)}
+ .context-controls .training-panel{width:100%}
+}
