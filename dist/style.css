@@ -518,3 +518,41 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
  .scene-frame[data-input-mode=gauge] .context-controls{max-width:calc(100% - 215px)}
  .context-controls .training-panel{width:100%}
 }
+
+/* HUD balls reuse the table pigments and ivory number patches. */
+.player-balls:empty{display:none}
+.player-balls .hud-ball,.session-score .hud-ball{
+ --hud-ball-size:26px;
+ position:relative;isolation:isolate;display:inline-grid;place-items:center;
+ width:var(--hud-ball-size);height:var(--hud-ball-size);min-width:var(--hud-ball-size);
+ flex:none;overflow:hidden;border-radius:50%;border:1px solid #ffffff24;
+ background:radial-gradient(ellipse at 30% 20%,#ffffffd4 0%,#ffffff38 12%,#ffffff00 37%),radial-gradient(circle at 36% 30%,#0000 38%,#0003 72%,#000a 100%),var(--ball-color);
+ box-shadow:inset 0 0 1px #fff9,inset -2px -3px 4px #0004,0 2px 3px #0008;
+ color:#171717;text-shadow:none;line-height:1;vertical-align:middle;
+}
+.player-balls .hud-ball.is-stripe,.session-score .hud-ball.is-stripe{
+ background:radial-gradient(ellipse at 30% 20%,#ffffffd4 0%,#ffffff38 12%,#ffffff00 37%),radial-gradient(circle at 36% 30%,#0000 38%,#0003 72%,#000a 100%),linear-gradient(#f5f4e9 0% 27%,var(--ball-color) 27% 73%,#f5f4e9 73% 100%);
+}
+.hud-ball .hud-ball-number{
+ display:grid;place-items:center;width:52%;height:52%;border-radius:50%;
+ background:radial-gradient(circle at 35% 28%,#fffef6,#faf8ed 62%,#dfdccb);
+ box-shadow:0 0 0 .4px #dfdccb;color:#171717!important;
+ font:700 calc(var(--hud-ball-size)*.35)/1 Arial,sans-serif!important;
+ letter-spacing:-.03em;text-shadow:none;
+}
+.hud-ball.double-digit .hud-ball-number{font-size:calc(var(--hud-ball-size)*.29)!important;letter-spacing:-.08em}
+.player-balls .hud-ball.potted,.session-score .hud-ball.potted{opacity:.26;filter:saturate(.25);box-shadow:inset 0 0 0 1px #ffffff5c;transform:scale(.9)}
+.player-balls .hud-ball.target{outline:1px solid var(--gold);outline-offset:2px}
+.player-balls{gap:4px;min-height:26px;margin-top:6px;max-width:none}
+.scene-frame[data-game-mode=eight] .hud-scoreboard{max-width:650px}
+.scene-frame[data-game-mode=eight] .match-score{gap:24px}
+.session-score .hud-ball{--hud-ball-size:22px}
+.welcome-dialog h2{margin:0 0 28px}
+@media(max-width:1000px){.player-balls .hud-ball{--hud-ball-size:23px}.player-balls{min-height:23px}.session-score .hud-ball{--hud-ball-size:20px}}
+@media(max-width:700px){
+ .scene-frame[data-game-mode=eight] .match-score{gap:12px}
+ .player-balls .hud-ball{--hud-ball-size:20px}.player-balls{gap:3px;min-height:20px}
+ .session-score .hud-ball{--hud-ball-size:16px}
+ .welcome-dialog h2{margin:0 0 23px}
+}
+@media(max-width:430px){.player-balls .hud-ball{--hud-ball-size:19px}.player-balls{gap:3px;min-height:19px}.session-score .hud-ball{--hud-ball-size:16px}}

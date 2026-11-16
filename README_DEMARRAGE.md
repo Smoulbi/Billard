@@ -1,8 +1,8 @@
-# FRAME v0.84 — projet complet
+# FRAME v0.85 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.84 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.85 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -485,3 +485,11 @@ annonce. Il reste disponible en jeu de la 8 avec annonce obligatoire.
 
 Validation : 289 tests réussis, dont un test de régression du bloc d’annonce
 en jeu de la 8 avec/sans annonce, à la casse, en fin de partie et en jeu de la 9.
+
+
+## Version 0.85 — billes du bandeau
+
+Les slogans de l’accueil sont supprimés. Les billes sous les joueurs reprennent
+la palette de la table, le numéro noir dans son disque ivoire, les rayures et
+les reflets de la résine. Le même dessin sert aux billes restantes du jeu de la 9.
+Les joueurs restent présentés dans un bandeau compact.

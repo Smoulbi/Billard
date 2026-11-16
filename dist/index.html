@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c1216">
-  <meta name="description" content="Un atelier de simulation de billard américain en 3D : trajectoires, puissance, rétro et effets.">
-  <title>FRAME — Atelier de billard 3D</title>
+  <meta name="description" content="Jeu de la 8, jeu de la 9 et entraînement au billard américain.">
+  <title>FRAME — Billard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=0.84">
+  <link rel="stylesheet" href="./style.css?v=0.85">
 </head>
 <body>
  <div class="app"><div class="workspace"><main class="main-stage">
@@ -105,7 +105,7 @@
           <div id="loadingOverlay" class="loading-overlay"><div class="loader-ring"></div><p>PRÉPARATION DE LA TABLE</p></div>
 
   <div id="matchOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="matchOverlayTitle">
-    <div class="game-dialog welcome-dialog"><span class="eyebrow">LE PLAISIR DU JEU. LA PRÉCISION DU GESTE.</span><h2 id="matchOverlayTitle">FRAME<span>.</span></h2><p class="welcome-subtitle">Prenez place à la table.</p>
+    <div class="game-dialog welcome-dialog"><h2 id="matchOverlayTitle">FRAME<span>.</span></h2>
       <div class="game-mode-grid"><label class="mode-tile"><input type="radio" name="gameMode" value="training"><b>ENTRAÎNEMENT</b><span>Libre · placement · annuler les coups</span></label><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JOUER À LA 8</b><span>2 joueurs locaux · règles WPA</span></label><label class="mode-tile"><input type="radio" name="gameMode" value="nine"><b>JOUER À LA 9</b><span>2 joueurs · rotation · push-out</span></label></div>
       <label class="call-switch-row"><input id="requireCall" type="checkbox" checked><span><b>Annonce de bille et de poche</b><small>À chaque coup hors casse. Désactivable pour une variante sans annonce.</small></span></label>
       <label class="dialog-label" for="breakerSelect">PREMIER JOUEUR À CASSER</label>
@@ -120,7 +120,7 @@
   </div>
   <div id="victoryOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="victoryTitle" aria-describedby="victoryReason" hidden>
     <div class="game-dialog victory-dialog">
-      <span class="eyebrow">FRAME / PARTIE TERMINÉE</span>
+      <span class="eyebrow">PARTIE TERMINÉE</span>
       <div class="victory-medallion" aria-hidden="true">8</div>
       <h2 id="victoryTitle">Victoire !</h2>
       <p class="victory-winner" id="victoryWinner">JOUEUR 1</p>
@@ -138,7 +138,7 @@
  </div>
 </dialog>
 <dialog id="optionsDialog" class="options-dialog" aria-labelledby="optionsTitle">
- <div class="options-heading"><div><span class="eyebrow">FRAME / VOTRE SESSION</span><h2 id="optionsTitle">Options</h2></div><button type="button" id="closeOptions" class="close-options" aria-label="Retour au menu précédent">←</button></div>
+ <div class="options-heading"><div><h2 id="optionsTitle">Options</h2></div><button type="button" id="closeOptions" class="close-options" aria-label="Retour au menu précédent">←</button></div>
  <div class="options-scroll">
   <section class="sound-settings" aria-labelledby="soundSettingsTitle"><h3 id="soundSettingsTitle">Son</h3><div class="volume-controls"><button id="audioToggle" class="icon-button" title="Activer ou désactiver le son" aria-label="Activer ou désactiver le son">SON <span id="audioLabel">ON</span></button><label for="volumeSlider">Volume <output id="volumeValue" for="volumeSlider">100 %</output></label><input id="volumeSlider" type="range" min="0" max="100" value="100" step="1" aria-label="Volume du jeu"></div></section>
   <section class="input-settings"><h3>Commandes du tir</h3><button id="powerModeButton" class="power-mode-button" type="button" aria-pressed="true">MODE : GESTE SOURIS</button><details id="strokeSensitivityControls" class="dock-section shot-control"><summary>Sensibilité du geste</summary><div class="dock-section-content">
@@ -210,12 +210,12 @@
           <p class="calibration-footnote">Les 57 essais sont comparés notamment aux régressions de <a href="https://mediatum.ub.tum.de/doc/1155344/988748.pdf" target="_blank" rel="noopener noreferrer">Nierhoff, Heunisch &amp; Hirche — 1 217 impacts de pool US</a>. Pool v0.17 : référence empirique conservée. Pool v0.18–0.19 : ressort normal/tangentiel inspiré des principes de <a href="https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html" target="_blank" rel="noopener noreferrer">Stronge</a>. Pool v0.20 : contact couplé en 3D avec cisaillement vertical. Pool v0.21 : <strong>identification sous contraintes et contrôle sur la vitesse 1,2 m/s exclue de l'ajustement</strong>. Pool v0.69 : accord à la régression US et transition glissement–roulement précise ; le score pool sépare les repères snooker et indicatifs. Pool v0.68 : correction de non-pénétration, mêmes paramètres et même écart à cette régression que v0.21. <strong>Recherche v0.22 : un contact simultané bille–bande–tapis est implémenté dans un banc séparé, mais ses écarts avec la régression américaine sont supérieurs ; il n'est pas activé en jeu.</strong> Aucun de ces modèles mécaniques n'est validé sur une table indépendante ; les coefficients K55/K66 ne sont pas mesurés. Snooker historique inchangé, géométrie toujours américaine. Les mesures personnelles restent dans ce navigateur.</p>
         </section></details>
 
-  <p class="options-note">FRAME · VERSION 0.84 · BUILD 084<br>Billard américain indépendant. Physique calculée à 240 Hz.</p>
+  <p class="options-note">VERSION 0.85 · BUILD 085</p>
  </div>
  <div class="options-footer" hidden><button id="resumeGame" type="button" class="primary-button"><span>REPRENDRE LE JEU</span><span class="button-arrow">↗</span></button></div>
 </dialog>
 </section>
 </main></div></div>
- <script type="module" src="./game.js?v=0.84"></script>
+ <script type="module" src="./game.js?v=0.85"></script>
 </body>
 </html>

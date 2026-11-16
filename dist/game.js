@@ -870,23 +870,30 @@ function newGame() {
 const groupLabel = group => group === 'solid' ? 'PLEINES 1–7' :
   group === 'stripe' ? 'RAYÉES 9–15' : 'TABLE OUVERTE';
 
+function createHudBall(num,{potted=false,target=false}={}) {
+  const badge=document.createElement('span');
+  badge.className='mini-ball hud-ball'+(num>=9?' is-stripe':'')+
+    (num>=10?' double-digit':'')+(potted?' potted':'')+(target?' target':'');
+  badge.style.setProperty('--ball-color',BALL_COLORS[num]);
+  badge.title=`Bille ${num} · ${potted?'empochée':target?'à jouer pour gagner':'sur table'}`;
+  badge.setAttribute('role','img');badge.setAttribute('aria-label',badge.title);
+  const number=document.createElement('span');number.className='hud-ball-number';
+  number.textContent=String(num);number.setAttribute('aria-hidden','true');
+  badge.append(number);
+  return badge;
+}
+
 function refreshPlayerBalls() {
   for(let player=0;player<2;player++){
     const row=player===0?el.playerOneBalls:el.playerTwoBalls;
-    row.replaceChildren(...playerBallState(match,balls,player).map(({num,potted,target})=>{
-      const badge=document.createElement('span');
-      badge.className='mini-ball'+(potted?' potted':'')+(target?' target':'');
-      badge.style.setProperty('--ball-color',BALL_COLORS[num]);
-      badge.style.background=num>=9?`linear-gradient(#f1f1e8 25%,${BALL_COLORS[num]} 25%,${BALL_COLORS[num]} 75%,#f1f1e8 75%)`:BALL_COLORS[num];
-      badge.textContent=String(num);badge.title=`Bille ${num} · ${potted?'empochée':target?'à jouer pour gagner':'sur table'}`;
-      badge.setAttribute('aria-label',badge.title);
-      return badge;
-    }));
+    row.replaceChildren(...playerBallState(match,balls,player).map(({num,potted,target})=>
+      createHudBall(num,{potted,target})));
   }
 }
 
 function refreshMatchUI() {
   refreshControlMode();
+  el.gameCanvas.closest('.scene-frame').dataset.gameMode=training?'training':match?.mode||'preparation';
   refreshPlayerBalls();
   el.matchPanel.hidden=!match;
   el.ballsProgress.hidden=match?.mode!=='nine';
@@ -1468,11 +1475,7 @@ function updateCounters() {
   for(let n=1;n<=15;n++) {
     const ball=balls.find(b=>b.num===n);
     if(!ball||(match?.mode==='nine'&&!ball.active)) continue;
-    const s=document.createElement('span');s.className='mini-ball'+(!ball.active?' potted':'');
-    s.style.background=n>=9?`linear-gradient(to bottom,#e8ece3 0%,#e8ece3 28%,${BALL_COLORS[n]} 28%,${BALL_COLORS[n]} 72%,#e8ece3 72%)`:BALL_COLORS[n];
-    s.style.color=[1,9,10,12,13,14].includes(n)?'#131a1b':'#fff';s.textContent=n;
-    s.title=`Bille ${n}${!ball.active?' — empochée':''}`;
-    el.ballsProgress.append(s);
+    el.ballsProgress.append(createHudBall(n,{potted:!ball.active}));
   }
 }
 
