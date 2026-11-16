@@ -1,8 +1,8 @@
-# FRAME v0.94 — projet complet
+# FRAME v0.95 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.94 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.95 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -553,3 +553,7 @@ Les recherches pour les prochaines améliorations (collisions en vol, bandes 3D,
 Le replay démarre en perspective. Clic droit pour tourner, molette enfoncée pour déplacer et défilement pour zoomer, y compris en pause et à la fin de la lecture. V ou le bouton de vue alterne entre dessus et vue libre. Quitter le replay restaure la caméra et les réglages d’orbite du jeu. Les commandes de partie sont masquées pendant la lecture.
 
 La recherche approfondie sur le frottement en vol est dans [FROTTEMENT_EN_VOL_v0.94.md](docs/FROTTEMENT_EN_VOL_v0.94.md). Elle inclut une formulation pour deux sphères libres et 500 contrôles synthétiques, séparés du moteur du jeu et des validations expérimentales restant à faire.
+
+## Version 0.95 — frottement des billes en vol
+
+Les collisions entre deux billes libres en vol échangent désormais mouvement et rotation via un frottement 3D limité à l’arrêt du glissement. Quand une bille est soutenue par le tapis, seule la composante tangentielle horizontale découplée du support est ajoutée ; le traitement des contacts simultanés reste approximatif. La correction des petits chevauchements ne relève plus artificiellement une bille pour la séparer d’une bille au sol. Le modèle de frottement et les coefficients restent à confronter à des mesures de chocs aériens.

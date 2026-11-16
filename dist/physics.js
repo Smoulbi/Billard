@@ -1,3 +1,4 @@
+import {resolveSphereImpulse} from './sphere-collision.js?v=0.95';
 import {resolveSeparatedRailImpact,projectRailSeparation} from './separated-cushion.js?v=0.69';
 // FRAME physics — all lengths in metres, time in seconds, angular speeds in rad/s.
 // The renderer never influences the simulation. Each sphere is assumed homogeneous.
@@ -985,24 +986,39 @@ function simulateFlight(balls,dt,callbacks) {
       const dx=b.x-a.x,dy=(b.y??RADIUS)-(a.y??RADIUS),dz=b.z-a.z;
       const distance=Math.hypot(dx,dy,dz);
       if(distance>2*RADIUS||distance<1e-12)continue;
-      const n=[dx/distance,dy/distance,dz/distance];
-      const closing=(b.vx-a.vx)*n[0]+((b.vy||0)-(a.vy||0))*n[1]+(b.vz-a.vz)*n[2];
-      // A supported ball cannot be pushed below the cloth. Its vertical
-      // inverse mass is zero for a downward normal impulse.
-      const freeA=(a.y??RADIUS)>RADIUS+1e-8||n[1]<0;
-      const freeB=(b.y??RADIUS)>RADIUS+1e-8||n[1]>0;
-      const denominator=2*(n[0]**2+n[2]**2)+(Number(freeA)+Number(freeB))*n[1]**2;
-      const overlap=2*RADIUS-distance+1e-9;
-      a.x-=n[0]*overlap*.5;a.z-=n[2]*overlap*.5;
-      b.x+=n[0]*overlap*.5;b.z+=n[2]*overlap*.5;
-      if(freeA)a.y=Math.max(RADIUS,(a.y??RADIUS)-n[1]*overlap*.5);
-      if(freeB)b.y=Math.max(RADIUS,(b.y??RADIUS)+n[1]*overlap*.5);
-      if(closing>=-1e-7)continue;
-      const impulse=-(1+PHYSICS.ballRestitution)*closing/denominator;
-      a.vx-=impulse*n[0];a.vz-=impulse*n[2];
-      b.vx+=impulse*n[0];b.vz+=impulse*n[2];
-      if(freeA)a.vy=(a.vy||0)-impulse*n[1];
-      if(freeB)b.vy=(b.vy||0)+impulse*n[1];
+      let nx=dx/distance,ny=dy/distance,nz=dz/distance;
+      // Upward motion at cloth height is already free flight, not support.
+      const supportedA=(a.y??RADIUS)<=RADIUS+1e-8&&Math.abs(a.vy||0)<1e-8;
+      const supportedB=(b.y??RADIUS)<=RADIUS+1e-8&&Math.abs(b.vy||0)<1e-8;
+      const freeA=!supportedA||ny<0,freeB=!supportedB||ny>0;
+      const overlap=2*RADIUS-distance;
+      if(overlap>0){
+        const half=(overlap+1e-9)*.5;
+        const ay=(a.y??RADIUS)-ny*half,by=(b.y??RADIUS)+ny*half;
+        if(freeA&&freeB&&ay>=RADIUS&&by>=RADIUS){
+          // Equal masses: opposite vertical corrections preserve total PE.
+          a.x-=nx*half;a.y=ay;a.z-=nz*half;
+          b.x+=nx*half;b.y=by;b.z+=nz*half;
+        }else{
+          // Preserve heights at a supported contact; never lift a centre just
+          // to correct penetration. Near-vertical overlap separates through
+          // velocity on the next fine step (no arbitrary lateral direction).
+          const horizontal=Math.hypot(dx,dz);
+          if(horizontal>1e-10){
+            const needed=Math.sqrt(Math.max(0,4*RADIUS*RADIUS-dy*dy));
+            const shift=Math.max(0,needed-horizontal+1e-9)*.5/horizontal;
+            a.x-=dx*shift;a.z-=dz*shift;b.x+=dx*shift;b.z+=dz*shift;
+            const length=Math.hypot(b.x-a.x,(b.y??RADIUS)-(a.y??RADIUS),b.z-a.z);
+            nx=(b.x-a.x)/length;ny=((b.y??RADIUS)-(a.y??RADIUS))/length;nz=(b.z-a.z)/length;
+          }
+        }
+      }
+      const impact=resolveSphereImpulse(a,b,[nx,ny,nz],{
+        mass:PHYSICS.mass,radius:RADIUS,restitution:PHYSICS.ballRestitution,
+        friction:ballContactFriction,freeA,freeB
+      });
+      const closing=-impact.impactSpeed;
+      if(!impact.impactSpeed)continue;
       callbacks.onBallContact?.(a,b,-closing,time);
       if(-closing>.045)callbacks.onCollision?.(a,b,-closing,time);
     }
