@@ -596,3 +596,7 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
 .camera-dialog .control-title{margin-top:14px}
 
 .jump-hint{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);z-index:8;padding:8px 12px;border-radius:6px;background:#102328e8;color:#e5f1ee;font:12px Arial,sans-serif;max-width:calc(100% - 24px);text-align:center;pointer-events:none}
+
+.scene-frame.is-replaying .shot-dock,.scene-frame.is-replaying .context-controls,.scene-frame.is-replaying .scene-bottom-right,.scene-frame.is-replaying #jumpHint{display:none!important}
+.scene-frame.is-replaying #gameCanvas{width:100%}
+.replay-camera-help{margin:10px 0;color:#b5cac4;font:11px/1.5 Arial,sans-serif;text-align:center}

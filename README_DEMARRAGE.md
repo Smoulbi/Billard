@@ -1,8 +1,8 @@
-# FRAME v0.93 — projet complet
+# FRAME v0.94 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.93 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.94 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -547,3 +547,7 @@ Après la frappe, l’élévation revient automatiquement à 0° ; le coup et so
 La frappe produit une impulsion descendante, suivie du même contact avec le tapis que les réceptions. Restitution nominale 0,6 (plage approximative 0,5–0,7 indiquée par Dr Dave), impulsion de frottement qui modifie vitesse et rotation, sans seuil fixe à 20°. Les petits rebonds sont coupés sous une hauteur numérique de 0,05 mm. Le coefficient de frottement d’impact 0,2 reste une hypothèse à calibrer, distincte du frottement pendant le glissement. Le contact simultané procédé–bille–tapis reste approximé par deux contacts successifs.
 
 Les recherches pour les prochaines améliorations (collisions en vol, bandes 3D, queues et calibration) sont documentées dans [RECHERCHES_JUMPS_v0.93.md](docs/RECHERCHES_JUMPS_v0.93.md), avec les domaines de validité et un manifeste de sources consultées.
+
+## Version 0.94 — caméra libre pendant le replay
+
+Le replay démarre en perspective. Clic droit pour tourner, molette enfoncée pour déplacer et défilement pour zoomer, y compris en pause et à la fin de la lecture. V ou le bouton de vue alterne entre dessus et vue libre. Quitter le replay restaure la caméra et les réglages d’orbite du jeu. Les commandes de partie sont masquées pendant la lecture.

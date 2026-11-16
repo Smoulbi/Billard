@@ -39,7 +39,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['jumpHint','cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['replayViewButton','jumpHint','cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
@@ -1241,32 +1241,54 @@ function loadLabScenario() {
 }
 
 function startShotReplay() {
-  if(replayPlayback||shotActive||!lastShotReplay?.complete||fallbackCtx)return;
-  releaseAimMouse();shotCameraTransition=null;
+  if(gamePaused||replayPlayback||shotActive||!lastShotReplay?.complete||fallbackCtx)return;
+  releaseAimMouse();releaseCameraDrag();shotCameraTransition=null;
   const hidden=[...balls.map(b=>b.mesh),...fallingBalls.map(f=>f.mesh),cueGroup,
     spinImpactMarker,aimLine,deflectionLine,objectLine,ghostMarker,cueTrailLine,objectTrailLine,
     placementZone,headStringLine].filter(Boolean).map(mesh=>({mesh,visible:mesh.visible}));
   replayPlayback={record:lastShotReplay,start:performance.now(),camera:camera.clone(),
-    cameraMode,hidden,shotState:el.shotState.textContent,meshes:lastShotReplay.templates.map(mesh=>mesh.clone(true)),
+    cameraMode,orbit:{...orbit},hidden,shotState:el.shotState.textContent,meshes:lastShotReplay.templates.map(mesh=>mesh.clone(true)),
     overlays:[el.matchOverlay,el.decisionOverlay,el.victoryOverlay].map(e=>({e,hidden:e.hidden}))};
   for(const {mesh} of hidden)mesh.visible=false;
   for(const mesh of replayPlayback.meshes)scene.add(mesh);
   for(const {e} of replayPlayback.overlays)e.hidden=true;
-  cameraMode='overhead';updateRailVisibility();
-  camera.position.set(0,3.97,.001);camera.up.set(0,0,-1);camera.lookAt(0,0,0);
-  camera.fov=40;camera.updateProjectionMatrix();
-  el.cameraName.textContent='REPLAY · DESSUS';el.shotState.textContent='REPLAY';
+  el.gameCanvas.closest('.scene-frame').classList.add('is-replaying');
+  cameraMode='perspective';orbit.topDown=false;
+  updateCamera();refreshReplayCameraUI();
+  el.shotState.textContent='REPLAY';
   el.controlModeTitle.textContent='REPLAY';el.controlModeHint.textContent='Lecture du dernier tir · Échap pour revenir au jeu.';
-  el.sceneHint.textContent='REPLAY DU DERNIER TIR · ÉCHAP : REVENIR AU JEU';
+  el.sceneHint.textContent='CLIC DROIT : TOURNER · MOLETTE ENFONCÉE : DÉPLACER · DÉFILER : ZOOM';
   el.replayProgress.max=Math.max(.001,lastShotReplay.duration);
   el.replayResume.textContent='PAUSE';
-  el.replayDialog.showModal();el.stopReplayButton.focus();
+  el.replayDialog.show();el.stopReplayButton.focus();
   animateShotReplay(replayPlayback.start);
+}
+
+function releaseCameraDrag() {
+  if(orbit.pointerId!=null&&el.gameCanvas.hasPointerCapture(orbit.pointerId))
+    el.gameCanvas.releasePointerCapture(orbit.pointerId);
+  orbit.dragMode=null;orbit.pointerId=null;
+  el.gameCanvas.style.cursor='crosshair';
+}
+
+function refreshReplayCameraUI() {
+  el.cameraName.textContent=orbit.topDown?'REPLAY · DESSUS':'REPLAY · VUE LIBRE';
+  el.replayViewButton.textContent=orbit.topDown?'VUE LIBRE · V':'VUE DU DESSUS · V';
+}
+
+function toggleReplayCamera() {
+  if(gamePaused||!replayPlayback)return;
+  orbit.topDown=!orbit.topDown;
+  cameraMode=orbit.topDown?'overhead':'perspective';
+  updateCamera();refreshReplayCameraUI();
 }
 
 function stopShotReplay() {
   if(!replayPlayback)return;
+  releaseCameraDrag();
   const saved=replayPlayback;replayPlayback=null;
+  el.gameCanvas.closest('.scene-frame').classList.remove('is-replaying');
+  Object.assign(orbit,saved.orbit);
   for(const mesh of saved.meshes)scene.remove(mesh);
   for(const {mesh,visible} of saved.hidden)mesh.visible=visible;
   for(const {e,hidden} of saved.overlays)e.hidden=hidden;
@@ -1947,6 +1969,7 @@ function refreshPowerInput() {
 
 function toggleCamera() {
   if(gamePaused)return;
+  if(replayPlayback){toggleReplayCamera();return;}
   shotCameraTransition=null;
   if(fallbackCtx)return;
   if(training?.editing||placementMode||needsCuePlacement||placementPointer){forcePlacementCamera();return;}
@@ -2212,6 +2235,7 @@ function bindGameMenu() {
 function bindControls() {
   bindGameMenu();
   el.shotReplayButton.addEventListener('click',startShotReplay);
+  el.replayViewButton.addEventListener('click',toggleReplayCamera);
   el.stopReplayButton.addEventListener('click',stopShotReplay);
   el.replayProgress.addEventListener('input',()=>{
     if(!replayPlayback)return;
@@ -2366,7 +2390,8 @@ function bindControls() {
   el.gameCanvas.addEventListener('pointerdown',e=>{
     if(gamePaused)return;
     el.gameCanvas.focus({preventScroll:true});
-    if(training?.editing&&e.button===0){beginTrainingPlacement(e);return;}
+    if(replayPlayback&&e.button!==1&&e.button!==2)return;
+    if(!replayPlayback&&training?.editing&&e.button===0){beginTrainingPlacement(e);return;}
     if(cameraMode==='first-person') {
       firstPerson.previousX=e.clientX;firstPerson.previousY=e.clientY;
       if(e.button===2){
@@ -2417,14 +2442,15 @@ function bindControls() {
   });
   el.gameCanvas.addEventListener('pointerleave',()=>{firstPerson.previousX=null;firstPerson.previousY=null;});
   el.gameCanvas.addEventListener('pointermove',e=>{
-    if(trainingDrag?.id===e.pointerId){
+    if(gamePaused)return;
+    if(!replayPlayback&&trainingDrag?.id===e.pointerId){
       const p=tablePointAt(e.clientX,e.clientY);
       if(p&&moveTrainingBall(trainingDrag.num,p.x+trainingDrag.offsetX,p.z+trainingDrag.offsetZ))trainingDrag.moved=true;
       return;
     }
-    if(training?.editing)return;
-    if(cameraMode==='first-person'&&!placementMode&&!needsCuePlacement&&!placementPointer)return;
-    if(placementPointer&&placementPointer.id===e.pointerId){
+    if(!replayPlayback&&training?.editing)return;
+    if(!replayPlayback&&cameraMode==='first-person'&&!placementMode&&!needsCuePlacement&&!placementPointer)return;
+    if(!replayPlayback&&placementPointer&&placementPointer.id===e.pointerId){
       const point=tablePointAt(e.clientX,e.clientY);
       if(point)moveCueTo(point.x+placementPointer.offsetX,point.z+placementPointer.offsetZ,true);
     }else if(orbit.dragMode&&orbit.pointerId===e.pointerId){
@@ -2437,13 +2463,15 @@ function bindControls() {
           panCameraTarget(orbit,e.clientX-orbit.x,e.clientY-orbit.y,el.gameCanvas.clientHeight,camera.fov);
           updateCamera();
         }
-      }else if(!orbit.topDown){
+      }else if(!orbit.topDown||replayPlayback){
+        if(replayPlayback&&orbit.topDown){orbit.topDown=false;cameraMode='perspective';refreshReplayCameraUI();}
         orbit.azimuth-=(e.clientX-orbit.x)*0.006;
         orbit.elevation=Math.max(0.22,Math.min(1.45,orbit.elevation+(e.clientY-orbit.y)*0.005));
         updateCamera();
       }
       orbit.x=e.clientX;orbit.y=e.clientY;
     }else {
+      if(replayPlayback)return;
       const point=cuePlacementAvailable()?tablePointAt(e.clientX,e.clientY):null;
       const cue=balls.find(b=>b.num===0);
       const hoveringCue=point&&cue&&Math.hypot(point.x-cue.x,point.z-cue.z)<.075;
@@ -2473,11 +2501,11 @@ function bindControls() {
   el.gameCanvas.addEventListener('pointerup',releasePointer);
   el.gameCanvas.addEventListener('pointercancel',releasePointer);
   el.placeCueButton.addEventListener('click',()=>{
-    if(!cuePlacementAvailable()||needsCuePlacement)return;
+    if(replayPlayback||!cuePlacementAvailable()||needsCuePlacement)return;
     placementMode=!placementMode;
     refreshPlacementUI();
   });
-  el.gameCanvas.addEventListener('wheel',e=>{e.preventDefault();if(gamePaused||shotActive||replayPlayback)return;if(powerInputMode==='mouse'&&strokePhase==='spin'){setElevation(Number(el.elevationSlider.value)+(e.deltaY<0?1:-1));return;}if(cameraMode==='first-person')return;zoomCamera(orbit,e.deltaY,e.deltaMode);updateCamera();},{passive:false});
+  el.gameCanvas.addEventListener('wheel',e=>{e.preventDefault();if(gamePaused||shotActive)return;if(replayPlayback){zoomCamera(orbit,e.deltaY,e.deltaMode);updateCamera();return;}if(powerInputMode==='mouse'&&strokePhase==='spin'){setElevation(Number(el.elevationSlider.value)+(e.deltaY<0?1:-1));return;}if(cameraMode==='first-person')return;zoomCamera(orbit,e.deltaY,e.deltaMode);updateCamera();},{passive:false});
   let spinning=false;
   const spinFromPointer=e=>{
     const rect=el.spinPad.getBoundingClientRect();
@@ -2573,7 +2601,11 @@ function bindControls() {
       (el.matchOverlay.hidden||menu.isOpen)&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden){
       e.preventDefault();if(replayPlayback)stopShotReplay();openCameraSettings();return;
     }
-    if(gamePaused||replayPlayback||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
+    if(replayPlayback){
+      if(!editingText&&e.key.toLowerCase()==='v'&&!e.repeat){e.preventDefault();toggleReplayCamera();}
+      return;
+    }
+    if(gamePaused||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
     if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement||
       e.target instanceof HTMLButtonElement||e.target?.isContentEditable)return;
     if(e.key.toLowerCase()==='s'){if(!e.repeat){e.preventDefault();toggleSpinSelection();}return;}
