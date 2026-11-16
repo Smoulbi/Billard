@@ -1,0 +1,170 @@
+{
+  "angle": {
+    "hint": "\u00c9L\u00c9VATION : 46\u00b0",
+    "visible": true,
+    "state": {
+      "balls": [
+        {
+          "num": 0,
+          "x": -0.8,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.12,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "strokePhase": "aim",
+      "elevation": "46",
+      "audio": []
+    }
+  },
+  "shot": {
+    "fired": true,
+    "justFired": {
+      "balls": [
+        {
+          "num": 0,
+          "x": -0.8,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 2.778633481835987,
+          "vy": 1.2084908645689327,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.12,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.028575,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 46,
+      "audio": [
+        {
+          "kind": "cue",
+          "speed": 2.778633481835987
+        },
+        {
+          "kind": "cushion",
+          "speed": 1.2084908645689503
+        },
+        {
+          "kind": "ball",
+          "speed": 2.7893073232876784
+        }
+      ]
+    },
+    "after": {
+      "balls": [
+        {
+          "num": 0,
+          "x": 0.0648631064856607,
+          "y": 0.030115829214550874,
+          "z": 0,
+          "meshY": 0.030115829214550874,
+          "vx": 0.07301971106570271,
+          "vy": -0.2458930026025237,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.18035868450761236,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 2.661624485055991,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.030115829214550874,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 46,
+      "audio": [
+        {
+          "kind": "cue",
+          "speed": 2.778633481835987
+        },
+        {
+          "kind": "cushion",
+          "speed": 1.2084908645689503
+        },
+        {
+          "kind": "ball",
+          "speed": 2.7893073232876784
+        }
+      ]
+    },
+    "angleLabel": "0\u00b0",
+    "errors": []
+  },
+  "landingSounds": [
+    {
+      "kind": "cushion",
+      "speed": 1.2084908645689503,
+      "sampleGain": 0.1590490439380787
+    },
+    {
+      "kind": "cushion",
+      "speed": 0.3011551724914798,
+      "sampleGain": 0.07939708178727746
+    }
+  ],
+  "errors": [],
+  "tests": {
+    "passed": 309,
+    "failed": 0
+  },
+  "method": "Chromium headless/SwiftShader; temporary QA accessors and audio-call capture appended only by the test server. Actual physics and DOM handlers exercised; no audio listening assessment."
+}
