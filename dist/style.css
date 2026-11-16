@@ -534,7 +534,8 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
  background:radial-gradient(ellipse at 30% 20%,#ffffffd4 0%,#ffffff38 12%,#ffffff00 37%),radial-gradient(circle at 36% 30%,#0000 38%,#0003 72%,#000a 100%),linear-gradient(#f5f4e9 0% 27%,var(--ball-color) 27% 73%,#f5f4e9 73% 100%);
 }
 .hud-ball .hud-ball-number{
- display:grid;place-items:center;width:52%;height:52%;border-radius:50%;
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ display:grid;place-items:center;width:calc(var(--hud-ball-size)*.52);height:calc(var(--hud-ball-size)*.52);border-radius:50%;
  background:radial-gradient(circle at 35% 28%,#fffef6,#faf8ed 62%,#dfdccb);
  box-shadow:0 0 0 .4px #dfdccb;color:#171717!important;
  font:700 calc(var(--hud-ball-size)*.35)/1 Arial,sans-serif!important;
