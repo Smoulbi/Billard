@@ -424,3 +424,90 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
  .scene-frame:has(.shot-dock[open]) .scene-top-left{max-width:105px}
 }
 @media(max-width:430px){.shot-dock[data-power-mode=gauge][open]{top:225px;max-height:calc(100% - 237px)}}
+
+/* FRAME 0.83 — quiet match view, with navigation on Escape only. */
+.game-hud{padding:18px 24px 20px;background:linear-gradient(#061216b0,transparent);min-height:102px}
+.hud-scoreboard{min-height:64px;max-width:800px;margin:0 auto}
+.match-score{gap:260px}
+.match-player{min-height:62px;padding:9px 12px;border-radius:7px;gap:10px;box-shadow:0 3px 15px #0003;background:#0c2226d9}
+.match-player.current{background:#14322edb;box-shadow:0 0 0 1px #dfbd7320,0 3px 15px #0004}
+.player-avatar{width:35px;height:35px;font-size:18px;border-width:1px}
+.match-player small{font-size:9px;letter-spacing:.8px;color:#d7e6da}
+.match-player .player-identity>span{display:block;font-size:7px;margin-top:4px;color:#8dad9e}
+.player-balls{gap:4px;margin-top:6px;min-height:14px}
+.player-balls .mini-ball{width:14px;height:14px;font-size:6px}
+.session-score{top:15px;width:236px}
+.session-score .balls-progress{margin:0;gap:5px;max-width:none;flex-wrap:nowrap}
+.session-score .mini-ball{width:20px;height:20px;font-size:8px;box-shadow:inset -3px -3px 4px #0007,inset 1px 1px 3px #fff7;border:1px solid #ffffff25}
+.session-score .mini-ball.potted{opacity:.15}
+.scene-frame .placement-quick{top:auto;bottom:77px;left:22px;max-width:calc(100% - 44px)}
+.scene-frame .scene-bottom-right{left:50%;right:auto;bottom:18px;transform:translateX(-50%);max-width:calc(100% - 48px);flex-wrap:wrap;justify-content:center;gap:7px}
+.scene-bottom-right #shotReplayButton{height:32px;padding:0 12px;border-radius:6px;background:#102323df;border:1px solid #47645c;color:#bfd6cc;font:8px var(--mono);letter-spacing:.4px}
+.scene-bottom-right #shotReplayButton:disabled{opacity:.35;cursor:default}
+.scene-bottom-right .camera-button{height:32px;padding:0 11px;display:flex;align-items:center;justify-content:center;font-size:8px}
+.camera-button kbd{display:none}
+.context-controls{position:absolute;z-index:5;left:20px;bottom:122px;display:flex;flex-direction:column;align-items:flex-start;gap:10px;max-height:calc(100% - 230px);max-width:min(410px,calc(100% - 40px));overflow-y:auto;scrollbar-width:thin;overscroll-behavior:contain}
+.context-controls .panel-divider,.context-controls .control-description,.context-controls .training-history{display:none}
+.context-controls .eyebrow{font-size:8px;color:#91b4a4;letter-spacing:.6px;margin-bottom:8px}
+.context-controls .call-panel{width:222px;margin:0;padding:13px;background:#0d2525ef;border:1px solid #3e6253;border-radius:7px;box-shadow:0 6px 24px #0004}
+.context-controls .call-label{font-size:7px;letter-spacing:.3px;margin:10px 0 6px}
+.context-controls .call-panel select{padding:8px;font-size:9px}
+.context-controls .called-pockets{gap:4px}
+.context-controls .called-pockets button{font-size:7px;min-height:28px;padding:6px 3px}
+.context-controls .safety-button{font-size:7px;min-height:30px;margin-top:8px;padding:8px 4px}
+.context-controls .call-hint{font-size:9px;line-height:1.4;margin:8px 0 0}
+.context-controls #nineBallPanel{margin:0;padding:0;background:none;max-width:240px}
+.context-controls #nineBallPanel>.eyebrow,.context-controls #nineBallPanel>details,.context-controls #nineBallTarget{display:none}
+.context-controls #pushOutButton{margin:0;background:#223c2df2;border:1px solid #b09a5a;color:#e7d7a2;padding:9px 14px;font-size:8px;border-radius:5px}
+.context-controls .training-panel{display:flex;flex-wrap:wrap;align-items:center;gap:6px;width:min(410px,100%);padding:9px;background:#0c2525ec;border:1px solid #426352;border-radius:7px;box-shadow:0 6px 22px #0004}
+.context-controls .training-panel>.eyebrow{display:none}
+.context-controls .training-panel>.power-mode-button{width:auto;font-size:8px;min-height:31px;margin:0;flex:1;padding:7px 9px;white-space:nowrap}
+.context-controls .training-panel>.training-grid{display:flex;gap:5px;margin:0;flex:1}
+.context-controls .training-panel>.training-grid button{font-size:7px;padding:7px;min-height:31px;flex:1;white-space:nowrap}
+.context-controls .training-panel>.dock-section{flex-basis:100%;margin:0;border-top:1px solid #38574b;padding-top:3px}
+.context-controls .training-panel>.dock-section>summary{font:8px var(--mono);color:#adcbb9;cursor:pointer;min-height:23px;padding:7px 2px}
+.context-controls .training-panel .dock-section-content{padding:2px 2px 6px}
+.context-controls .training-panel .training-grid button{font-size:8px;min-height:30px}
+.context-controls .training-panel .rail-model-select{height:31px;font-size:8px}
+aside.shot-dock,aside.shot-dock:not([open]),aside.shot-dock[data-power-mode=gauge],aside.shot-dock[data-power-mode=gauge][open]{position:absolute;z-index:5;inset:95px 20px 68px auto;width:216px;height:auto;max-height:calc(100% - 163px);display:block;border:1px solid #3e5e53;border-radius:8px;background:#0d2325ed;overflow:hidden;box-shadow:0 7px 24px #0005}
+aside.shot-dock[data-power-mode=mouse],aside.shot-dock[data-power-mode=mouse][open]{display:none!important}
+aside.shot-dock:not([open]) .shot-dock-body,aside.shot-dock .shot-dock-body{position:absolute;inset:0;display:flex;flex-direction:column;min-height:0}
+aside.shot-dock .shot-dock-content{padding:14px 12px 10px;overflow:auto;flex:1;min-height:0}
+aside.shot-dock .play-mode-card{display:none}
+aside.shot-dock .shot-control{margin:0 0 13px}
+aside.shot-dock .gauge-controls>details,aside.shot-dock .control-description{display:none}
+aside.shot-dock .gauge-controls .control-title{font-size:9px}
+aside.shot-dock .power-value{font-size:12px}
+aside.shot-dock .power-instruments{gap:5px;flex-wrap:nowrap}
+aside.shot-dock .power-instruments>div{padding:6px 7px}
+aside.shot-dock .power-instruments small{font-size:6px}
+aside.shot-dock .power-instruments strong{font-size:17px}
+aside.shot-dock .power-instruments span{font-size:7px}
+aside.shot-dock .power-instruments button{font-size:7px;padding:6px;white-space:normal}
+aside.shot-dock .range-labels{font-size:7px}
+aside.shot-dock #spinSettings{border:0;border-top:1px solid #345247;background:transparent;border-radius:0;margin:15px 0 0;padding-top:12px}
+aside.shot-dock #spinSettings>.dock-section-content{padding:0}
+aside.shot-dock #spinSettings .control-title{margin-bottom:12px}
+aside.shot-dock .spin-pad{width:113px;height:113px}
+aside.shot-dock .spin-area{gap:6px}
+aside.shot-dock .spin-readout{font-size:7px;padding:8px 6px}
+aside.shot-dock .impact-readout{font-size:6px;padding:8px 6px}
+aside.shot-dock .axis-label,aside.shot-dock .axis-side{font-size:7px}
+aside.shot-dock .shot-dock-body>.actions{padding:8px 10px;flex:none;background:#102927}
+aside.shot-dock .primary-button{height:38px;font-size:10px}
+.pause-dialog{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-50%);margin:0;padding:19px;width:min(350px,calc(100vw - 42px));border:1px solid #567566;border-radius:11px;background:linear-gradient(145deg,#1c3832,#102327);color:#deecdf;box-shadow:0 25px 90px #0009}
+.pause-dialog::backdrop{background:#020a0ec4;backdrop-filter:blur(8px)}
+.pause-actions{display:grid;gap:10px}
+.pause-actions .secondary-button{height:47px;font-size:10px;letter-spacing:.7px;background:#1c3831;border-color:#547363;color:#e2ecd9;border-radius:6px}
+.pause-actions .secondary-button:hover{background:#335441;border-color:var(--gold)}
+.pause-actions #openOptionsButton{color:var(--gold)}
+.close-options{font-size:22px;display:grid;place-items:center}
+.replay-dialog{bottom:64px}
+@media(max-width:1000px){.game-hud{padding:15px 17px}.hud-scoreboard{max-width:700px}.match-score{gap:225px}.session-score{width:210px}.session-score .balls-progress{gap:4px}.session-score .mini-ball{width:18px;height:18px;font-size:7px}.match-player{padding:8px 10px;min-height:59px}.player-avatar{width:30px;height:30px;font-size:16px}.context-controls{left:15px;bottom:120px;max-width:360px}aside.shot-dock,aside.shot-dock:not([open]),aside.shot-dock[data-power-mode=gauge],aside.shot-dock[data-power-mode=gauge][open]{inset:89px 15px 65px auto;width:204px;max-height:calc(100% - 154px)}}
+@media(max-width:700px){.game-hud{padding:12px}.hud-scoreboard{min-height:54px;margin:0;max-width:none}.match-score{gap:166px}.match-player{min-height:54px;padding:7px 8px;gap:7px}.player-avatar{width:25px;height:25px;font-size:13px}.match-player small{font-size:8px;letter-spacing:.4px}.match-player .player-identity>span{font-size:6px;margin-top:3px}.player-balls{gap:3px;min-height:12px;margin-top:5px}.player-balls .mini-ball{width:12px;height:12px;font-size:5px}.session-score{top:14px;width:156px}.session-score .balls-progress{display:flex;gap:3px;max-width:none;margin:0;flex-wrap:nowrap}.session-score .mini-ball{width:14px;height:14px;font-size:6px}
+ .scene-frame .scene-bottom-right{left:12px;right:12px;bottom:14px;max-width:none;transform:none;justify-content:center;gap:5px}.scene-frame .scene-bottom-right .camera-button{font-size:7px;height:30px;padding:0 8px}.scene-bottom-right #shotReplayButton{height:30px;padding:0 9px;font-size:7px}.scene-frame .placement-quick{top:auto;bottom:67px;left:12px;max-width:calc(100% - 24px)}
+ .context-controls{left:12px;bottom:112px;max-width:min(300px,calc(100% - 24px));max-height:calc(100% - 195px)}.context-controls .training-panel{gap:5px;padding:7px;width:285px}.context-controls .training-panel>.power-mode-button{font-size:7px;padding:7px 6px}.context-controls .training-panel>.training-grid button{font-size:6px;padding:7px 5px}.context-controls .call-panel{width:198px;padding:10px}.context-controls .called-pockets button{font-size:6px}.context-controls .call-label{margin:8px 0 5px;font-size:6px}.context-controls .safety-button{font-size:6px}.context-controls .call-hint{font-size:8px}.context-controls .eyebrow{font-size:7px}
+ aside.shot-dock,aside.shot-dock:not([open]),aside.shot-dock[data-power-mode=gauge],aside.shot-dock[data-power-mode=gauge][open]{inset:84px 12px 62px auto;width:181px;max-height:calc(100% - 146px)}aside.shot-dock .shot-dock-content{padding:12px 10px}aside.shot-dock .shot-dock-body>.actions{flex-direction:column;padding:7px 9px}aside.shot-dock .spin-pad{width:103px;height:103px}aside.shot-dock .power-instruments>div{padding:6px}aside.shot-dock .power-instruments strong{font-size:15px}aside.shot-dock .power-instruments small{font-size:5px}aside.shot-dock .power-instruments span{font-size:6px}aside.shot-dock .power-instruments button{font-size:6px;padding:5px}aside.shot-dock .spin-readout{font-size:6px}aside.shot-dock .impact-readout{font-size:5px}aside.shot-dock .gauge-controls .control-title{font-size:8px}aside.shot-dock .power-value{font-size:11px}
+}
+@media(max-width:430px){.game-hud{padding:10px 9px}.match-score{gap:124px}.match-player{padding:7px 6px;min-height:53px}.player-avatar{display:none}.player-balls{max-width:105px;gap:2px}.player-balls .mini-ball{width:11px;height:11px;font-size:5px}.session-score{width:118px;top:8px}.session-score .balls-progress{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}.session-score .mini-ball{width:16px;height:16px;font-size:6px}.context-controls .call-panel{width:175px}.context-controls .call-label{font-size:6px}.context-controls .called-pockets button{font-size:5px;padding:5px 2px}.context-controls .call-panel select{font-size:8px}aside.shot-dock,aside.shot-dock:not([open]),aside.shot-dock[data-power-mode=gauge],aside.shot-dock[data-power-mode=gauge][open]{width:169px;right:9px;top:77px;bottom:62px;max-height:calc(100% - 139px)}aside.shot-dock .shot-dock-content{padding:11px 9px}aside.shot-dock .spin-pad{width:99px;height:99px}}
+@media(max-height:550px) and (orientation:landscape){.game-hud{padding:9px 16px}.hud-scoreboard{max-width:650px;min-height:48px;margin:0 auto}.match-player{min-height:48px;padding:6px 10px}.player-avatar{width:26px;height:26px}.match-player small{font-size:8px}.match-player .player-identity>span{font-size:6px}.player-balls{margin-top:4px;min-height:11px}.player-balls .mini-ball{width:11px;height:11px;font-size:5px}.session-score{top:12px}.session-score .mini-ball{width:17px;height:17px}.context-controls{bottom:99px;max-height:calc(100% - 166px)}.scene-frame .placement-quick{top:auto;bottom:59px}.scene-frame .scene-bottom-right{max-width:calc(100% - 40px);bottom:13px}aside.shot-dock,aside.shot-dock:not([open]),aside.shot-dock[data-power-mode=gauge],aside.shot-dock[data-power-mode=gauge][open]{inset:68px 13px 58px auto;width:180px;max-height:calc(100% - 126px)}aside.shot-dock .spin-pad{width:80px;height:80px}aside.shot-dock .spin-area{gap:3px}aside.shot-dock .shot-dock-content{padding:9px 10px}aside.shot-dock #spinSettings{margin-top:10px;padding-top:9px}.scene-bottom-right .camera-button{height:28px;font-size:7px}.scene-bottom-right #shotReplayButton{height:28px;font-size:7px}}

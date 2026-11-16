@@ -1,4 +1,4 @@
-import {createGameMenu,playerBallState} from './game-menu.js?v=0.82';
+import {createGameMenu,playerBallState} from './game-menu.js?v=0.83';
 import {createImpactAudio} from './impact-audio.js?v=0.82';
 import {ShotReplay} from './shot-replay.js?v=0.69';
 import {railCutaway} from './rail-visibility.js?v=0.66';
@@ -39,12 +39,13 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','placementQuick','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
 let menuReplayTime=null,menuOpenedAt=0;
 let menu=null;
+let menuOrigin='game';
 let sessionSettings=null;
 let pointerWasLocked=false,programmaticPointerUnlock=false;
 let fullscreenWasActive=false,ignoreFullscreenMenuUntil=0;
@@ -888,6 +889,7 @@ function refreshMatchUI() {
   refreshControlMode();
   refreshPlayerBalls();
   el.matchPanel.hidden=!match;
+  el.ballsProgress.hidden=match?.mode!=='nine';
   el.modeChip.textContent=training?'ENTRAÎNEMENT':match?(match.mode==='nine'?'JEU DE LA 9':'JEU DE LA 8'):'PRÉPARATION';
   for(let player=0;player<2;player++){
     const node=player===0?el.playerOne:el.playerTwo;
@@ -1461,10 +1463,11 @@ function updateCounters() {
   el.pottedCount.textContent=String(potted).padStart(2,'0');
   el.ballTotal.textContent=String(balls.filter(b=>b.num!==0).length).padStart(2,'0');
   refreshPlayerBalls();
+  el.ballsProgress.hidden=match?.mode!=='nine';
   el.ballsProgress.replaceChildren();
   for(let n=1;n<=15;n++) {
     const ball=balls.find(b=>b.num===n);
-    if(!ball) continue;
+    if(!ball||(match?.mode==='nine'&&!ball.active)) continue;
     const s=document.createElement('span');s.className='mini-ball'+(!ball.active?' potted':'');
     s.style.background=n>=9?`linear-gradient(to bottom,#e8ece3 0%,#e8ece3 28%,${BALL_COLORS[n]} 28%,${BALL_COLORS[n]} 72%,#e8ece3 72%)`:BALL_COLORS[n];
     s.style.color=[1,9,10,12,13,14].includes(n)?'#131a1b':'#fff';s.textContent=n;
@@ -1911,7 +1914,7 @@ function prepareMouseAim() {
 function refreshPowerInput() {
   if(fallbackCtx)powerInputMode='gauge';
   const mouse=powerInputMode==='mouse';
-  el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock>summary span').textContent=mouse?'Annonces · entraînement':'Puissance · effet';
+  el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').hidden=mouse;
   el.gameCanvas.closest('.scene-frame').dataset.inputMode=powerInputMode;
   el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').dataset.powerMode=mouse?'mouse':'gauge';
   el.powerModeButton.textContent=mouse?'MODE : GESTE SOURIS':'MODE : JAUGE';
@@ -2108,6 +2111,12 @@ function restartCurrentMatch() {
   startMatch();
 }
 
+function backFromMenuOptions() {
+  ignoreFullscreenMenuUntil=performance.now()+300;
+  if(menu.dialog===el.optionsDialog&&menuOrigin==='game')menu.show(el.pauseDialog);
+  else menu.close();
+}
+
 function bindGameMenu() {
   const readPreference=key=>{try{return localStorage.getItem(key);}catch{return null;}};
   const savePreference=(key,value)=>{try{localStorage.setItem(key,String(value));}catch{/* Storage is optional. */}};
@@ -2128,37 +2137,31 @@ function bindGameMenu() {
   el.audioToggle.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.audio.muted',!soundEnabled)));
   const savedMode=readPreference('frame.powerInputMode');
   if(savedMode==='gauge'||savedMode==='mouse')powerInputMode=savedMode;
-  el.spinSettings.open=powerInputMode==='gauge';
-  if(powerInputMode==='gauge')el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').open=true;
   refreshPowerInput();
   el.powerModeButton.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.powerInputMode',powerInputMode)));
-  menu=createGameMenu({dialog:el.optionsDialog,
+  menu=createGameMenu({dialog:el.pauseDialog,
+    onEscape:backFromMenuOptions,
     canOpen:()=>el.decisionOverlay.hidden&&el.victoryOverlay.hidden,
     onOpen:()=>{
+      menuOrigin=el.matchOverlay.hidden?'game':'home';
       menuOpenedAt=performance.now();
       menuReplayTime=replayPlayback&&replayPlayback.pausedAt==null?
         Math.min(replayPlayback.record.duration,(performance.now()-replayPlayback.start)/1000):null;
       gamePaused=true;releaseAimMouse();impactAudio.stop();
       el.restartMatchButton.disabled=!sessionSettings;
-      el.resumeGame.textContent=el.matchOverlay.hidden?'REPRENDRE LA PARTIE':'RETOUR À L’ACCUEIL';
-      el.optionsButton.setAttribute('aria-expanded','true');
     },
     onClose:()=>{
       gamePaused=false;lastFrame=performance.now();
       if(shotCameraTransition)shotCameraTransition.start+=lastFrame-menuOpenedAt;
       if(replayPlayback&&menuReplayTime!==null)replayPlayback.start=performance.now()-menuReplayTime*1000;
       menuReplayTime=null;
-      el.optionsButton.setAttribute('aria-expanded','false');
       requestAnimationFrame(resize);
       (el.matchOverlay.hidden?el.gameCanvas:el.startMatch).focus({preventScroll:true});
     }
   });
-  for(const button of [el.optionsButton,el.homeOptionsButton])button.addEventListener('click',()=>menu.open());
-  el.closeOptions.addEventListener('click',()=>menu.close());
-  el.resumeGame.addEventListener('click',()=>{
-    if(el.matchOverlay.hidden)void requestSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document);
-    menu.close();
-  });
+  el.homeOptionsButton.addEventListener('click',()=>menu.open(el.optionsDialog));
+  el.openOptionsButton.addEventListener('click',()=>menu.show(el.optionsDialog));
+  el.closeOptions.addEventListener('click',backFromMenuOptions);
   el.mainMenuButton.addEventListener('click',returnToMainMenu);
   el.restartMatchButton.addEventListener('click',restartCurrentMatch);
 }
@@ -2241,9 +2244,7 @@ function bindControls() {
     releaseAimMouse();
     if(powerInputMode==='gauge'){gaugePower=Number(el.powerSlider.value);powerInputMode='mouse';}
     else{powerInputMode='gauge';setPower(gaugePower);}
-    el.spinSettings.open=powerInputMode==='gauge';
-    el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').open=true;
-    updateVisuals();
+      updateVisuals();
     // Switching mode happens in Options; capture starts after resuming the game.
     requestAnimationFrame(resize);
   });
@@ -2308,7 +2309,7 @@ function bindControls() {
   el.victoryNewMatch.addEventListener('click',showMatchSetup);
   el.victoryInspect.addEventListener('click',()=>{
     el.victoryOverlay.hidden=true;
-    el.optionsButton.focus();
+    el.gameCanvas.focus();
   });
   el.calledBall.addEventListener('change',()=>{safetyCalled=false;refreshCallUI();});
   el.calledPockets.querySelectorAll('button').forEach(button=>{
@@ -2519,10 +2520,6 @@ function bindControls() {
     updateVisuals();
   });
   el.audioToggle.addEventListener('click',()=>{soundEnabled=!soundEnabled;impactAudio.setMuted(!soundEnabled);if(soundEnabled)void impactAudio.unlock();el.audioLabel.textContent=soundEnabled?'ON':'OFF';});
-  el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').addEventListener('toggle',()=>requestAnimationFrame(resize));
-  el.fullscreenButton.addEventListener('click',()=>{
-    toggleSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document).finally(()=>{requestAnimationFrame(resize);el.gameCanvas.focus();});
-  });
   document.addEventListener('fullscreenchange',()=>{
     const active=document.fullscreenElement===el.gameCanvas.closest('.scene-frame');
     if(fullscreenWasActive&&!active&&performance.now()>ignoreFullscreenMenuUntil&&
@@ -2535,7 +2532,7 @@ function bindControls() {
       if(e.repeat)return;
       e.preventDefault();
       if(replayPlayback)stopShotReplay();
-      if(menu.isOpen){ignoreFullscreenMenuUntil=performance.now()+300;menu.close();}
+      if(menu.isOpen)backFromMenuOptions();
       else if(el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu.open();
       return;
     }

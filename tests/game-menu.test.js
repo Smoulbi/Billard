@@ -33,3 +33,57 @@ test('player HUD distinguishes groups, potted balls and the final eight',()=>{
   assert.deepEqual(playerBallState({mode:'eight',groups:[null,null]},balls,0),[]);
   assert.deepEqual(playerBallState({mode:'nine'},balls,0),[]);
 });
+
+
+function page({fail=false}={}) {
+  const listeners={},queued=[];
+  return {open:false,listeners,queued,
+    addEventListener(name,callback){listeners[name]=callback;},
+    showModal(){if(fail)throw new Error('unavailable');this.open=true;},
+    close(){this.open=false;queued.push(()=>listeners.close());},
+    flush(){for(const callback of queued.splice(0))callback();},
+    escape(){let prevented=false;listeners.cancel({preventDefault(){prevented=true;}});return prevented;}
+  };
+}
+test('pause and options pages share one balanced pause even with asynchronous old close events',()=>{
+  const pause=page(),options=page(),calls=[];
+  const menu=createGameMenu({dialog:pause,onOpen:()=>calls.push('pause'),onClose:()=>calls.push('resume')});
+  assert.ok(menu.open());assert.equal(menu.dialog,pause);
+  assert.ok(menu.show(options));assert.equal(menu.dialog,options);assert.ok(options.open);assert.equal(pause.open,false);
+  pause.flush();assert.ok(menu.isOpen);assert.deepEqual(calls,['pause']);
+  assert.ok(menu.show(pause));assert.equal(menu.dialog,pause);options.flush();
+  assert.ok(menu.isOpen);assert.deepEqual(calls,['pause']);
+  assert.ok(menu.close());assert.equal(menu.dialog,null);pause.flush();
+  assert.equal(menu.isOpen,false);assert.deepEqual(calls,['pause','resume']);
+});
+test('stale close events do not close a page that has since been reopened',()=>{
+  const pause=page(),options=page(),calls=[];
+  const menu=createGameMenu({dialog:pause,onClose:()=>calls.push('resume')});
+  menu.open();menu.show(options);menu.show(pause);
+  pause.flush();options.flush();assert.ok(menu.isOpen);assert.equal(menu.dialog,pause);assert.ok(pause.open);
+  assert.deepEqual(calls,[]);menu.close();pause.flush();assert.deepEqual(calls,['resume']);
+});
+test('options can open directly and Escape can return to pause without resuming',()=>{
+  const pause=page(),options=page(),calls=[];
+  let menu;
+  menu=createGameMenu({dialog:pause,onOpen:()=>calls.push('pause'),onClose:()=>calls.push('resume'),
+    onEscape:target=>target===options?menu.show(pause):menu.close()});
+  assert.ok(menu.open(options));assert.equal(menu.dialog,options);
+  assert.ok(options.escape());assert.equal(menu.dialog,pause);assert.deepEqual(calls,['pause']);
+  assert.ok(pause.escape());options.flush();pause.flush();assert.deepEqual(calls,['pause','resume']);
+});
+test('failed page transitions preserve the original usable modal and pause interval',()=>{
+  const pause=page(),unavailable=page({fail:true}),calls=[];
+  const menu=createGameMenu({dialog:pause,onOpen:()=>calls.push('pause'),onClose:()=>calls.push('resume')});
+  menu.open();assert.equal(menu.show(unavailable),false);
+  assert.ok(pause.open);assert.ok(menu.isOpen);assert.equal(menu.dialog,pause);assert.deepEqual(calls,['pause']);
+  assert.ok(menu.close());pause.flush();assert.deepEqual(calls,['pause','resume']);
+});
+test('native close on the active override resumes once, while stale cancel events are ignored',()=>{
+  const pause=page(),options=page(),calls=[];
+  const menu=createGameMenu({dialog:pause,onClose:()=>calls.push('resume')});
+  menu.open();menu.show(options);
+  assert.equal(pause.escape(),false);assert.ok(menu.isOpen);
+  options.close();options.flush();pause.flush();
+  assert.equal(menu.isOpen,false);assert.deepEqual(calls,['resume']);
+});
