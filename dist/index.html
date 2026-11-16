@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0c1216">
   <meta name="description" content="Jeu de la 8, jeu de la 9 et entraînement au billard américain.">
   <title>FRAME — Billard</title>
-  <link rel="stylesheet" href="./style.css?v=0.89">
+  <link rel="stylesheet" href="./style.css?v=0.90">
 </head>
 <body>
  <div class="app"><div class="workspace"><main class="main-stage">
@@ -140,7 +140,7 @@
   <select id="cameraViewSelect" class="rail-model-select"><option value="perspective">Perspective</option><option value="overhead">Dessus</option><option value="first-person">Première personne</option></select>
   <p id="cameraSettingsHint" class="control-description"></p>
 <section id="firstPersonSettings" class="camera-tuning"><div class="dock-section-content">
-                <div class="control-title"><strong>ZOOM · VUE JOUEUR</strong><span id="firstPersonFovValue" class="power-value">60°</span></div>
+                <div class="control-title"><strong>ZOOM</strong><span id="firstPersonFovValue" class="power-value">60°</span></div>
                 <p class="control-description">Élargissez le champ de vision pour voir davantage la table, sans déplacer votre position.</p>
                 <input id="firstPersonFovSlider" type="range" min="35" max="85" value="60" step="1" aria-label="Champ de vision de la vue à la première personne en degrés">
                 <div class="range-labels"><span>ZOOM +</span><span>VUE LARGE</span></div>
@@ -148,10 +148,7 @@
                 <div class="control-title"><strong>HAUTEUR DES YEUX ↕</strong><span id="firstPersonHeightValue" class="power-value">23 cm</span></div>
                 <input id="firstPersonHeightSlider" type="range" min="12" max="50" value="23" step="0.01" aria-label="Hauteur des yeux au-dessus du tapis en centimètres">
                 <div class="range-labels"><span>BAS</span><span>HAUT</span></div>
-                <div class="control-title" style="margin-top:16px"><strong>RECUL DERRIÈRE LA BLANCHE</strong><span id="firstPersonSetbackValue" class="power-value">52 cm</span></div>
-                <input id="firstPersonSetbackSlider" type="range" min="30" max="110" value="52" step="1" aria-label="Recul des yeux derrière la blanche en centimètres">
-                <div class="range-labels"><span>PROCHE</span><span>ÉLOIGNÉ</span></div>
-                <button id="firstPersonPositionReset" class="text-button" type="button">RÉINITIALISER LA POSITION</button>
+                <button id="firstPersonPositionReset" class="text-button" type="button">RÉINITIALISER LA HAUTEUR</button>
                 <div class="panel-divider slim"></div>
               </div></section>
  </div>
@@ -215,11 +212,11 @@
           <p class="calibration-footnote">Les 57 essais sont comparés notamment aux régressions de <a href="https://mediatum.ub.tum.de/doc/1155344/988748.pdf" target="_blank" rel="noopener noreferrer">Nierhoff, Heunisch &amp; Hirche — 1 217 impacts de pool US</a>. Pool v0.17 : référence empirique conservée. Pool v0.18–0.19 : ressort normal/tangentiel inspiré des principes de <a href="https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html" target="_blank" rel="noopener noreferrer">Stronge</a>. Pool v0.20 : contact couplé en 3D avec cisaillement vertical. Pool v0.21 : <strong>identification sous contraintes et contrôle sur la vitesse 1,2 m/s exclue de l'ajustement</strong>. Pool v0.69 : accord à la régression US et transition glissement–roulement précise ; le score pool sépare les repères snooker et indicatifs. Pool v0.68 : correction de non-pénétration, mêmes paramètres et même écart à cette régression que v0.21. <strong>Recherche v0.22 : un contact simultané bille–bande–tapis est implémenté dans un banc séparé, mais ses écarts avec la régression américaine sont supérieurs ; il n'est pas activé en jeu.</strong> Aucun de ces modèles mécaniques n'est validé sur une table indépendante ; les coefficients K55/K66 ne sont pas mesurés. Snooker historique inchangé, géométrie toujours américaine. Les mesures personnelles restent dans ce navigateur.</p>
         </section></details>
 
-  <p class="options-note">VERSION 0.89 · BUILD 089</p>
+  <p class="options-note">VERSION 0.90 · BUILD 090</p>
  </div>
 </dialog>
 </section>
 </main></div></div>
- <script type="module" src="./game.js?v=0.89"></script>
+ <script type="module" src="./game.js?v=0.90"></script>
 </body>
 </html>

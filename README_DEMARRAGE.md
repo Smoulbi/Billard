@@ -1,8 +1,8 @@
-# FRAME v0.89 — projet complet
+# FRAME v0.90 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.89 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.90 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -529,3 +529,7 @@ actuelle, y compris lors de la première préparation après une casse.
 Les réglages caméra s’affichent en haut à droite sans assombrir ni flouter la
 table. Pendant la pause, modifier un réglage redessine immédiatement la scène,
 sans avancer la simulation. Le rendu reste au repos entre deux modifications.
+
+## Version 0.90 — réglages caméra simplifiés
+
+La vue à la première personne conserve un seul réglage Zoom et la hauteur des yeux. Le recul reste fixe à 52 cm ; le bouton de réinitialisation de hauteur ne modifie plus que celle-ci. Aperçu en direct conservé.

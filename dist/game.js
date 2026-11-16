@@ -39,7 +39,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
@@ -1811,7 +1811,7 @@ function updateRailVisibility(now=performance.now()) {
   const planes=railCutawayForView({mode:cameraMode,cue:balls.find(b=>b.num===0),aim,
     shooting:shotActive,shot:firstPerson.shot,
     transitioning:!!shotCameraTransition&&shotCameraProgress(now-shotCameraTransition.start,shotCameraTransition.duration)>0
-  },{length:LENGTH,width:WIDTH,setback:Number(el.firstPersonSetbackSlider.value)/100});
+  },{length:LENGTH,width:WIDTH});
   for(let i=0;i<railVisibilityPlanes.length;i++){
     const p=planes?.[i];
     railVisibilityPlanes[i].normal.set(p?.x??0,p?.y??1,p?.z??0);
@@ -1830,8 +1830,7 @@ function updateCamera() {
     const cue=balls.find(b=>b.num===0);
     if(!cue)return;
     const pose=currentFirstPersonPose(firstPerson,cue,aim,shotActive,{
-      height:Number(el.firstPersonHeightSlider.value)/100,
-      setback:Number(el.firstPersonSetbackSlider.value)/100
+      height:Number(el.firstPersonHeightSlider.value)/100
     });
     camera.position.set(pose.position.x,pose.position.y,pose.position.z);
     camera.up.set(0,1,0);
@@ -2496,8 +2495,7 @@ function bindControls() {
   el.firstPersonFovReset.addEventListener('click',()=>{el.firstPersonFovSlider.value='60';updateFirstPersonZoom();});
   const updateFirstPersonPosition=()=>{
     for(const [slider,label,min,max] of [
-      [el.firstPersonHeightSlider,el.firstPersonHeightValue,12,50],
-      [el.firstPersonSetbackSlider,el.firstPersonSetbackValue,30,110]
+      [el.firstPersonHeightSlider,el.firstPersonHeightValue,12,50]
     ]){
       const value=Number(slider.value);
       label.textContent=`${value.toLocaleString('fr-FR',{maximumFractionDigits:1})} cm`;
@@ -2507,9 +2505,8 @@ function bindControls() {
     if(cameraMode==='first-person'){shotCameraTransition=null;updateCamera();}
   };
   el.firstPersonHeightSlider.addEventListener('input',updateFirstPersonPosition);
-  el.firstPersonSetbackSlider.addEventListener('input',updateFirstPersonPosition);
   el.firstPersonPositionReset.addEventListener('click',()=>{
-    el.firstPersonHeightSlider.value='23';el.firstPersonSetbackSlider.value='52';updateFirstPersonPosition();
+    el.firstPersonHeightSlider.value='23';updateFirstPersonPosition();
   });
   updateFirstPersonPosition();
   updateFirstPersonZoom();
