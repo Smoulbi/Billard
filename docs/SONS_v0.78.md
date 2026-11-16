@@ -26,5 +26,6 @@ au plus et aucun écrêtage dans les cas mesurés. Pic des rafales de bandes :
 `data/impact-audio-v078-validation.json` ; méthode et adaptateur d’état hors ligne
 inchangés, décrits dans `SONS_v0.76.md`.
 
-Suite complète à terminer avant livraison. Aucune nouvelle écoute subjective
+Suite complète : **275 tests réussis, 0 échec, 0 ignoré**. Relecture indépendante
+terminée sans défaut bloquant. Aucune nouvelle écoute subjective
 n’est revendiquée : le choix sonore est celui de l’utilisateur.
