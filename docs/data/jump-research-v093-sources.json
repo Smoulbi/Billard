@@ -1,0 +1,90 @@
+[
+  {
+    "id": "S1",
+    "title": "Charles S. Peskin — Collision of Billiard Balls in 3D with Spin and Friction (2020)",
+    "url": "https://math.nyu.edu/~peskin/Collision_of_Billiard_Balls_in_3D_with_Spin_and_Friction.pdf",
+    "consulted": "2026-11-16",
+    "sha256": "56bdc789f2d1fa54d498322430332234cdd134ee895b0ff3c584933dc4edc429",
+    "scope": "Note théorique, Texte intégral obtenu ; loi de Coulomb 3D, restriction au glissement explicitée p. 10. Pas de calibration expérimentale."
+  },
+  {
+    "id": "S2",
+    "title": "Hyeong-Chan Kim — Collision of two spinning billiard balls and the role of table (2024)",
+    "url": "https://arxiv.org/abs/2402.13258",
+    "consulted": "2026-11-16",
+    "sha256": "3e984df0682d2c22bf493e85c7fc4f19a12eef7a65d3bf3319c3cd17443a74d9",
+    "scope": "Prépublication théorique, Texte intégral obtenu ; passages sur la bille incidente en rotation et bille cible initialement immobile sur un plan ; ne couvre pas toutes les géométries de choc en vol."
+  },
+  {
+    "id": "S3",
+    "title": "Mathavan, Jackson et Parkin — A theoretical analysis of billiard ball dynamics under cushion impacts (2010)",
+    "url": "https://doi.org/10.1243/09544062JMES1964",
+    "consulted": "2026-11-16",
+    "sha256": "8c4ad418408b1e1728577632a99ba4789320a91b4b13d95ddd0a231c5fb2f093",
+    "scope": "Article avec comparaison expérimentale sur table de snooker Riley. PDF lu depuis https://drdavepoolinfo.com/physics_articles/Mathavan_IMechE_2010.pdf. Hypothèses et identification §§2, 3.5."
+  },
+  {
+    "id": "S4",
+    "title": "Rod Cross — Cue and ball deflection (or squirt) in billiards (2008)",
+    "url": "https://www.physics.usyd.edu.au/~cross/PUBLICATIONS/39.%20squirt.pdf",
+    "consulted": "2026-11-16",
+    "sha256": "bf36d126ae0985d398e277c5d6224e691c8f7e2be578c0fc34a44d3977550a5c",
+    "scope": "Article expérimental, AJP 76(3), 205–212. Montage à bille suspendue de 120 g, diamètre 50,3 mm, queue 186 g/94 cm ; ne calibre pas un jump sur table de pool."
+  },
+  {
+    "id": "S5",
+    "title": "Lewandowski, Faustino et Cox — Design, Fabrication, and Implementation of Jump-Cue Testing Machine (2006)",
+    "url": "https://digitalcommons.unf.edu/ojii_volumes/63",
+    "consulted": "2026-11-16",
+    "sha256": "ffec7c408f9d48b978d25cd675a9fd956a6f8f09ef9fe2fd51aa19ad641fc18c",
+    "scope": "PDF intégral lu ; tableaux 1–2 p. imprimée 5, PDF p. 6. 18 queues comparées, deux tableaux anonymisés X/Y publiés."
+  },
+  {
+    "id": "S6",
+    "title": "Alciatore — Pool Physics Property Constants",
+    "url": "https://drdavepoolinfo.com/faq/physics/physical-properties/",
+    "consulted": "2026-11-16",
+    "sha256": "5f7dd0157f965de313fc6c53988a48fcd6857f15f6e1f0c64e015b6c8ee4473a",
+    "scope": "Repères approximatifs : e table 0,5–0,7 ; e procédé cuir 0,71–0,75, phénolique 0,81–0,87. Pas un jeu de mesures identifiées de notre équipement."
+  },
+  {
+    "id": "S7",
+    "title": "Alciatore — Jump Shot Technique Advice and Drills",
+    "url": "https://drdavepoolinfo.com/faq/jump/technique/",
+    "consulted": "2026-11-16",
+    "sha256": "c31098a0d157c8edefb95630a19acde7d460c48307a30003ac9cd390d0dd6b46",
+    "scope": "Page lue : compression du tapis et dégagement du procédé ; liens HSV B.14/B.44 repérés, sans numérisation vidéo."
+  },
+  {
+    "id": "S8",
+    "title": "WPA — Tournament Table and Equipment Specifications, republication CueSight",
+    "url": "https://www.cuesight.com/wpa/tournament-table-equipment-specifications/",
+    "consulted": "2026-11-16",
+    "sha256": "577f9afebfca024d899ea86637d66fcb6ad8ef90a9aac3122f2db585da58bc5f",
+    "scope": "Spécification géométrique §7 : nez à 63,5 % ±1 point du diamètre. Republication lue ; pas une mesure de rebond."
+  },
+  {
+    "id": "S9",
+    "title": "Alciatore — Highly Elevated Pool Jump Shots",
+    "url": "https://drdavepoolinfo.com/faq/jump/highly-elevated/",
+    "consulted": "2026-11-16",
+    "sha256": "4392cbd6cadf1d94803412da74333405d2e6f9c577e79cc85c419abbb9cfddb5",
+    "scope": "Page lue : queue plus légère que la bille susceptible de reculer et faciliter le dégagement ; condition particulière, pas une masse universelle de queue de saut."
+  },
+  {
+    "id": "S10",
+    "title": "Biber, Champneys et Szalai — Analysis of point-contact models of the bounce of a hard spinning ball on a compliant frictional surface (2022)",
+    "url": "https://arxiv.org/abs/2208.11685",
+    "consulted": "2026-11-16",
+    "sha256": "54e77470da1a50851b1c237abbb5cc88e87dcabda2c086f8c5cfd0ba53890027",
+    "scope": "Modèle de contact compliant, comparé à golf/gazon. Méthode pertinente, coefficients non transférables au billard."
+  },
+  {
+    "id": "S11",
+    "title": "Yang et Chen — The design of jump shot decision-making system for a billiard robot (2010)",
+    "url": "https://doi.org/10.1109/RAMECH.2010.5513158",
+    "consulted": "2026-11-16",
+    "sha256": "bb1bc51ad0329a41ab2c6f45bad641da2363c48c27c1ee93c0127ba5ac45b317",
+    "scope": "Métadonnées Crossref et résumé OpenAlex uniquement. Texte intégral non obtenu ; aucune valeur numérique retenue."
+  }
+]

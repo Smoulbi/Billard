@@ -545,3 +545,5 @@ Après la frappe, l’élévation revient automatiquement à 0° ; le coup et so
 ## Version 0.93 — contact bille–tapis pour les jumps
 
 La frappe produit une impulsion descendante, suivie du même contact avec le tapis que les réceptions. Restitution nominale 0,6 (plage approximative 0,5–0,7 indiquée par Dr Dave), impulsion de frottement qui modifie vitesse et rotation, sans seuil fixe à 20°. Les petits rebonds sont coupés sous une hauteur numérique de 0,05 mm. Le coefficient de frottement d’impact 0,2 reste une hypothèse à calibrer, distincte du frottement pendant le glissement. Le contact simultané procédé–bille–tapis reste approximé par deux contacts successifs.
+
+Les recherches pour les prochaines améliorations (collisions en vol, bandes 3D, queues et calibration) sont documentées dans [RECHERCHES_JUMPS_v0.93.md](docs/RECHERCHES_JUMPS_v0.93.md), avec les domaines de validité et un manifeste de sources consultées.
