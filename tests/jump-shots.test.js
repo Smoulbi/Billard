@@ -61,3 +61,11 @@ test('jump results converge when the external timestep is halved',()=>{
  const run=step=>{const b=makePhysicsBody(0,-.8,0);strikeBall(b,aim,4,center,{elevation:45});advance([b],.4,{},step);return b;};
  const a=run(1/240),b=run(1/480);assert.ok(Math.abs(a.x-b.x)<.001);assert.ok(Math.abs(a.y-b.y)<.001);assert.ok(Math.abs(a.vx-b.vx)<.01);
 });
+
+test('the trajectory guide skips the jumped obstacle and predicts the actual first target',async()=>{
+ const {predictTrajectory}=await import('../dist/trajectory.js');
+ const layout=[makePhysicsBody(0,-.8,0),makePhysicsBody(2,-.46,0),makePhysicsBody(1,.12,0)];
+ const prediction=predictTrajectory(layout,aim,100/3,center,45);
+ assert.equal(prediction.firstObject,1);
+ assert.equal(layout[0].x,-.8);assert.equal(layout[0].y,RADIUS);
+});

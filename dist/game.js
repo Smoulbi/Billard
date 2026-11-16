@@ -1555,6 +1555,8 @@ function updateVisuals() {
   if(gamePaused)pausedViewDirty=true;
   if(replayPlayback)return;
   if(cameraMode==='first-person'&&camera)updateCamera();
+  el.jumpHint.hidden=!(powerInputMode==='mouse'&&strokePhase==='spin'&&!shotActive);
+  el.jumpHint.textContent=`INCLINAISON : ${el.elevationSlider.value}° · MOLETTE : INCLINER · S : VALIDER`;
   refreshPlacementUI();
   if(!cueGroup)return;
   const cue=balls.find(b=>b.num===0);
@@ -1575,11 +1577,9 @@ function updateVisuals() {
   cueGroup.rotation.set(0,-Math.atan2(aim.z,aim.x),-tilt,'YXZ');
   const contact=spinContactPoint(cue,aim,spin,RADIUS,elevation);
   spinImpactMarker.position.set(contact.x,contact.y,contact.z);
-  if(powerInputMode==='mouse'){
-    // The blue tip ends at local x=-.035: align it with the selected surface point.
-    cueGroup.position.set(contact.x+.035*aim.x*Math.cos(tilt),
-      contact.y-.035*Math.sin(tilt),contact.z+.035*aim.z*Math.cos(tilt));
-  }
+  // The blue tip ends at local x=-.035: align it in both input modes.
+  cueGroup.position.set(contact.x+.035*aim.x*Math.cos(tilt),
+    contact.y-.035*Math.sin(tilt),contact.z+.035*aim.z*Math.cos(tilt));
   if(strokePhase==='stroke'&&mouseStroke)cueGroup.translateX(-mouseStroke.pull);
   const deflection=Math.abs(impact.squirtDegrees);
   el.impactReadout.classList.toggle('warning',impact.miscue);
@@ -1742,7 +1742,7 @@ function physicsStep(dt) {
     onLanding:(_ball,speed)=>{if(speed>.35)impactAudio.play('ball',speed*.25);},
     onOffTable:b=>{
       if(shotEvents)(shotEvents.offTable??=[]).push(b.num);
-      b.mesh.visible=false;stopBall(b);
+      b.mesh.visible=false;stopBall(b);b.offTable=true;
       if(b.num===0)scratchedThisShot=true;
       updateCounters();
     },

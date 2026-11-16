@@ -155,7 +155,7 @@ export function makePhysicsBody(num, x, z) {
 
 export function stopBall(ball) {
   ball.vx = ball.vz = ball.wx = ball.wy = ball.wz = ball.vy = 0;
-  ball.y=RADIUS;
+  ball.y=RADIUS;ball.offTable=false;
   ball.rotX = ball.rotY = ball.rotZ = 0;
   ball.state = 'stationary';
 }
@@ -922,7 +922,7 @@ function simulateFlight(balls,dt,callbacks) {
         if(impact>1e-7)callbacks.onRailContact?.(b,impact,time,rail.kind);
         if(impact>.045)callbacks.onCushion?.(b,impact,time,rail.kind);
       }
-      if(Math.abs(b.x)>LENGTH+.15||Math.abs(b.z)>WIDTH+.15){
+      if(Math.abs(b.x)>LENGTH+RADIUS||Math.abs(b.z)>WIDTH+RADIUS){
         b.active=false;callbacks.onOffTable?.(b,time);continue;
       }
       if(b.y<=RADIUS+1e-8&&inPocket(b)){

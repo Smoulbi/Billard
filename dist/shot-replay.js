@@ -13,11 +13,11 @@ export class ShotReplay {
     if(last&&time-last.time<this.interval-1e-8&&!force)return;
     const states=this.ids.map(num=>{
       const b=balls.find(b=>b.num===num);
-      if(!b.active&&!this.pockets.has(num))this.pockets.set(num,{time,x:b.x,z:b.z});
+      if(!b.active&&!b.offTable&&!this.pockets.has(num))this.pockets.set(num,{time,x:b.x,z:b.z});
       const pocket=this.pockets.get(num),elapsed=pocket?time-pocket.time:0;
       return {num,x:pocket?.x??b.x,z:pocket?.z??b.z,
         y:pocket ? RADIUS-4.905*elapsed**2 : (b.y??RADIUS),
-        visible:!pocket||elapsed<.28,
+        visible:!b.offTable&&(!pocket||elapsed<.28),
         q:b.mesh?.quaternion.toArray()??[0,0,0,1]};
     });
     const frame={time,states};
