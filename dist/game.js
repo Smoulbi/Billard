@@ -1911,6 +1911,7 @@ function prepareMouseAim() {
 function refreshPowerInput() {
   if(fallbackCtx)powerInputMode='gauge';
   const mouse=powerInputMode==='mouse';
+  el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock>summary span').textContent=mouse?'Annonces · entraînement':'Puissance · effet';
   el.gameCanvas.closest('.scene-frame').dataset.inputMode=powerInputMode;
   el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').dataset.powerMode=mouse?'mouse':'gauge';
   el.powerModeButton.textContent=mouse?'MODE : GESTE SOURIS':'MODE : JAUGE';
@@ -2115,6 +2116,7 @@ function bindGameMenu() {
   const updateVolume=()=>{
     const level=impactAudio.setVolume(Number(el.volumeSlider.value)/100);
     el.volumeValue.textContent=`${Math.round(level*100)} %`;
+    el.volumeSlider.style.background=`linear-gradient(to right,var(--accent) ${level*100}%,#35443e ${level*100}%)`;
     savePreference('frame.audio.volume',level);
   };
   updateVolume();
@@ -2126,6 +2128,7 @@ function bindGameMenu() {
   const savedMode=readPreference('frame.powerInputMode');
   if(savedMode==='gauge'||savedMode==='mouse')powerInputMode=savedMode;
   el.spinSettings.open=powerInputMode==='gauge';
+  if(powerInputMode==='gauge')el.gameCanvas.closest('.scene-frame').querySelector('.shot-dock').open=true;
   refreshPowerInput();
   el.powerModeButton.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.powerInputMode',powerInputMode)));
   menu=createGameMenu({dialog:el.optionsDialog,

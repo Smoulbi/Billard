@@ -400,3 +400,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
 .home-options-button:hover{background:#2c4738;border-color:var(--gold);color:#e7d7b0}
 @media(max-width:700px){.shot-dock[data-power-mode=gauge][open]{top:151px;bottom:12px;max-height:calc(100% - 163px)}.shot-dock[data-power-mode=mouse][open]{height:min(390px,calc(100dvh - 180px))}}
 @media(max-height:550px) and (orientation:landscape){.shot-dock[data-power-mode=gauge][open]{top:123px;bottom:12px;max-height:calc(100% - 135px)}.shot-dock[data-power-mode=mouse][open]{height:calc(100dvh - 145px)}}
+
+.camera-queue-settings{padding:3px 18px 18px}
+.camera-queue-settings .dock-section{border:1px solid #3a554b;border-radius:6px;margin:13px 0 0;overflow:hidden}
+.camera-queue-settings .dock-section>summary{padding:13px;font:11px var(--body);color:#c9dfce;cursor:pointer}
+.camera-queue-settings .dock-section[open]>summary{border-bottom:1px solid #3a554b;color:var(--gold)}
+.camera-queue-settings .dock-section-content{padding:14px}
+.camera-queue-settings .panel-divider{display:none}
+.camera-queue-settings .control-title{gap:12px}
+.camera-queue-settings .control-title>div{gap:0}
+.camera-queue-settings .control-index{display:none}
+.camera-queue-settings .control-description{font-size:11px;line-height:1.6}
+.camera-queue-settings .power-value{white-space:nowrap;font-size:12px}
+@media(max-width:700px){.camera-queue-settings{padding:1px 13px 13px}.camera-queue-settings .dock-section-content{padding:12px}.camera-queue-settings .control-title{font-size:9px}}
+
+/* Keep the table's pockets clear of the lateral gauge controls on desktop. */
+@media(min-width:900px){.scene-frame:has(.shot-dock[data-power-mode=gauge][open]) #gameCanvas{width:calc(100% - 292px)}}
