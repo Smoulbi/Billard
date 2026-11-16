@@ -18,5 +18,9 @@ douze voix et l’absence d’écrêtage sont confirmés dans les rafales testé
 Résultats : `data/impact-audio-v079-validation.json`. Méthode et limites du rendu
 hors ligne : `SONS_v0.76.md`.
 
-Suite complète et relecture à terminer avant livraison.
+Suite complète : **276 réussites, 0 échec, 0 ignoré**. La relecture a détecté
+et fait annuler trois changements involontaires de constantes visuelles lors
+du changement de version, avant livraison. Après restauration, treize contrôles
+ciblés interface/visuels/trajectoire passent ; le diff final de `game.js` ne
+modifie que la version de l’import audio.
 Aucune écoute subjective sur le poste utilisateur n’est revendiquée.
