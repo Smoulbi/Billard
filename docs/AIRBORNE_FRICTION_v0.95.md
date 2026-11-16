@@ -47,10 +47,30 @@ pour ce parcours. Il s’agit d’une extension isotrope de l’ajustement TP A-
 Les coups entièrement au sol conservent leur solveur précédent. Le guide et le
 replay restent liés aux trajectoires du même moteur.
 
-## Point de reprise
+## Validation terminée
 
-Les 32 tests ciblés passent. Huit nouveaux tests couvrent notamment les cas
-indépendants de l’étude 0.94, les bilans et rotations de repère sur 150 états
-libres, 150 états soutenus, l’adhérence, un contact intégré en vol et la correction
-sans hausse de hauteur d’un choc vertical soutenu.
-Restent : suite complète, parcours navigateur et contrôle des trajectoires.
+- **329 tests réussis**, aucun échec ni test ignoré, dont les huit nouveaux tests
+  du noyau et de son intégration. Les anciens tests de trajectoire, de replay,
+  de réception et de règles restent inclus dans la suite.
+- Cas libres : comparaison aux résultats indépendants de l’étude 0.94 et bilans
+  de quantité de mouvement/énergie sur 150 états et rotations de repère.
+- Cas soutenus : 150 états dissipatifs, réaction normale de la table prise en
+  compte dans le bilan vertical, cible restant à la hauteur du tapis.
+- Chromium/SwiftShader : deux billes libres démarrent à 20 cm de hauteur de
+  centre, dont une avec une rotation de 30 rad/s. Après le choc, la cible a une
+  rotation de −8,90 rad/s et les vitesses verticales diffèrent. Les hauteurs des
+  maillages correspondent aux corps physiques et le replay enregistre la rotation.
+- Sur une cible soutenue, une rotation latérale d’environ −0,562 rad/s est observée
+  juste après le contact, puis le frottement du tapis la dissipe. La cible reste
+  à `y=R` avec `vy=0`. L’énergie mécanique totale ne croît pas dans les deux
+  parcours synthétiques contrôlés. Aucune erreur JavaScript relevée.
+
+Ces contrôles utilisent des états initiaux artificiels pour isoler le phénomène,
+avec des accès QA ajoutés uniquement par un serveur temporaire ; ils ne sont
+pas des mesures de billes réelles. Le cas de contact soutenu reste volontairement
+limité : la tangente inclinée et le frottement du tapis pendant le choc multiple
+sont les prochaines parties à modéliser et à confronter à des mesures.
+
+[Mesures navigateur](data/airborne-friction-v095-validation.json) ·
+[Capture du cas libre](data/airborne-friction-v095.png) ·
+[Sources complémentaires](data/airborne-friction-v095-sources.json).

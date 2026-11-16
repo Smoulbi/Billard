@@ -1,0 +1,30 @@
+[
+  {
+    "title": "Kim, H.-C. — Collision of Two Spinning Billiard Balls and the Role of Table, New Physics: Sae Mulli 74(6), 621–633 (2024)",
+    "url": "https://doi.org/10.3938/NPSM.74.621",
+    "consulted": "2026-11-16",
+    "sha256": "ab9952907c7422c1fadc39abbe338d8b268b6afe9399b5cf0b630ca27a3b673f",
+    "scope": "Texte publié obtenu depuis https://pdf.medrang.co.kr/NPSM/2024/074/npsm-74-6-621.pdf ; notamment pp. 622–625, rôle du support et du frottement du tapis. Modèle théorique à billes initialement sur un plan, pas une calibration de nos chocs aériens."
+  },
+  {
+    "title": "Peskin, 2020",
+    "url": "https://math.nyu.edu/~peskin/Collision_of_Billiard_Balls_in_3D_with_Spin_and_Friction.pdf",
+    "consulted": "2026-11-16",
+    "sha256": "56bdc789f2d1fa54d498322430332234cdd134ee895b0ff3c584933dc4edc429",
+    "scope": "Note théorique ; vitesse des surfaces, couples, restrictions de glissement."
+  },
+  {
+    "title": "Alciatore, TP A-14",
+    "url": "https://drdavepoolinfo.com/technical_proofs/new/TP_A-14.pdf",
+    "consulted": "2026-11-16",
+    "sha256": "285c74fc2387abc405e0aeacbb78c750bc57e614f9df6f0c97cba7a088a154e3",
+    "scope": "Impulsions tangentielles et ajustement des données de Marlow ; extension aérienne non calibrée."
+  },
+  {
+    "title": "Cross, 2023 — Oblique angle collisions between three or more billiard balls",
+    "url": "https://doi.org/10.1119/5.0119656",
+    "consulted": "2026-11-16",
+    "sha256": "bd154c0ed9e301140e920678e194c46676945f75c09871d1c5117b488dc3e7d3",
+    "scope": "Résumé et métadonnées Crossref uniquement : conservation seule insuffisante en multi-contact ; le résumé précise que le frottement est ignoré. Aucun coefficient utilisé."
+  }
+]
