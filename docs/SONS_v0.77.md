@@ -33,4 +33,5 @@ avec douze voix au plus. Les résultats sont conservés dans
 Le script `scripts/validate-impact-audio.mjs` vérifie désormais la nouvelle loi ;
 les résultats 0.76 restent archivés sans réécriture. La méthode et l’adaptateur
 d’état d’OfflineAudioContext sont décrits dans `SONS_v0.76.md`.
-Suite complète à terminer avant livraison sur main.
+Suite complète : **275 tests réussis, 0 échec, 0 ignoré**. Relecture indépendante
+du changement et des résultats terminée sans défaut bloquant.

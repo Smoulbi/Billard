@@ -1,5 +1,5 @@
 {
-  "measuredAt": "2026-11-16T12:10:01.362Z",
+  "measuredAt": "2026-11-16T12:10:50.088Z",
   "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
   "sampleRate": 48000,
   "method": "Production createImpactAudio with native OfflineAudioContext nodes; scheduling-only state adapter; decoded same-origin WAVs; no subjective audition.",
@@ -15,8 +15,8 @@
         0.01477095764130354
       ],
       "peakRatio": 1.4142136172830115,
-      "expectedRatio": 1.414213562373095,
-      "maxSampleError": 2.056739641445593e-9
+      "expectedRatio": 1.4142135623730951,
+      "maxSampleError": 2.0567396431803164e-9
     },
     {
       "kind": "cue",
@@ -43,8 +43,8 @@
         0.20889286696910858
       ],
       "peakRatio": 1.4142135566365344,
-      "expectedRatio": 1.414213562373095,
-      "maxSampleError": 2.6901559452285895e-8
+      "expectedRatio": 1.4142135623730951,
+      "maxSampleError": 2.690155942453032e-8
     },
     {
       "kind": "cue",
@@ -71,8 +71,8 @@
         0.0032836890313774347
       ],
       "peakRatio": 1.4142135949978767,
-      "expectedRatio": 1.414213562373095,
-      "maxSampleError": 2.5218373765102664e-10
+      "expectedRatio": 1.4142135623730951,
+      "maxSampleError": 2.521837374341862e-10
     },
     {
       "kind": "ball",
@@ -99,8 +99,8 @@
         0.046438369899988174
       ],
       "peakRatio": 1.4142136486531867,
-      "expectedRatio": 1.414213562373095,
-      "maxSampleError": 4.781257181840637e-9
+      "expectedRatio": 1.4142135623730951,
+      "maxSampleError": 4.781257188779531e-9
     },
     {
       "kind": "ball",
@@ -127,8 +127,8 @@
         0.017130045220255852
       ],
       "peakRatio": 1.4142136683503015,
-      "expectedRatio": 1.414213562373095,
-      "maxSampleError": 3.1022895120857985e-9
+      "expectedRatio": 1.4142135623730951,
+      "maxSampleError": 3.1022895086163516e-9
     },
     {
       "kind": "cushion",
@@ -155,8 +155,8 @@
         0.24225541949272156
       ],
       "peakRatio": 1.4142136356495403,
-      "expectedRatio": 1.414213562373095,
-      "maxSampleError": 3.451336999527044e-8
+      "expectedRatio": 1.4142135623730951,
+      "maxSampleError": 3.451336996751486e-8
     },
     {
       "kind": "cushion",
@@ -248,8 +248,8 @@
       ],
       "count": 12,
       "requestedMaxVoices": 100,
-      "peak": 0.7590873837471008,
-      "rms": 0.2110730159961484,
+      "peak": 0.7590872645378113,
+      "rms": 0.21107301369475992,
       "starts": 12,
       "evicted": 0
     },
@@ -262,7 +262,7 @@
       "count": 100,
       "requestedMaxVoices": 100,
       "peak": 0.7590872645378113,
-      "rms": 0.21107301424598102,
+      "rms": 0.21107301427875338,
       "starts": 100,
       "evicted": 88
     }

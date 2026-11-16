@@ -10,7 +10,7 @@ const socket=new WebSocket(page.webSocketDebuggerUrl);
 await new Promise(resolve=>socket.addEventListener('open',resolve,{once:true}));
 try {
  const expression=`(${async function validate() {
-  const {createImpactAudio,impactGain}=await import(new URL('./impact-audio.js?v=0.77',location.href));
+  const {createImpactAudio}=await import(new URL('./impact-audio.js?v=0.77',location.href));
   const rate=48000;
   async function render(kinds,speed,count,maxVoices=12) {
    const offline=new OfflineAudioContext(2,rate,rate);
@@ -47,7 +47,7 @@ try {
   const isolated=[];
   for(const kind of ['cue','ball','cushion'])for(const [low,high] of [[0.03,0.06],[0.75,1.5],[6,12],[12,24]]){
    const a=await render([kind],low,1),b=await render([kind],high,1);
-   const expectedRatio=impactGain(high)/impactGain(low);
+   const expectedRatio=low<12 ? Math.SQRT2 : 2;
    let maxError=0;
    for(let c=0;c<a.samples.length;c++)for(let i=0;i<a.samples[c].length;i++)
     maxError=Math.max(maxError,Math.abs(b.samples[c][i]-expectedRatio*a.samples[c][i]));
