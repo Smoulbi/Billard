@@ -27,6 +27,12 @@ export const SIDE_POCKET_SHELF = 0.006; // 6 mm, within WPA 0–9.525 mm
 export const PHYSICS = Object.freeze({
   mass: 0.170097,
   gravity: 9.81,
+  // Alciatore's approximate ball-table COR range is 0.5–0.7; nominal,
+  // not calibrated to this table. Impact friction is a separate provisional
+  // Coulomb parameter; equal to the typical sliding value, not a measurement.
+  tableRestitution: 0.60,
+  tableImpactFriction: 0.20,
+  minBounceHeight: 0.00005, // numerical cutoff: 0.05 mm, not an angle threshold
   // Alciatore TP B.6 (pool): typical sliding 0.2, rolling 0.01.
   // The old 0.0128 snooker rolling value remains in the snooker profile.
   slidingFriction: 0.20,
@@ -167,9 +173,8 @@ export function stopBall(ball) {
 // squirt. Elevation tips the impulse and contact basis in 3D: its longitudinal
 // angular component then generates a *lateral cloth slip*, so the existing
 // sliding-friction integrator produces swerve without a scripted curve.
-// Above 20°, the downward cue impulse rebounds from the cloth into flight.
-// Restitution is a gameplay approximation, separate from calibrated planar shots.
-export function getCueImpact(aim, speed, english = {x: 0, y: 0}, options = {}) {
+// Keep the downward cue impulse separate from the immediate table contact.
+export function getCueStrike(aim, speed, english = {x: 0, y: 0}, options = {}) {
   const magnitude = Math.hypot(aim.x, aim.z) || 1;
   const dx = aim.x / magnitude, dz = aim.z / magnitude;
   const ox = Math.max(-1, Math.min(1, Number(english.x) || 0));
@@ -207,12 +212,46 @@ export function getCueImpact(aim, speed, english = {x: 0, y: 0}, options = {}) {
   const angularFactor = PHYSICS.mass * impulseSpeed * INVERSE_INERTIA;
   return {
     vx: ux * impulseSpeed, vz: uz * impulseSpeed,
-    vy:theta>=20*Math.PI/180&&!miscue ? impulseSpeed*st*0.42 : 0,
+    vy:uy * impulseSpeed || 0,
     wx: (ry * uz - rz * uy) * angularFactor,
     wy: (rz * ux - rx * uz) * angularFactor,
     wz: (rx * uy - ry * ux) * angularFactor,
     miscue, squirtDegrees: squirt * 180 / Math.PI, impactOffset: radialOffset,
   };
+}
+
+// Rigid uniform sphere against a stationary horizontal plane. Coulomb impulse
+// is limited by the impulse that cancels contact slip (no slip reversal).
+// Changes translation AND rotation; wy has no torque from a point below COM.
+export function resolveTableContact(ball, {
+  restitution=PHYSICS.tableRestitution,
+  friction=PHYSICS.tableImpactFriction,
+  minBounceHeight=PHYSICS.minBounceHeight
+}={}) {
+  const incoming=-(ball.vy||0);
+  if(incoming<=0)return 0;
+  const normalImpulse=PHYSICS.mass*(1+restitution)*incoming;
+  const sx=ball.vx+RADIUS*ball.wz,sz=ball.vz-RADIUS*ball.wx;
+  const slip=Math.hypot(sx,sz);
+  if(slip>1e-12){
+    const impulse=Math.min(friction*normalImpulse,PHYSICS.mass*slip/3.5);
+    const jx=-impulse*sx/slip,jz=-impulse*sz/slip;
+    ball.vx+=jx*INVERSE_MASS;ball.vz+=jz*INVERSE_MASS;
+    ball.wx-=RADIUS*jz*INVERSE_INERTIA;
+    ball.wz+=RADIUS*jx*INVERSE_INERTIA;
+  }
+  const outgoing=restitution*incoming;
+  ball.vy=outgoing*outgoing/(2*PHYSICS.gravity)>=minBounceHeight?outgoing:0;
+  return incoming;
+}
+
+// HUD/preview and the real stroke share the post-table launch state. The
+// intermediate downward velocity is produced by getCueStrike, without any
+// fixed elevation threshold. Miscues remain weak, deflected cue impacts.
+export function getCueImpact(aim,speed,english={x:0,y:0},options={}) {
+  const impact=getCueStrike(aim,speed,english,options);
+  resolveTableContact(impact);
+  return impact;
 }
 
 export function strikeBall(ball, aim, speed, english = {x: 0, y: 0}, options = {}) {
@@ -900,20 +939,31 @@ function simulateFlight(balls,dt,callbacks) {
       groundCredit=grounded._advanceCredit||0;
     }
     for(const b of flying){
-      const y=b.y??RADIUS,v=b.vy||0;
-      const landing=(v+Math.sqrt(v*v+2*PHYSICS.gravity*Math.max(0,y-RADIUS)))/PHYSICS.gravity;
-      const airTime=Math.min(h,landing);
-      b.x+=b.vx*airTime;b.z+=b.vz*airTime;
-      b.y=y+v*airTime-.5*PHYSICS.gravity*airTime*airTime;
-      b.vy=v-PHYSICS.gravity*airTime;b.state='airborne';
-      b.rotX+=b.wx*airTime;b.rotY+=b.wy*airTime;b.rotZ+=b.wz*airTime;
-      if(landing<=h){
+      let remaining=h,elapsed=0;
+      while(remaining>TIME_EPS&&b.active){
+        if((b.y??RADIUS)<=RADIUS+1e-8&&!b.vy){
+          advanceBall(b,remaining,callbacks.cushionProfile||DEFAULT_CUSHION_PROFILE,callbacks.cushionModel);
+          break;
+        }
+        const y=b.y??RADIUS,v=b.vy||0;
+        const landing=(v+Math.sqrt(v*v+2*PHYSICS.gravity*Math.max(0,y-RADIUS)))/PHYSICS.gravity;
+        const airTime=Math.min(remaining,landing);
+        b.x+=b.vx*airTime;b.z+=b.vz*airTime;
+        b.y=y+v*airTime-.5*PHYSICS.gravity*airTime*airTime;
+        b.vy=v-PHYSICS.gravity*airTime;b.state='airborne';
+        b.rotX+=b.wx*airTime;b.rotY+=b.wy*airTime;b.rotZ+=b.wz*airTime;
+        remaining-=airTime;elapsed+=airTime;
+        if(landing>airTime)break;
         b.y=RADIUS;
-        const incoming=-b.vy;
-        b.vy=incoming>.35?incoming*.32:0;
-        callbacks.onLanding?.(b,incoming,step*h+landing);
-        if(!b.vy){b.state='sliding';advanceBall(b,h-airTime,callbacks.cushionProfile||DEFAULT_CUSHION_PROFILE,callbacks.cushionModel);}
+        // A pocket opening supplies no plane impulse or landing sound.
+        if(inPocket(b)){
+          stopBall(b);b.active=false;callbacks.onPocket?.(b);break;
+        }
+        const incoming=resolveTableContact(b);
+        callbacks.onLanding?.(b,incoming,step*h+elapsed);
+        if(!b.vy)b.state='sliding';
       }
+      if(!b.active)continue;
       // A raised ball clears the rubber only above its top. Lower impacts
       // retain the established horizontal rail response (no scripted landing).
       if(b.y-RADIUS<.045)for(const rail of RAILS){

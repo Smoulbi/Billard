@@ -1,8 +1,8 @@
-# FRAME v0.92 — projet complet
+# FRAME v0.93 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.92 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.93 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -541,3 +541,7 @@ Inclinaison de queue jusqu’à 75°. En geste souris : S puis molette pour incl
 ## Version 0.92 — retour de queue et rebonds
 
 Après la frappe, l’élévation revient automatiquement à 0° ; le coup et son replay gardent l’angle utilisé. Les réceptions utilisent le son des bandes, modulé par la vitesse verticale d’impact avec le tapis, sans seuil de silence ajouté pour les petits rebonds. L’angle reste affiché sur la table après son réglage tant qu’il est non nul.
+
+## Version 0.93 — contact bille–tapis pour les jumps
+
+La frappe produit une impulsion descendante, suivie du même contact avec le tapis que les réceptions. Restitution nominale 0,6 (plage approximative 0,5–0,7 indiquée par Dr Dave), impulsion de frottement qui modifie vitesse et rotation, sans seuil fixe à 20°. Les petits rebonds sont coupés sous une hauteur numérique de 0,05 mm. Le coefficient de frottement d’impact 0,2 reste une hypothèse à calibrer, distincte du frottement pendant le glissement. Le contact simultané procédé–bille–tapis reste approximé par deux contacts successifs.

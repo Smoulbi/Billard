@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {RADIUS, LENGTH, WIDTH, SIDE_CUT, CORNER_CUT, NOSE_HEIGHT,
   CORNER_POCKET_SHELF, SIDE_POCKET_SHELF, getCushionSegments,
   getPockets,
-  PHYSICS, makePhysicsBody, getCueImpact, strikeBall, simulatePhysics,
+  PHYSICS, makePhysicsBody, getCueStrike, getCueImpact, strikeBall, simulatePhysics,
   resolveBallCollision, isMoving,pocketSupportClearance} from '../dist/physics.js';
 import {pocketReferenceGeometry} from '../dist/table-pocket-geometry.js';
 
@@ -97,7 +97,9 @@ test('the elevation-induced horizontal rotation curves sidespin back through clo
   strikeBall(elevated, {x: 1, z: 0}, 1.5, {x: 0.55, y: 0}, {elevation: 15});
   close(flat.wx, 0, 1e-12);
   assert.ok(elevated.wx > 0, 'a lifted cue must impart forward-axis rotation');
-  close(flat.vz / flat.vx, elevated.vz / elevated.vx, 1e-12);
+  const cueOnly=getCueStrike({x:1,z:0},1.5,{x:.55,y:0},{elevation:15});
+  close(flat.vz/flat.vx,cueOnly.vz/cueOnly.vx,1e-12);
+  assert.ok(elevated.vy>0,'the table contact also launches a small hop');
   advance([flat], 0.5);
   advance([elevated], 0.5);
   assert.ok(elevated.z > flat.z + 0.02,
@@ -105,7 +107,7 @@ test('the elevation-induced horizontal rotation curves sidespin back through clo
 });
 
 test('raising a centred cue does not create unrequested sidespin or a lateral drift', () => {
-  const shot = getCueImpact({x: 1, z: 0}, 2.5, {x: 0, y: 0}, {elevation: 15});
+  const shot = getCueStrike({x: 1, z: 0}, 2.5, {x: 0, y: 0}, {elevation: 15});
   close(shot.vz, 0, 1e-12);
   close(shot.wx, 0, 1e-12);
   close(shot.wy, 0, 1e-12);

@@ -6,13 +6,14 @@ import {newEightBallMatch,adjudicateEightBall} from '../dist/eight-ball-rules.js
 import {newNineBallMatch,adjudicateNineBall} from '../dist/nine-ball-rules.js';
 const aim={x:1,z:0},center={x:0,y:0};
 function advance(balls,time,callbacks={},step=1/240){for(let t=0;t<time-1e-10;t+=step)simulatePhysics(balls,Math.min(step,time-t),callbacks);}
-test('jump launch depends on cue angle and strength; flat shots and miscues do not launch',()=>{
+test('jump launch grows with cue angle and strength; flat shots stay flat and miscues transfer less energy',()=>{
  const b=makePhysicsBody(0,-.8,0);
- strikeBall(b,aim,4,center,{elevation:15});assert.equal(b.vy,0);
+ strikeBall(b,aim,4,center,{elevation:0});assert.equal(b.vy,0);
+ strikeBall(b,aim,4,center,{elevation:15});assert.ok(b.vy>0);
  strikeBall(b,aim,4,center,{elevation:45});const v=b.vy;assert.ok(v>1);
  strikeBall(b,aim,2,center,{elevation:45});assert.equal(b.vy,v/2);
  strikeBall(b,aim,4,center,{elevation:65});assert.ok(b.vy>v);
- strikeBall(b,aim,4,{x:.98,y:0},{elevation:45});assert.equal(b.vy,0);
+ strikeBall(b,aim,4,{x:.98,y:0},{elevation:45});assert.ok(b.vy>0&&b.vy<v);
 });
 test('flight follows gravity without cloth drag; paused time has no effect',()=>{
  const b=makePhysicsBody(0,-.8,0);strikeBall(b,aim,3,center,{elevation:45});
