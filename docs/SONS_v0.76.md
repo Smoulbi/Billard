@@ -30,7 +30,8 @@ Le son triangle de poche est conservé, dans ce même contexte. Le replay reste 
 - Les originaux correspondent aux trois SHA-256 fournis. Une relecture indépendante
   a comparé chaque échantillon PCM16 adapté au décodage FFmpeg normalisé ; fréquences,
   canaux et nombres de trames sont conservés. Les gains sont consignés dans la provenance.
-- Tests Node : les 265 tests existants et dix tests audio couvrent linéarité,
+- `npm test` final : **275 réussites, 0 échec, 0 ignoré**.
+  Les 265 tests existants et dix tests audio couvrent linéarité,
   invalides, cache, absence de lecture tardive, plafond et éviction des voix,
   nettoyage, mute, échec isolé, refus de reprise puis réessai, destruction pendant
   téléchargement **et décodage**, et son de poche.
