@@ -111,3 +111,23 @@ test('pocket retains the separate triangle envelope and uses shared voice cleanu
   source.onended();assert.ok(source.disconnected);assert.ok(gain.disconnected);
   await r.audio.dispose();assert.ok(r.gains[0].disconnected);assert.ok(r.compressors[0].disconnected);
 });
+
+test('dispose during decoding discards late buffers and contains decoding failures',async()=>{
+  for(const rejectDecode of [false,true]) {
+    const r=rig();let resolveDecode,rejectPending,decodeCalls=0;
+    const decoding=new Promise((resolve,reject)=>{resolveDecode=resolve;rejectPending=reject;});
+    r.context.decodeAudioData=()=>{decodeCalls++;return decoding;};
+    const audio=createImpactAudio({contextFactory:()=>r.context,
+      fetcher:async()=>({ok:true,arrayBuffer:async()=>new ArrayBuffer(4)})});
+    const pending=audio.unlock();
+    while(decodeCalls<3)await new Promise(resolve=>setImmediate(resolve));
+    await audio.dispose();
+    if(rejectDecode)rejectPending(new Error('decoder failed after disposal'));
+    else resolveDecode({});
+    assert.equal(await pending,false);
+    assert.equal(audio.play('cue',12),false);
+    assert.equal(audio.play('ball',12),false);
+    assert.equal(audio.play('cushion',12),false);
+    assert.equal(r.sources.length,0);
+  }
+});
