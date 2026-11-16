@@ -482,3 +482,6 @@ Voir `docs/INTERFACE_v0.83.md`.
 
 Le bloc « Annonce avant le coup » est entièrement masqué dans une partie sans
 annonce. Il reste disponible en jeu de la 8 avec annonce obligatoire.
+
+Validation : 289 tests réussis, dont un test de régression du bloc d’annonce
+en jeu de la 8 avec/sans annonce, à la casse, en fin de partie et en jeu de la 9.
