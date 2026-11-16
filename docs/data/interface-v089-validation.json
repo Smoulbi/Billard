@@ -1,0 +1,90 @@
+{
+  "panel": {
+    "open": true,
+    "rect": {
+      "x": 864,
+      "y": 16,
+      "width": 320,
+      "height": 458.5,
+      "top": 16,
+      "right": 1184,
+      "bottom": 474.5,
+      "left": 864
+    },
+    "backdrop": "rgba(0, 0, 0, 0)",
+    "blur": "none"
+  },
+  "tableBeforeHash": "8792c9a20158aaa1448b84e965c7c714bf4405ccc11d35f484db348e66e3a4fc",
+  "tableWithPanelHash": "80f27d5dd27165a1ced55096d494efbbda88218902caf1f54712c82d5c20a85d",
+  "unchangedTableOutsidePanel": false,
+  "fov60Hash": "34993bfbd5faa7d98f6fa44213b4afd6ca423c9ac40fcb1b466ee33d968989e0",
+  "fov75Hash": "c12bbb6198cbfd0d69e973bf4c5acea0019511c6a78dcc55f31a1bfdf11f4b82",
+  "liveImageChanged": true,
+  "drawsBefore": 6398,
+  "drawsAfter": 6839,
+  "drawsIdle": 6839,
+  "redrawnOnEdit": true,
+  "idleDrawsStable": true,
+  "live": {
+    "open": true,
+    "fov": "75\u00b0",
+    "errors": []
+  },
+  "responsive": [
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "rect": {
+        "x": 54,
+        "y": 16,
+        "width": 320,
+        "height": 458.5,
+        "top": 16,
+        "right": 374,
+        "bottom": 474.5,
+        "left": 54
+      },
+      "backdrop": "rgba(0, 0, 0, 0)",
+      "blur": "none",
+      "scroll": [
+        390,
+        390
+      ]
+    },
+    {
+      "viewport": [
+        844,
+        390
+      ],
+      "rect": {
+        "x": 508,
+        "y": 16,
+        "width": 320,
+        "height": 358,
+        "top": 16,
+        "right": 828,
+        "bottom": 374,
+        "left": 508
+      },
+      "backdrop": "rgba(0, 0, 0, 0)",
+      "blur": "none",
+      "scroll": [
+        844,
+        844
+      ]
+    }
+  ],
+  "pixelComparison": {
+    "meanAbsoluteChannelDifference": 0.005182336182336183,
+    "maximumChannelDifference": 1,
+    "note": "PNG hashes differ by at most one channel level (render rounding/local shadow); no global darkening. Backdrop computed transparent, blur none."
+  },
+  "tests": {
+    "passed": 296,
+    "failed": 0,
+    "skipped": 0
+  },
+  "method": "Production page in headless Chromium/SwiftShader; CDP draw-call counters only in test browser; viewport DPR 0.6, final screenshot DPR 1."
+}
