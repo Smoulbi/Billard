@@ -49,7 +49,7 @@ test('preparation is context-free and shares exactly three downloads and decodes
     assert.equal(r.audio.play(kind,0.12),true);
     assert.equal(r.sources[index].buffer.data,r.decoded[index]);
     assert.equal(r.sources[index].playbackRate.value,1);
-    assert.equal(r.gains[index+1].gain.value,kind==='cushion'?0.1*10**(-1/20):0.1);
+    assert.equal(r.gains[index+1].gain.value,kind==='cushion'?0.1*10**(-3/20):0.1);
   }
   assert.equal(r.gains[0].gain.value,0.24);
   assert.equal(r.compressors[0].threshold.value,-12);
@@ -142,13 +142,13 @@ test('dispose during decoding discards late buffers and contains decoding failur
 });
 
 
-test('only cushion voices are reduced by one decibel at quiet and strong speeds',async()=>{
+test('only cushion voices are reduced by three decibels at quiet and strong speeds',async()=>{
   const r=rig();await r.audio.unlock();
   for(const speed of [0.045,0.12,6,12,24]){
     for(const kind of ['cue','ball','cushion']){
       r.audio.play(kind,speed);
       const applied=r.gains.at(-1).gain.value;
-      assert.equal(applied,impactGain(speed)*(kind==='cushion'?10**(-1/20):1));
+      assert.equal(applied,impactGain(speed)*(kind==='cushion'?10**(-3/20):1));
     }
   }
   r.audio.playPocket();assert.equal(r.gains.at(-1).gain.value,0.105);

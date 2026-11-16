@@ -1,4 +1,4 @@
-import {createImpactAudio} from './impact-audio.js?v=0.79';
+import {createImpactAudio} from './impact-audio.js?v=0.80';
 import {ShotReplay} from './shot-replay.js?v=0.69';
 import {railCutaway} from './rail-visibility.js?v=0.66';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
