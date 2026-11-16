@@ -17,6 +17,14 @@ le moteur et les règles sont conservés.
 
 ## Validation
 
-Dix tests audio ciblés réussis. Suite complète et mesures Web Audio à terminer
-avant livraison. Aucune nouvelle écoute subjective n’est revendiquée : le choix
-sonore est celui de l’utilisateur.
+Dix tests audio ciblés réussis. Identité vérifiée entre le WAV reçu, les copies
+Git et le fichier effectivement servi en HTTP avec son paramètre de cache.
+Douze comparaisons de signaux et huit rafales ont été rendues par le lecteur de
+production et les nœuds natifs Web Audio : courbe de volume conforme, douze voix
+au plus et aucun écrêtage dans les cas mesurés. Pic des rafales de bandes :
+0,75825 au plus ; pic maximal tous cas : 0,92983. Résultats dans
+`data/impact-audio-v078-validation.json` ; méthode et adaptateur d’état hors ligne
+inchangés, décrits dans `SONS_v0.76.md`.
+
+Suite complète à terminer avant livraison. Aucune nouvelle écoute subjective
+n’est revendiquée : le choix sonore est celui de l’utilisateur.
