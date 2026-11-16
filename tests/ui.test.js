@@ -64,3 +64,20 @@ test('the pre-shot call panel is visible only in eight-ball playing with calls e
     assert.equal(!el.callPanel.hidden,expected,JSON.stringify(match));
   }
 });
+
+
+test('camera edits redraw a paused view without advancing physics or rendering unchanged frames',()=>{
+  const source=readFileSync(new URL('../dist/game.js',import.meta.url),'utf8');
+  const animate=source.slice(source.indexOf('function animate(t)'),source.indexOf('function fallbackGeometry()'));
+  for(const fallback of [false,true]){
+    let draws=0;
+    const state={gamePaused:true,pausedViewDirty:true,lastFrame:0,shotSimTime:10,
+      fallbackCtx:fallback?{}:null,renderer:{render(){draws++;}},scene:{},camera:{},
+      drawFallback(){draws++;},physicsStep(){assert.fail('settings must keep physics paused');}};
+    runInNewContext(animate+';animate(100);animate(200);',state);
+    assert.equal(draws,1);assert.equal(state.lastFrame,200);assert.equal(state.shotSimTime,10);
+    state.pausedViewDirty=true;
+    runInNewContext('animate(300);',state);
+    assert.equal(draws,2);assert.equal(state.pausedViewDirty,false);assert.equal(state.shotSimTime,10);
+  }
+});

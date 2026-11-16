@@ -1,8 +1,8 @@
-# FRAME v0.88 — projet complet
+# FRAME v0.89 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.88 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.89 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -522,3 +522,10 @@ sinon la table conserve une vue immersive dans la fenêtre. Les réglages camér
 s’ouvrent avec C (vue, champ de vision, hauteur et recul), également accessibles
 depuis Options. La découpe de bande se synchronise à chaque image avec la visée
 actuelle, y compris lors de la première préparation après une casse.
+
+
+## Version 0.89 — aperçu caméra en direct
+
+Les réglages caméra s’affichent en haut à droite sans assombrir ni flouter la
+table. Pendant la pause, modifier un réglage redessine immédiatement la scène,
+sans avancer la simulation. Le rendu reste au repos entre deux modifications.

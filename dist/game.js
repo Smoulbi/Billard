@@ -43,6 +43,7 @@ const ids = ['cameraDialog','cameraOptionsButton','closeCameraSettings','cameraV
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
+let pausedViewDirty=false;
 let menuReplayTime=null,menuOpenedAt=0;
 let menu=null;
 let menuOrigin='game';
@@ -1551,6 +1552,7 @@ function trajectoryPreview() {
 }
 
 function updateVisuals() {
+  if(gamePaused)pausedViewDirty=true;
   if(replayPlayback)return;
   if(cameraMode==='first-person'&&camera)updateCamera();
   refreshPlacementUI();
@@ -1818,6 +1820,7 @@ function updateRailVisibility(now=performance.now()) {
 }
 
 function updateCamera() {
+  if(gamePaused)pausedViewDirty=true;
   if(shotCameraTransition)return;
   updateRailVisibility();
   el.firstPersonSettings.hidden=!!fallbackCtx;
@@ -2173,11 +2176,11 @@ function bindGameMenu() {
       menuOpenedAt=performance.now();
       menuReplayTime=replayPlayback&&replayPlayback.pausedAt==null?
         Math.min(replayPlayback.record.duration,(performance.now()-replayPlayback.start)/1000):null;
-      gamePaused=true;releaseAimMouse();impactAudio.stop();
+      gamePaused=true;pausedViewDirty=true;releaseAimMouse();impactAudio.stop();
       el.restartMatchButton.disabled=!sessionSettings;
     },
     onClose:()=>{
-      gamePaused=false;lastFrame=performance.now();
+      gamePaused=false;pausedViewDirty=false;lastFrame=performance.now();
       if(shotCameraTransition)shotCameraTransition.start+=lastFrame-menuOpenedAt;
       if(replayPlayback&&menuReplayTime!==null)replayPlayback.start=performance.now()-menuReplayTime*1000;
       menuReplayTime=null;
@@ -2573,6 +2576,7 @@ function bindControls() {
 }
 
 function resize() {
+  if(gamePaused)pausedViewDirty=true;
   const w=el.gameCanvas.clientWidth,h=el.gameCanvas.clientHeight;
   if(w<1||h<1)return;
   if(fallbackCtx) {
@@ -2587,7 +2591,15 @@ function resize() {
 }
 
 function animate(t) {
-  if(gamePaused){lastFrame=t;return;}
+  if(gamePaused){
+    lastFrame=t;
+    if(pausedViewDirty){
+      pausedViewDirty=false;
+      if(fallbackCtx)drawFallback();
+      else if(renderer)renderer.render(scene,camera);
+    }
+    return;
+  }
   if(replayPlayback){lastFrame=t;animateShotReplay(t);renderer.render(scene,camera);return;}
   const elapsed=Math.max(0,(t-lastFrame)/1000);
   const delta=Math.min(MAX_DT,elapsed);lastFrame=t;
