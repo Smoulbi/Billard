@@ -1,7 +1,7 @@
 import {createGameMenu,playerBallState} from './game-menu.js?v=0.83';
 import {createImpactAudio} from './impact-audio.js?v=0.82';
 import {ShotReplay} from './shot-replay.js?v=0.69';
-import {railCutaway} from './rail-visibility.js?v=0.66';
+import {railCutawayForView} from './rail-visibility.js?v=0.88';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
@@ -24,8 +24,8 @@ import {newEightBallMatch,adjudicateEightBall,resolveEightBallDecision,
   eightBallVictoryPresentation,groupOf} from './eight-ball-rules.js';
 import {predictTrajectory} from './trajectory.js?v=0.69';
 import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.69';
-import {panCameraTarget,zoomCamera} from './camera-controls.js';
-import {isFullscreenShortcut,toggleSceneFullscreen,requestSceneFullscreen} from './fullscreen.js';
+import {panCameraTarget,zoomCamera,isCameraSettingsShortcut} from './camera-controls.js?v=0.88';
+import {isFullscreenShortcut,toggleSceneFullscreen,requestSceneFullscreen} from './fullscreen.js?v=0.88';
 import {pocketCollectorRadii,
   pocketMouthTrimOutline,pocketCastingOutline,
   cornerPocketInsertOutline,
@@ -39,16 +39,16 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonSetbackSlider','firstPersonSetbackValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
 let menuReplayTime=null,menuOpenedAt=0;
 let menu=null;
 let menuOrigin='game';
+let cameraReturnDialog=null;
 let sessionSettings=null;
 let pointerWasLocked=false,programmaticPointerUnlock=false;
-let fullscreenWasActive=false,ignoreFullscreenMenuUntil=0;
 let cameraMode='perspective';
 let shotCameraTransition=null;
 let powerInputMode='mouse';
@@ -1793,7 +1793,6 @@ function animateShotCamera(now) {
   const move=shotCameraTransition;
   if(!move)return;
   const progress=shotCameraProgress(now-move.start,move.duration);
-  if(progress>0)updateRailVisibility();
   camera.position.lerpVectors(move.position,move.destination,progress);
   camera.quaternion.slerpQuaternions(move.rotation,move.orientation,progress);
   camera.fov=move.fov+(40-move.fov)*progress;
@@ -1806,10 +1805,11 @@ function animateShotCamera(now) {
   }
 }
 
-function updateRailVisibility(cue=null,direction=aim) {
-  const planes=cameraMode==='first-person'&&cue?railCutaway(cue,direction,{
-    length:LENGTH,width:WIDTH,setback:Number(el.firstPersonSetbackSlider.value)/100
-  }):null;
+function updateRailVisibility(now=performance.now()) {
+  const planes=railCutawayForView({mode:cameraMode,cue:balls.find(b=>b.num===0),aim,
+    shooting:shotActive,shot:firstPerson.shot,
+    transitioning:!!shotCameraTransition&&shotCameraProgress(now-shotCameraTransition.start,shotCameraTransition.duration)>0
+  },{length:LENGTH,width:WIDTH,setback:Number(el.firstPersonSetbackSlider.value)/100});
   for(let i=0;i<railVisibilityPlanes.length;i++){
     const p=planes?.[i];
     railVisibilityPlanes[i].normal.set(p?.x??0,p?.y??1,p?.z??0);
@@ -1820,14 +1820,12 @@ function updateRailVisibility(cue=null,direction=aim) {
 function updateCamera() {
   if(shotCameraTransition)return;
   updateRailVisibility();
-  el.firstPersonSettings.hidden=cameraMode!=='first-person'||!!fallbackCtx;
+  el.firstPersonSettings.hidden=!!fallbackCtx;
   const fov=cameraMode==='first-person'?Number(el.firstPersonFovSlider.value):40;
   if(camera.fov!==fov){camera.fov=fov;camera.updateProjectionMatrix();}
   if(cameraMode==='first-person') {
     const cue=balls.find(b=>b.num===0);
     if(!cue)return;
-    const origin=shotActive&&firstPerson.shot?firstPerson.shot:{cue,aim};
-    updateRailVisibility(origin.cue,origin.aim);
     const pose=currentFirstPersonPose(firstPerson,cue,aim,shotActive,{
       height:Number(el.firstPersonHeightSlider.value)/100,
       setback:Number(el.firstPersonSetbackSlider.value)/100
@@ -1940,13 +1938,19 @@ function toggleCamera() {
   if(fallbackCtx)return;
   if(training?.editing||placementMode||needsCuePlacement||placementPointer){forcePlacementCamera();return;}
   const modes=['perspective','overhead','first-person'];
-  releaseAimMouse();
-  cameraMode=modes[(modes.indexOf(cameraMode)+1)%modes.length];
+  setCameraView(modes[(modes.indexOf(cameraMode)+1)%modes.length]);
+  if(cameraMode==='first-person')captureAimMouse();
+}
+
+function setCameraView(mode) {
+  if(fallbackCtx||!['perspective','overhead','first-person'].includes(mode))return;
+  if(training?.editing||placementMode||needsCuePlacement||placementPointer){forcePlacementCamera();return;}
+  shotCameraTransition=null;releaseAimMouse();
+  cameraMode=mode;
   orbit.topDown=cameraMode==='overhead';
   firstPerson.previousX=null;firstPerson.previousY=null;
   el.cameraName.textContent=cameraMode==='first-person'?'PREMIÈRE PERSONNE':orbit.topDown?'DESSUS':'PERSPECTIVE';
   updateCamera();updateVisuals();
-  if(cameraMode==='first-person')captureAimMouse();
 }
 
 function updateAimAt(clientX,clientY) {
@@ -2113,8 +2117,29 @@ function restartCurrentMatch() {
   startMatch();
 }
 
+function refreshCameraSettings() {
+  el.cameraViewSelect.value=fallbackCtx?'overhead':cameraMode;
+  el.cameraViewSelect.disabled=!!fallbackCtx||!!training?.editing||placementMode||needsCuePlacement||!!placementPointer;
+  el.cameraSettingsHint.textContent=fallbackCtx?'Rendu 2D : vue de dessus.':
+    el.cameraViewSelect.disabled?'Vue de dessus imposée pendant le placement.':'Réglages de la vue à la première personne.';
+  el.firstPersonSettings.hidden=!!fallbackCtx;
+}
+
+function openCameraSettings() {
+  if(menu.dialog===el.cameraDialog){closeCameraSettings();return;}
+  cameraReturnDialog=menu.isOpen?menu.dialog:null;
+  refreshCameraSettings();
+  if(menu.isOpen)menu.show(el.cameraDialog);else menu.open(el.cameraDialog);
+}
+
+function closeCameraSettings(escape=false) {
+  if(cameraReturnDialog){const target=cameraReturnDialog;cameraReturnDialog=null;menu.show(target);}
+  else if(escape)menu.show(el.pauseDialog);
+  else menu.close();
+}
+
 function backFromMenuOptions() {
-  ignoreFullscreenMenuUntil=performance.now()+300;
+  if(menu.dialog===el.cameraDialog){closeCameraSettings(true);return;}
   if(menu.dialog===el.optionsDialog&&menuOrigin==='game')menu.show(el.pauseDialog);
   else menu.close();
 }
@@ -2160,10 +2185,10 @@ function bindGameMenu() {
       (el.matchOverlay.hidden?el.gameCanvas:el.startMatch).focus({preventScroll:true});
     }
   });
-  el.resumeGame.addEventListener('click',()=>{
-    void requestSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document);
-    menu.close();
-  });
+  el.resumeGame.addEventListener('click',()=>menu.close());
+  el.cameraOptionsButton.addEventListener('click',openCameraSettings);
+  el.closeCameraSettings.addEventListener('click',()=>closeCameraSettings());
+  el.cameraViewSelect.addEventListener('change',()=>{setCameraView(el.cameraViewSelect.value);refreshCameraSettings();});
   el.homeOptionsButton.addEventListener('click',()=>menu.open(el.optionsDialog));
   el.openOptionsButton.addEventListener('click',()=>menu.show(el.optionsDialog));
   el.closeOptions.addEventListener('click',backFromMenuOptions);
@@ -2462,7 +2487,7 @@ function bindControls() {
     el.firstPersonFovValue.textContent=`${value}°`;
     const filled=(value-35)/50*100;
     el.firstPersonFovSlider.style.background=`linear-gradient(to right,var(--accent) ${filled}%,#35443e ${filled}%)`;
-    if(cameraMode==='first-person')updateCamera();
+    if(cameraMode==='first-person'){shotCameraTransition=null;updateCamera();}
   };
   el.firstPersonFovSlider.addEventListener('input',updateFirstPersonZoom);
   el.firstPersonFovReset.addEventListener('click',()=>{el.firstPersonFovSlider.value='60';updateFirstPersonZoom();});
@@ -2476,7 +2501,7 @@ function bindControls() {
       const filled=(value-min)/(max-min)*100;
       slider.style.background=`linear-gradient(to right,var(--accent) ${filled}%,#35443e ${filled}%)`;
     }
-    if(cameraMode==='first-person')updateCamera();
+    if(cameraMode==='first-person'){shotCameraTransition=null;updateCamera();}
   };
   el.firstPersonHeightSlider.addEventListener('input',updateFirstPersonPosition);
   el.firstPersonSetbackSlider.addEventListener('input',updateFirstPersonPosition);
@@ -2516,12 +2541,7 @@ function bindControls() {
     updateVisuals();
   });
   el.audioToggle.addEventListener('click',()=>{soundEnabled=!soundEnabled;impactAudio.setMuted(!soundEnabled);if(soundEnabled)void impactAudio.unlock();el.audioLabel.textContent=soundEnabled?'ON':'OFF';});
-  document.addEventListener('fullscreenchange',()=>{
-    const active=document.fullscreenElement===el.gameCanvas.closest('.scene-frame');
-    if(fullscreenWasActive&&!active&&performance.now()>ignoreFullscreenMenuUntil&&
-      el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu.open();
-    fullscreenWasActive=active;requestAnimationFrame(resize);
-  });
+  document.addEventListener('fullscreenchange',()=>requestAnimationFrame(resize));
   window.addEventListener('keydown',e=>{
     const stage=el.gameCanvas.closest('.scene-frame');
     if(e.key==='Escape'){
@@ -2532,14 +2552,18 @@ function bindControls() {
       else if(el.matchOverlay.hidden&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden)menu.open();
       return;
     }
+    const editingText=e.target instanceof HTMLTextAreaElement||e.target instanceof HTMLSelectElement||
+      (e.target instanceof HTMLInputElement&&!['range','checkbox','radio','button'].includes(e.target.type))||e.target?.isContentEditable;
+    if(!editingText&&isFullscreenShortcut(e)){
+      e.preventDefault();toggleSceneFullscreen(stage,document).finally(()=>requestAnimationFrame(resize));return;
+    }
+    if(!editingText&&isCameraSettingsShortcut(e)&&
+      (el.matchOverlay.hidden||menu.isOpen)&&el.decisionOverlay.hidden&&el.victoryOverlay.hidden){
+      e.preventDefault();if(replayPlayback)stopShotReplay();openCameraSettings();return;
+    }
     if(gamePaused||replayPlayback||!el.matchOverlay.hidden||!el.decisionOverlay.hidden||!el.victoryOverlay.hidden)return;
     if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement||
       e.target instanceof HTMLButtonElement||e.target?.isContentEditable)return;
-    if(isFullscreenShortcut(e)){
-      e.preventDefault();
-      toggleSceneFullscreen(stage,document).finally(()=>requestAnimationFrame(resize));
-      return;
-    }
     if(e.key.toLowerCase()==='s'){if(!e.repeat){e.preventDefault();toggleSpinSelection();}return;}
     if(e.code==='Space'){e.preventDefault();shoot();}
     if(e.key.toLowerCase()==='v')toggleCamera();
@@ -2585,6 +2609,7 @@ function animate(t) {
   }
   if(shotActive&&t-lastAimVisualTime>200){lastAimVisualTime=t;updateVisuals();}
   animateShotCamera(t);
+  updateRailVisibility(t);
   if(fallbackCtx)drawFallback();
   else renderer.render(scene,camera);
 }

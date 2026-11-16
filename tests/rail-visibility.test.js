@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {railCutaway} from '../dist/rail-visibility.js';
+import {railCutaway,railCutawayForView} from '../dist/rail-visibility.js';
 import {LENGTH,WIDTH,RADIUS} from '../dist/physics.js';
 const settings={length:LENGTH,width:WIDTH};
 const removed=(planes,p)=>planes.every(n=>n.x*p.x+n.y*p.y+n.z*p.z+n.constant<0);
@@ -29,4 +29,20 @@ test('corner and oblique shots retain a bounded clearance corridor along the sho
 test('central, missing and pocketed cue balls do not activate a cutaway',()=>{
   for(const cue of [null,{x:0,z:0},{x:0,z:WIDTH-.03,active:false}])
     assert.equal(railCutaway(cue,{x:1,z:0},settings),null);
+});
+
+test('the first ready view after a break uses the live cue even with a stale shot snapshot',()=>{
+  const cue={x:-LENGTH+RADIUS,z:.1,active:true},aim={x:1,z:0};
+  const state={mode:'first-person',cue,aim,shooting:false,shot:{cue:{x:0,z:0},aim:{x:0,z:1}}};
+  assert.deepEqual(railCutawayForView(state,settings),railCutaway(cue,aim,settings));
+  assert.ok(railCutawayForView(state,settings));
+  state.cue={x:0,z:0,active:true};
+  assert.equal(railCutawayForView(state,settings),null);
+});
+test('shot clearance stays at the frozen origin until overhead motion begins',()=>{
+  const shot={cue:{x:-LENGTH+RADIUS,z:0},aim:{x:1,z:0}};
+  const state={mode:'first-person',cue:{x:0,z:0},aim:{x:0,z:1},shooting:true,shot};
+  assert.deepEqual(railCutawayForView(state,settings),railCutaway(shot.cue,shot.aim,settings));
+  assert.equal(railCutawayForView({...state,transitioning:true},settings),null);
+  assert.equal(railCutawayForView({...state,mode:'overhead'},settings),null);
 });

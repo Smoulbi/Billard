@@ -27,3 +27,8 @@ export function zoomCamera(orbit, deltaY, deltaMode = 0) {
   const nextDistance = orbit.distance * Math.exp(wheelSteps * 0.17);
   orbit.distance = Math.max(MIN_CAMERA_DISTANCE, Math.min(MAX_CAMERA_DISTANCE, nextDistance));
 }
+
+export function isCameraSettingsShortcut(event) {
+  return event.key?.toLowerCase()==='c'&&!event.repeat&&
+    !event.ctrlKey&&!event.altKey&&!event.metaKey;
+}

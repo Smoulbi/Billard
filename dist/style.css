@@ -572,3 +572,15 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
 .welcome-dialog .mode-tile{display:flex;align-items:center;justify-content:center;text-align:center;padding:18px 12px}
 .welcome-dialog .mode-tile input{position:absolute;opacity:0;width:1px;height:1px;margin:0;clip-path:inset(50%);overflow:hidden}
 .welcome-dialog .mode-tile:focus-within{outline:2px solid var(--gold);outline-offset:3px}
+
+.scene-frame.scene-windowed{position:relative;inset:auto;flex:none;width:calc(100% - 32px);height:calc(100dvh - 32px);min-height:0;max-height:none;margin:16px;border:1px solid #34454c;border-radius:8px;z-index:auto}
+.camera-dialog{width:min(470px,calc(100vw - 24px));height:auto;max-height:calc(100dvh - 32px)}
+.camera-dialog .options-heading h2{margin:0}
+.camera-dialog kbd{font:12px Arial,sans-serif;color:var(--muted);border:1px solid var(--line);padding:3px 6px;border-radius:3px;margin-left:8px}
+.camera-dialog .camera-tuning{margin-top:18px}
+.camera-dialog .dock-section-content{padding:0}
+.camera-dialog .control-description{font-size:11px;line-height:1.5;color:var(--muted)}
+.camera-dialog .control-title{margin-top:17px;gap:10px;font-size:10px}
+.camera-dialog .power-value{white-space:nowrap}
+.camera-dialog .control-description:empty{display:none}
+.camera-dialog #firstPersonSettings .panel-divider{display:none}

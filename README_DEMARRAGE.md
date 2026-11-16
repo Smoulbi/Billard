@@ -1,8 +1,8 @@
-# FRAME v0.87 — projet complet
+# FRAME v0.88 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.87 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.88 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -512,3 +512,13 @@ Le menu pause propose Reprendre, Options, Recommencer et Menu principal, dans
 cet ordre. Arial remplace les polices précédentes dans l’interface ; le fond des
 cartes joueurs disparaît. Les choix de mode sont centrés et sans point radio
 visible : Entraînement, Jouer au 8 et Jouer au 9.
+
+
+## Version 0.88 — Échap, caméra et bandes
+
+Échap ouvre la pause sans quitter la vue immersive ; F bascule le plein écran.
+Le plein écran natif est employé si le navigateur autorise la capture d’Échap ;
+sinon la table conserve une vue immersive dans la fenêtre. Les réglages caméra
+s’ouvrent avec C (vue, champ de vision, hauteur et recul), également accessibles
+depuis Options. La découpe de bande se synchronise à chaque image avec la visée
+actuelle, y compris lors de la première préparation après une casse.

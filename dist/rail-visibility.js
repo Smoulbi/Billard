@@ -14,3 +14,10 @@ export function railCutaway(cue,aim,{length,width,setback=.52}={}) {
     {x:0,y:-1,z:0,constant:.0015} // preserve the cloth/slate beneath
   ];
 }
+
+// Derive clipping from the current rendered view, not the previous shot's state.
+export function railCutawayForView({mode,cue,aim,shooting=false,shot=null,transitioning=false},settings) {
+  if(mode!=='first-person'||transitioning)return null;
+  const origin=shooting&&shot?shot:{cue,aim};
+  return railCutaway(origin.cue,origin.aim,settings);
+}

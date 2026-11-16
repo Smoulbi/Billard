@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {panCameraTarget,zoomCamera,MIN_CAMERA_DISTANCE,MAX_CAMERA_DISTANCE} from '../dist/camera-controls.js';
+import {panCameraTarget,zoomCamera,isCameraSettingsShortcut,MIN_CAMERA_DISTANCE,MAX_CAMERA_DISTANCE} from '../dist/camera-controls.js';
 
 const near=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-10,`${actual} != ${expected}`);
 
@@ -50,4 +50,11 @@ test('wheel zoom is proportional and normalizes pixel and line deltas',()=>{
   near(a.distance,3.97);
   zoomCamera(a,-3,2);
   assert.ok(a.distance>=MIN_CAMERA_DISTANCE);
+});
+
+test('C opens camera settings without consuming modified or repeated shortcuts',()=>{
+  assert.equal(isCameraSettingsShortcut({key:'c'}),true);
+  assert.equal(isCameraSettingsShortcut({key:'C'}),true);
+  for(const modifier of ['ctrlKey','altKey','metaKey','repeat'])assert.equal(isCameraSettingsShortcut({key:'c',[modifier]:true}),false);
+  assert.equal(isCameraSettingsShortcut({key:'v'}),false);
 });
