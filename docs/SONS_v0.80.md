@@ -15,4 +15,4 @@ Résultats : `data/impact-audio-v080-validation.json`. Méthode et limites :
 `SONS_v0.76.md` (adaptateur d’état pour le rendu hors ligne, aucune écoute
 subjective revendiquée).
 
-Suite complète et relecture à terminer avant livraison.
+Suite complète : **276 tests réussis, 0 échec, 0 ignoré**.
