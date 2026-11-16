@@ -1,8 +1,8 @@
-# FRAME v0.91 — projet complet
+# FRAME v0.92 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.91 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.92 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -537,3 +537,7 @@ La vue à la première personne conserve un seul réglage Zoom et la hauteur des
 ## Version 0.91 — jump shots
 
 Inclinaison de queue jusqu’à 75°. En geste souris : S puis molette pour incliner, S pour valider. Le saut dépend de l’angle et de la puissance ; les frappes jusqu’à 15° conservent le modèle historique. Trajectoire verticale, collisions en hauteur, réception et replay. Sortir une bille de table provoque une faute (8 sortie : perte ; 9 sortie : replacée).
+
+## Version 0.92 — retour de queue et rebonds
+
+Après la frappe, l’élévation revient automatiquement à 0° ; le coup et son replay gardent l’angle utilisé. Les réceptions utilisent le son des bandes, modulé par la vitesse verticale d’impact avec le tapis, sans seuil de silence ajouté pour les petits rebonds. L’angle reste affiché sur la table après son réglage tant qu’il est non nul.

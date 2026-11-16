@@ -1555,8 +1555,9 @@ function updateVisuals() {
   if(gamePaused)pausedViewDirty=true;
   if(replayPlayback)return;
   if(cameraMode==='first-person'&&camera)updateCamera();
-  el.jumpHint.hidden=!(powerInputMode==='mouse'&&strokePhase==='spin'&&!shotActive);
-  el.jumpHint.textContent=`INCLINAISON : ${el.elevationSlider.value}° · MOLETTE : INCLINER · S : VALIDER`;
+  const selectingElevation=powerInputMode==='mouse'&&strokePhase==='spin';
+  el.jumpHint.hidden=shotActive||!el.matchOverlay.hidden||!(selectingElevation||Number(el.elevationSlider.value)>0);
+  el.jumpHint.textContent=`ÉLÉVATION : ${el.elevationSlider.value}°${selectingElevation?' · MOLETTE : INCLINER · S : VALIDER':''}`;
   refreshPlacementUI();
   if(!cueGroup)return;
   const cue=balls.find(b=>b.num===0);
@@ -1654,6 +1655,8 @@ function shoot(source='gauge') {
   if(cueTrailLine)cueTrailLine.visible=false;
   if(objectTrailLine)objectTrailLine.visible=false;
   const impact=strikeBall(cue,aim,shotSpeed,spin,{elevation:Number(el.elevationSlider.value)});
+  // The shot and replay already captured the chosen angle; prepare the next cue flat.
+  setElevation(0);
   miscuedThisShot=impact.miscue;
   el.shootButton.disabled=true;el.shotState.textContent='EN MOUVEMENT';
   if(impact.miscue)setStatus('Fausse queue','Procédé trop loin du centre : perte de force et déviation brutale.',true);
@@ -1739,7 +1742,8 @@ function physicsStep(dt) {
   const hasMotion=simulatePhysics(balls,dt,{
     cushionModel:el.cushionModel.value,
     onPocket:pocketBall,
-    onLanding:(_ball,speed)=>{if(speed>.35)impactAudio.play('ball',speed*.25);},
+    // Landing speed is the incoming vertical speed, independent of table travel.
+    onLanding:(_ball,speed)=>impactAudio.play('cushion',speed),
     onOffTable:b=>{
       if(shotEvents)(shotEvents.offTable??=[]).push(b.num);
       b.mesh.visible=false;stopBall(b);b.offTable=true;
