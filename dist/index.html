@@ -6,10 +6,7 @@
   <meta name="theme-color" content="#0c1216">
   <meta name="description" content="Jeu de la 8, jeu de la 9 et entraînement au billard américain.">
   <title>FRAME — Billard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=0.86">
+  <link rel="stylesheet" href="./style.css?v=0.87">
 </head>
 <body>
  <div class="app"><div class="workspace"><main class="main-stage">
@@ -105,7 +102,7 @@
 
   <div id="matchOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="matchOverlayTitle">
     <div class="game-dialog welcome-dialog"><h2 id="matchOverlayTitle">FRAME<span>.</span></h2>
-      <div class="game-mode-grid"><label class="mode-tile"><input type="radio" name="gameMode" value="training"><b>ENTRAÎNEMENT</b></label><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JOUER À LA 8</b></label><label class="mode-tile"><input type="radio" name="gameMode" value="nine"><b>JOUER À LA 9</b></label></div>
+      <div class="game-mode-grid"><label class="mode-tile"><input type="radio" name="gameMode" value="training"><b>ENTRAÎNEMENT</b></label><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JOUER AU 8</b></label><label class="mode-tile"><input type="radio" name="gameMode" value="nine"><b>JOUER AU 9</b></label></div>
       <label class="call-switch-row"><input id="requireCall" type="checkbox" checked><span><b>Annonce de bille et de poche</b></span></label>
       <label class="dialog-label" for="breakerSelect">PREMIER JOUEUR À CASSER</label>
       <select id="breakerSelect" class="dialog-select"><option value="0">Joueur 1</option><option value="1">Joueur 2</option></select>
@@ -130,9 +127,10 @@
 
 <dialog id="pauseDialog" class="pause-dialog" aria-label="Partie en pause">
  <div class="pause-actions">
-  <button id="mainMenuButton" class="secondary-button" type="button">MENU PRINCIPAL</button>
-  <button id="restartMatchButton" class="secondary-button" type="button">RECOMMENCER LA PARTIE</button>
+  <button id="resumeGame" class="secondary-button" type="button">REPRENDRE</button>
   <button id="openOptionsButton" class="secondary-button" type="button">OPTIONS</button>
+  <button id="restartMatchButton" class="secondary-button" type="button">RECOMMENCER</button>
+  <button id="mainMenuButton" class="secondary-button" type="button">MENU PRINCIPAL</button>
  </div>
 </dialog>
 <dialog id="optionsDialog" class="options-dialog" aria-labelledby="optionsTitle">
@@ -208,12 +206,11 @@
           <p class="calibration-footnote">Les 57 essais sont comparés notamment aux régressions de <a href="https://mediatum.ub.tum.de/doc/1155344/988748.pdf" target="_blank" rel="noopener noreferrer">Nierhoff, Heunisch &amp; Hirche — 1 217 impacts de pool US</a>. Pool v0.17 : référence empirique conservée. Pool v0.18–0.19 : ressort normal/tangentiel inspiré des principes de <a href="https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html" target="_blank" rel="noopener noreferrer">Stronge</a>. Pool v0.20 : contact couplé en 3D avec cisaillement vertical. Pool v0.21 : <strong>identification sous contraintes et contrôle sur la vitesse 1,2 m/s exclue de l'ajustement</strong>. Pool v0.69 : accord à la régression US et transition glissement–roulement précise ; le score pool sépare les repères snooker et indicatifs. Pool v0.68 : correction de non-pénétration, mêmes paramètres et même écart à cette régression que v0.21. <strong>Recherche v0.22 : un contact simultané bille–bande–tapis est implémenté dans un banc séparé, mais ses écarts avec la régression américaine sont supérieurs ; il n'est pas activé en jeu.</strong> Aucun de ces modèles mécaniques n'est validé sur une table indépendante ; les coefficients K55/K66 ne sont pas mesurés. Snooker historique inchangé, géométrie toujours américaine. Les mesures personnelles restent dans ce navigateur.</p>
         </section></details>
 
-  <p class="options-note">VERSION 0.86 · BUILD 086</p>
+  <p class="options-note">VERSION 0.87 · BUILD 087</p>
  </div>
- <div class="options-footer" hidden><button id="resumeGame" type="button" class="primary-button"><span>REPRENDRE LE JEU</span><span class="button-arrow">↗</span></button></div>
 </dialog>
 </section>
 </main></div></div>
- <script type="module" src="./game.js?v=0.86"></script>
+ <script type="module" src="./game.js?v=0.87"></script>
 </body>
 </html>

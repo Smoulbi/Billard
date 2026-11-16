@@ -1,4 +1,4 @@
-:root{color-scheme:dark;--bg:#0b1115;--panel:#121a1e;--surface:#151f23;--line:#293339;--line-soft:#242d31;--text:#e6ece8;--muted:#849298;--subtle:#5a696e;--accent:#a6dd7a;--accent-strong:#b9eb90;--mono:var(--body);--body:'DM Sans',Arial,sans-serif;--display:'Outfit',sans-serif}
+:root{color-scheme:dark;--bg:#0b1115;--panel:#121a1e;--surface:#151f23;--line:#293339;--line-soft:#242d31;--text:#e6ece8;--muted:#849298;--subtle:#5a696e;--accent:#a6dd7a;--accent-strong:#b9eb90;--mono:var(--body);--body:Arial,sans-serif;--display:Arial,sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:var(--body);background:var(--bg);color:var(--text)}
 button,input{font:inherit}
@@ -564,3 +564,11 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
 .game-hud .match-player,.game-hud .match-player.current{border-color:transparent;outline:0;box-shadow:none}
 .game-hud .match-player.current small{color:var(--gold)}
 @media(max-width:700px){.scene-frame .scene-bottom-right{left:auto;right:12px;bottom:14px;max-width:calc(100% - 24px);justify-content:flex-end}}
+
+
+/* Plain player information, standard typography, and centered mode choices. */
+.game-hud .match-player,.game-hud .match-player.current{background:transparent}
+.game-hud .match-player.current small{color:#d7e6da}
+.welcome-dialog .mode-tile{display:flex;align-items:center;justify-content:center;text-align:center;padding:18px 12px}
+.welcome-dialog .mode-tile input{position:absolute;opacity:0;width:1px;height:1px;margin:0;clip-path:inset(50%);overflow:hidden}
+.welcome-dialog .mode-tile:focus-within{outline:2px solid var(--gold);outline-offset:3px}

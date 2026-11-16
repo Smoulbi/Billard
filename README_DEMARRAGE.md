@@ -1,8 +1,8 @@
-# FRAME v0.86 — projet complet
+# FRAME v0.87 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.86 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.87 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -23,7 +23,7 @@ Sous Windows, utiliser `py -3` à la place de `python3` si nécessaire.
 - dist/vendor/ : Three.js et sa licence, déjà inclus ; aucune installation npm nécessaire pour jouer.
 - tests/ : tests automatisés ; scripts/ : outils de diagnostic ; docs/ et fichiers Markdown : documentation et recherches conservées.
 - package.json : commande de tests. Node.js 24 permet de lancer `npm test`, sans npm install (aucune dépendance npm déclarée).
-- Google Fonts est le seul chargement externe de présentation dans index.html ; hors ligne, les polices de remplacement CSS prennent le relais. Les polices Google ne sont pas intégrées à cette archive.
+- La typographie utilise Arial ou la police sans-serif du système ; aucune police externe ne doit être téléchargée.
 - Les liens vers les publications scientifiques sont des références documentaires et ne sont pas nécessaires au jeu.
 
 Le fichier LISEZ-MOI.md et les notes de version anciennes sont conservés tels quels et décrivent des étapes historiques. Ce README contient la commande de lancement de cette archive.
@@ -502,3 +502,13 @@ Les placements rapides et les sous-titres du menu principal sont supprimés.
 Les cartes joueurs gardent leur contenu mais perdent leur contour ; le nom du
 joueur actif reste distingué. La police monospace est remplacée dans toute
 l’interface par DM Sans. Les numéros des billes conservent leur police de jeu.
+
+
+## Version 0.87 — démarrage et menu pause
+
+Le geste souris est choisi à chaque chargement, même si une ancienne préférence
+indiquait la jauge. Le choix peut être changé dans les options pendant la session.
+Le menu pause propose Reprendre, Options, Recommencer et Menu principal, dans
+cet ordre. Arial remplace les polices précédentes dans l’interface ; le fond des
+cartes joueurs disparaît. Les choix de mode sont centrés et sans point radio
+visible : Entraînement, Jouer au 8 et Jouer au 9.

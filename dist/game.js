@@ -2137,10 +2137,9 @@ function bindGameMenu() {
   impactAudio.setMuted(!soundEnabled);el.audioLabel.textContent=soundEnabled?'ON':'OFF';
   // The main audioToggle listener is registered below; persist after it runs.
   el.audioToggle.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.audio.muted',!soundEnabled)));
-  const savedMode=readPreference('frame.powerInputMode');
-  if(savedMode==='gauge'||savedMode==='mouse')powerInputMode=savedMode;
+  // Every page load starts in mouse-stroke mode, even with an older gauge preference.
+  powerInputMode='mouse';
   refreshPowerInput();
-  el.powerModeButton.addEventListener('click',()=>queueMicrotask(()=>savePreference('frame.powerInputMode',powerInputMode)));
   menu=createGameMenu({dialog:el.pauseDialog,
     onEscape:backFromMenuOptions,
     canOpen:()=>el.decisionOverlay.hidden&&el.victoryOverlay.hidden,
@@ -2160,6 +2159,10 @@ function bindGameMenu() {
       requestAnimationFrame(resize);
       (el.matchOverlay.hidden?el.gameCanvas:el.startMatch).focus({preventScroll:true});
     }
+  });
+  el.resumeGame.addEventListener('click',()=>{
+    void requestSceneFullscreen(el.gameCanvas.closest('.scene-frame'),document);
+    menu.close();
   });
   el.homeOptionsButton.addEventListener('click',()=>menu.open(el.optionsDialog));
   el.openOptionsButton.addEventListener('click',()=>menu.show(el.optionsDialog));
