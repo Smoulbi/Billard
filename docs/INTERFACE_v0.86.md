@@ -15,8 +15,31 @@ avec Arial/sans-serif en repli. Toutes les parties de l’interface qui utilisai
 cette police sont concernées ; DM Mono n’est plus chargé. Les chiffres des billes
 restent assortis à ceux de la table.
 
-## Point de reprise
+## Validation
 
-Implémentation sauvegardée avant contrôles visuels et suite complète. Quinze
-tests UI/menu/placement passent. Vérifications restantes : ancrage des boutons
-sur bureau et téléphone, suppression des sous-titres et contours, police appliquée.
+- **289 tests réussis, 0 échec, 0 ignoré** ; quinze tests ciblés UI/menu/placement passent.
+- Accueil de production : aucun sous-titre de mode, aucune précision sous
+  l’annonce, aucun paragraphe après le bouton Options ; placements rapides absents.
+- Les contrôles du jeu sont effectivement en bas à droite : bord droit à 20 px
+  et bord inférieur à 18 px sur la fenêtre bureau 1440×857.
+- Les cartes joueurs ont une bordure transparente et aucun halo ; leurs avatars,
+  noms, groupes et billes sont conservés. Les groupes et les commandes utilisent
+  DM Sans/Arial/sans-serif ; l’import DM Mono est retiré.
+- Fenêtres 390×844 et 844×390 : pas de débordement horizontal, boutons Replay,
+  Changer de vue et Placer la blanche visibles et non recouverts par la jauge.
+  La barre reste près des bords droit et inférieur dans les deux orientations.
+- Aucun événement error/unhandledrejection observé dans les essais instrumentés.
+
+Les captures accueil/jeu proviennent de la version de production en WebGL. Les
+contrôles fins et responsive utilisent un harnais temporaire d’inspection et de
+position de test, sans modifier les sources suivies, avec rendu logiciel arrêté.
+Aucune mesure de performance GPU n’est revendiquée. Les règles, la physique,
+les sons et le rendu des billes de la table sont inchangés.
+
+Preuves : `data/interface-v086-validation.json`.
+
+## Captures
+
+- [Menu](data/interface-v086-home.png)
+- [Boutons en bas à droite](data/interface-v086-game.png)
+- [Joueurs sans contour et nouvelle police](data/interface-v086-hud.png)

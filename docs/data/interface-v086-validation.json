@@ -1,0 +1,206 @@
+{
+  "version": "0.86",
+  "measuredAt": "2026-11-16T14:26:40.067065+00:00",
+  "tests": {
+    "passed": 289,
+    "failed": 0,
+    "skipped": 0
+  },
+  "welcome": {
+    "modeSubtitleCount": 0,
+    "callSubtitlePresent": false,
+    "lastChild": "BUTTON",
+    "decisionsParagraphPresent": false
+  },
+  "quickPlacement": {
+    "elementPresent": false,
+    "eventsRemoved": true,
+    "manualPlacementRetained": true
+  },
+  "typography": {
+    "previousMonospace": "DM Mono",
+    "replacement": "DM Sans, Arial, sans-serif",
+    "oldFontImportPresent": false,
+    "ballNumberFontRetained": "Arial"
+  },
+  "productionGame": {
+    "viewport": [
+      1440,
+      857
+    ],
+    "bar": {
+      "x": 987.46875,
+      "y": 807,
+      "right": 1420,
+      "bottom": 839
+    },
+    "visibleActionOrder": [
+      "shotReplayButton",
+      "viewButton",
+      "placeCueButton",
+      "aimMouseButton"
+    ],
+    "playerBorder": "rgba(0, 0, 0, 0)",
+    "playerShadow": "none",
+    "capturedRuntimeErrors": []
+  },
+  "responsive": [
+    {
+      "orientation": "portrait",
+      "options": {
+        "viewport": [
+          390,
+          844
+        ],
+        "dialog": {
+          "x": 19,
+          "y": 19,
+          "width": 352,
+          "height": 806,
+          "top": 19,
+          "right": 371,
+          "bottom": 825,
+          "left": 19
+        },
+        "scroll": [
+          390,
+          390
+        ],
+        "errors": []
+      },
+      "gauge": {
+        "viewport": [
+          390,
+          844
+        ],
+        "dock": {
+          "x": 212,
+          "y": 77,
+          "width": 169,
+          "height": 705,
+          "top": 77,
+          "right": 381,
+          "bottom": 782,
+          "left": 212
+        },
+        "powerVisible": true,
+        "spinVisible": true,
+        "forbiddenVisible": [],
+        "summary": false,
+        "bar": {
+          "x": 105.71875,
+          "y": 804,
+          "width": 272.28125,
+          "height": 30,
+          "top": 804,
+          "right": 378,
+          "bottom": 834,
+          "left": 105.71875
+        },
+        "font": "\"DM Sans\", Arial, sans-serif",
+        "quick": false,
+        "cardBorder": "rgba(0, 0, 0, 0)",
+        "controls": [
+          {
+            "id": "viewButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "shotReplayButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "placeCueButton",
+            "visible": true,
+            "unobstructed": true
+          }
+        ],
+        "scroll": [
+          390,
+          390
+        ]
+      }
+    },
+    {
+      "orientation": "landscape",
+      "options": {
+        "viewport": [
+          844,
+          390
+        ],
+        "dialog": {
+          "x": 52,
+          "y": 20,
+          "width": 740,
+          "height": 350,
+          "top": 20,
+          "right": 792,
+          "bottom": 370,
+          "left": 52
+        },
+        "scroll": [
+          844,
+          844
+        ],
+        "errors": []
+      },
+      "gauge": {
+        "viewport": [
+          844,
+          390
+        ],
+        "dock": {
+          "x": 651,
+          "y": 68,
+          "width": 180,
+          "height": 264,
+          "top": 68,
+          "right": 831,
+          "bottom": 332,
+          "left": 651
+        },
+        "powerVisible": true,
+        "spinVisible": true,
+        "forbiddenVisible": [],
+        "summary": false,
+        "bar": {
+          "x": 529.71875,
+          "y": 344,
+          "width": 294.28125,
+          "height": 28,
+          "top": 344,
+          "right": 824,
+          "bottom": 372,
+          "left": 529.71875
+        },
+        "font": "\"DM Sans\", Arial, sans-serif",
+        "quick": false,
+        "cardBorder": "rgba(0, 0, 0, 0)",
+        "controls": [
+          {
+            "id": "viewButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "shotReplayButton",
+            "visible": true,
+            "unobstructed": true
+          },
+          {
+            "id": "placeCueButton",
+            "visible": true,
+            "unobstructed": true
+          }
+        ],
+        "scroll": [
+          844,
+          844
+        ]
+      }
+    }
+  ],
+  "method": "Welcome/game captured from production WebGL startup. Responsive checks use temporary game-state inspection fixture, stopped renderer; click hit-tests check the actual controls. No tracked test hooks."
+}
