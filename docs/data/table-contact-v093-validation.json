@@ -1,0 +1,205 @@
+{
+  "tests": {
+    "passed": 317,
+    "failed": 0,
+    "skipped": 0
+  },
+  "angle45": {
+    "fired": true,
+    "launch": {
+      "balls": [
+        {
+          "num": 0,
+          "x": -0.8,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 2.02030508910442,
+          "vy": 1.6970562748477123,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.12,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.028575,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 45
+    },
+    "apex": {
+      "balls": [
+        {
+          "num": 0,
+          "x": -0.4548645472779832,
+          "y": 0.17534112403647997,
+          "z": 0,
+          "meshY": 0.17534112403647997,
+          "vx": 2.02030508910442,
+          "vy": 0.021181274847702145,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.12,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.17516771247461468,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 45
+    },
+    "errors": []
+  },
+  "subsequentAndAngle15": {
+    "after45": {
+      "balls": [
+        {
+          "num": 0,
+          "x": 0.3200752463318761,
+          "y": 0.15036481475502755,
+          "z": 0,
+          "meshY": 0.15036481475502755,
+          "vx": 1.552607109084603,
+          "vy": -0.21786590507296819,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.17203585215851352,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0.32673366485477107,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.1511874331094984,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 45
+    },
+    "launch15": {
+      "balls": [
+        {
+          "num": 0,
+          "x": -0.8,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 3.532414927425043,
+          "vy": 0.6211657082460491,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.12,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.028575,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 15
+    },
+    "after15": {
+      "balls": [
+        {
+          "num": 0,
+          "x": -0.6528160446906257,
+          "y": 0.04594127951025135,
+          "z": 0,
+          "meshY": 0.04594127951025135,
+          "vx": 3.532414927425043,
+          "vy": 0.21241570824604739,
+          "active": true
+        },
+        {
+          "num": 2,
+          "x": -0.46,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        },
+        {
+          "num": 1,
+          "x": 0.12,
+          "y": 0.028575,
+          "z": 0,
+          "meshY": 0.028575,
+          "vx": 0,
+          "vy": 0,
+          "active": true
+        }
+      ],
+      "replayY": 0.04383052360820108,
+      "strokePhase": "aim",
+      "elevation": "0",
+      "usedElevation": 15
+    },
+    "errors": []
+  },
+  "method": "Headless Chromium/SwiftShader; local QA accessors for repeatable setup and stepping, not included in production."
+}

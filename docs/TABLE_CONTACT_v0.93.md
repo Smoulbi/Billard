@@ -23,10 +23,21 @@ Le contact simultané procédé–bille–tapis reste approximé par deux contac
 instantanés successifs. Compression du tapis, blocage par le procédé et
 coefficients dépendant de la vitesse ne sont pas calibrés.
 
-## Point de reprise
+## Validation terminée
 
-58 tests ciblés attendus : contact normal/tangentiel, dissipation, rotation,
-absence d’inversion de glissement, continuité autour de 20°, franchissement,
-réception, son, replay, guide et consommation du reste du pas.
-Restent la suite complète, le contrôle navigateur et la recherche détaillée
-sur les collisions en vol, les bandes 3D et les queues de saut.
+- Suite complète : **317 tests réussis**, aucun échec ni test ignoré.
+- 58 tests ciblés couvrent notamment restitution, impulsion tangentielle,
+  énergie, non-inversion du glissement, continuité autour de 20°, temps restant
+  après rebond et absence de rebond sur une ouverture de poche.
+- Sur la page réelle dans Chromium/SwiftShader : angle 45°, vitesse de référence
+  4 m/s, vitesse horizontale de départ 2,0203 m/s et verticale 1,6971 m/s.
+  La blanche franchit l’obstacle immobile ; la hauteur du maillage suit celle
+  du corps physique. À 15°, le départ vertical est 0,6212 m/s, sans seuil à 20°.
+- Le réglage revient à 0° et le replay conserve 45° ou 15°. Aucune erreur JS
+  dans l’essai de ces deux angles.
+
+Le navigateur de contrôle utilise un serveur temporaire ajoutant des accès QA
+à la copie servie du module ; aucun accès QA n’est présent dans les fichiers
+livrés. Les tests numériques ne constituent pas une calibration expérimentale.
+
+[Mesures](data/table-contact-v093-validation.json) · [Capture](data/table-contact-v093-jump.png)
