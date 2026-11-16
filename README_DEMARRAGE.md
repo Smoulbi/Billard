@@ -1,8 +1,8 @@
-# FRAME v0.77 — projet complet
+# FRAME v0.78 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.77 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.78 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -425,3 +425,10 @@ Le niveau des impacts doux est relevé progressivement afin de conserver un peti
 son à faible vitesse. Les impacts forts gardent leur niveau. Les échantillons,
 le bouton SON, le replay silencieux et la physique sont conservés.
 Voir `docs/SONS_v0.77.md`.
+
+
+## Version 0.78 — son des bandes retouché
+
+Le son des bandes utilise le WAV retouché et approuvé par l’utilisateur, conservé
+tel quel. Les autres sons et la courbe de volume de la 0.77 sont conservés.
+Voir `docs/SONS_v0.78.md`.

@@ -44,7 +44,7 @@ test('preparation is context-free and shares exactly three downloads and decodes
   assert.equal(r.factories,1);assert.equal(r.requests.length,3);assert.equal(r.decoded.length,3);
   assert.ok(r.requests.some(url=>url.endsWith('/audio/cue.wav')));
   assert.ok(r.requests.some(url=>url.endsWith('/audio/ball.wav')));
-  assert.ok(r.requests.some(url=>url.endsWith('/audio/cushion.wav')));
+  assert.ok(r.requests.some(url=>new URL(url).pathname.endsWith('/audio/cushion.wav')&&new URL(url).searchParams.get('v')==='0.78'));
   for(const [index,kind] of ['cue','ball','cushion'].entries()) {
     assert.equal(r.audio.play(kind,0.12),true);
     assert.equal(r.sources[index].buffer.data,r.decoded[index]);

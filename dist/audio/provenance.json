@@ -1,5 +1,5 @@
 {
-  "normalization": "Decode float32 PCM, multiply by 0.5/max(abs(pcm)), round to PCM16; no trimming, filtering, resampling or pitch change.",
+  "normalization": "Initial v0.76 assets: float32 PCM normalized to peak 0.5 then PCM16. Current user-supplied cushion derivative: copied unchanged, constant_gain 1; see per-file processing and superseded records.",
   "decoder": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
   "files": [
     {
@@ -38,6 +38,28 @@
     },
     {
       "kind": "cushion",
+      "source": "source/cushion-fx.wav",
+      "source_description": "User-supplied edited cushion fx.wav, based on the previously supplied cushion sample; accepted for v0.78.",
+      "source_sha256": "81ca76b62fcbfcc439c7c6af13bcda9f4bffebca80cdcb6ca8f2f0e788e17c04",
+      "upstream_source": "source/cushion.ogg",
+      "upstream_source_url": "https://raw.githubusercontent.com/tailuge/billiards/fc83068dd0be4ff603def94c90d3b043c8bc3143/dist/sounds/cushion.ogg",
+      "upstream_source_sha256": "5c28fde11e323cbf0dca9181b1e17e318c31e20afb3d53ccf3e97ad083224594",
+      "license": "GPL-3.0",
+      "license_file": "licenses/tailuge-billiards-GPL-3.0.txt",
+      "output": "cushion.wav",
+      "output_sha256": "81ca76b62fcbfcc439c7c6af13bcda9f4bffebca80cdcb6ca8f2f0e788e17c04",
+      "channels": 2,
+      "sample_rate": 44100,
+      "frames": 7284,
+      "duration_seconds": 0.16517006802721088,
+      "constant_gain": 1,
+      "output_peak": 0.328643798828125,
+      "processing": "Copied byte-for-byte from the user upload; no normalization, filter, trim, pitch shift or resampling applied by integration."
+    }
+  ],
+  "superseded": [
+    {
+      "kind": "cushion",
       "source": "source/cushion.ogg",
       "source_url": "https://raw.githubusercontent.com/tailuge/billiards/fc83068dd0be4ff603def94c90d3b043c8bc3143/dist/sounds/cushion.ogg",
       "source_sha256": "5c28fde11e323cbf0dca9181b1e17e318c31e20afb3d53ccf3e97ad083224594",
@@ -51,7 +73,11 @@
       "duration_seconds": 0.12,
       "decoded_peak": 0.04862681031227112,
       "constant_gain": 10.282393535358487,
-      "output_peak": 0.5
+      "output_peak": 0.5,
+      "used_in_versions": [
+        "0.76",
+        "0.77"
+      ]
     }
   ]
 }

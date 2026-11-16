@@ -7,7 +7,7 @@ export function impactGain(speed) {
 }
 
 const sampleURLs=Object.fromEntries(['cue','ball','cushion'].map(kind=>
-  [kind,new URL(`./audio/${kind}.wav`,import.meta.url).href]));
+  [kind,new URL(`./audio/${kind}.wav${kind==='cushion'?'?v=0.78':''}`,import.meta.url).href]));
 
 export function createImpactAudio({
   contextFactory=()=>{
