@@ -2,7 +2,7 @@ import {createGameMenu,playerBallState} from './game-menu.js?v=0.83';
 import {createImpactAudio} from './impact-audio.js?v=0.82';
 import {ShotReplay} from './shot-replay.js?v=0.91';
 import {railCutawayForView} from './rail-visibility.js?v=0.88';
-import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
+import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.91';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
@@ -19,11 +19,11 @@ import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
 import {getLabScenario, ShotTelemetry} from './lab.js?v=0.68';
 import {powerToCueSpeed} from './power.js';
 import {HEAD_STRING_X, clampBreakPosition, canPlaceBreakCue,
-  clampFreePosition, canPlaceFreeCue} from './placement.js?v=0.69';
+  clampFreePosition, canPlaceFreeCue} from './placement.js?v=0.91';
 import {newEightBallMatch,adjudicateEightBall,resolveEightBallDecision,
   eightBallVictoryPresentation,groupOf} from './eight-ball-rules.js?v=0.91';
 import {predictTrajectory} from './trajectory.js?v=0.91';
-import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.69';
+import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.91';
 import {panCameraTarget,zoomCamera,isCameraSettingsShortcut} from './camera-controls.js?v=0.88';
 import {isFullscreenShortcut,toggleSceneFullscreen,requestSceneFullscreen} from './fullscreen.js?v=0.88';
 import {pocketCollectorRadii,

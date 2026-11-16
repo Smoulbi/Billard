@@ -5,7 +5,7 @@ import {PUBLISHED_COLLISIONS, MATHAVAN_2009_PDF,
   measurePostSlipCollision, measureRailRebound, measurePostSlideRailRebound,
   measurePoolObliqueRailRebound,measureQualifiedPoolRebound,
   measureRollingDeceleration,
-  publishedCushionFit} from './experimental.js?v=0.69';
+  publishedCushionFit} from './experimental.js?v=0.91';
 import {CUSHION_PROFILES,TUM_POOL_RAIL,poolRailReference} from './cushion-profiles.js';
 
 // The original 14 cases are analytical limits or diagnostic simulations, not

@@ -1,0 +1,86 @@
+{
+  "apex": {
+    "balls": [
+      {
+        "num": 0,
+        "x": -0.4582317224264937,
+        "y": 0.10050127033087036,
+        "z": 0,
+        "meshY": 0.10050127033087036,
+        "vx": 2.8284271247461876,
+        "vy": 0.00256439239339834,
+        "active": true
+      },
+      {
+        "num": 2,
+        "x": -0.46,
+        "y": 0.028575,
+        "z": 0,
+        "meshY": 0.028575,
+        "vx": 0,
+        "vy": 0,
+        "active": true
+      },
+      {
+        "num": 1,
+        "x": 0.12,
+        "y": 0.028575,
+        "z": 0,
+        "meshY": 0.028575,
+        "vx": 0,
+        "vy": 0,
+        "active": true
+      }
+    ],
+    "replayY": 0.10040542911256448,
+    "strokePhase": "aim",
+    "elevation": "45"
+  },
+  "after": {
+    "balls": [
+      {
+        "num": 0,
+        "x": 0.07305583640151055,
+        "y": 0.028575,
+        "z": 0,
+        "meshY": 0.028575,
+        "vx": 0.03848934760968895,
+        "vy": 0,
+        "active": true
+      },
+      {
+        "num": 2,
+        "x": -0.46,
+        "y": 0.028575,
+        "z": 0,
+        "meshY": 0.028575,
+        "vx": 0,
+        "vy": 0,
+        "active": true
+      },
+      {
+        "num": 1,
+        "x": 0.6192066788964463,
+        "y": 0.028575,
+        "z": 0,
+        "meshY": 0.028575,
+        "vx": 2.3708941311363,
+        "vy": 0,
+        "active": true
+      }
+    ],
+    "replayY": 0.028575,
+    "strokePhase": "aim",
+    "elevation": "45"
+  },
+  "errors": [],
+  "tests": {
+    "passed": 306,
+    "failed": 0
+  },
+  "controls": {
+    "mouseMode": "S enters spin selection; wheel changed elevation 45 to 46 degrees; visible hint confirmed",
+    "sliderMaxDegrees": 75
+  },
+  "method": "Chromium headless/SwiftShader; temporary local server appends QA accessors to game.js only for deterministic scenario setup and physics stepping. No QA hooks in production files."
+}
