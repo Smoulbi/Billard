@@ -1922,9 +1922,9 @@ function refreshPowerInput() {
   el.mouseStrokeHint.hidden=!mouse;
   el.mouseStrokeHint.textContent=mouseStroke?.needsRetry?
     'GESTE NON MESURÉ · RECULEZ DAVANTAGE LA QUEUE ET RECOMMENCEZ':strokePhase==='spin'?
-    'EFFET : DÉPLACEZ LE POINT ROUGE SUR LA BLANCHE · S : VALIDER · ÉCHAP : AUTRES RÉGLAGES':strokePhase==='stroke'?
+    'EFFET : DÉPLACEZ LE POINT ROUGE SUR LA BLANCHE · S : VALIDER · ÉCHAP : OPTIONS':strokePhase==='stroke'?
     'BAS : RECULER LA QUEUE · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':
-    'En première personne : visez, puis clic gauche pour préparer le geste. S règle l’effet sur la blanche ; Échap libère la souris.';
+    'En première personne : visez, puis clic gauche pour préparer le geste. S règle l’effet sur la blanche ; Échap ouvre les options.';
   el.shootButton.firstElementChild.textContent=mouse?'VISER À LA SOURIS':'TIRER';
 }
 
@@ -2021,15 +2021,16 @@ function refreshPlacementUI() {
         'GLISSEZ LA BLANCHE · MOLETTE ENFONCÉE : DÉPLACER · DÉFILER : ZOOM · F : PLEIN ÉCRAN')
     : fallbackCtx?'VISER À LA SOURIS · MODE 2D DE SECOURS':
       'VISER À LA SOURIS · CLIC DROIT : TOURNER · MOLETTE ENFONCÉE : DÉPLACER · DÉFILER : ZOOM · F : PLEIN ÉCRAN';
-  el.aimMouseButton.hidden=cameraMode!=='first-person'||document.pointerLockElement===el.gameCanvas;
-  el.aimMouseButton.disabled=shotActive;
+  el.aimMouseButton.hidden=(powerInputMode!=='mouse'&&cameraMode!=='first-person')||document.pointerLockElement===el.gameCanvas;
+  el.aimMouseButton.textContent=cameraMode==='first-person'?'REPRENDRE LA VISÉE':'VISER À LA SOURIS';
+  el.aimMouseButton.disabled=shotActive||needsCuePlacement||placementMode||!!training?.editing;
   if(cameraMode==='first-person') {
     el.cameraName.textContent=`PREMIÈRE PERSONNE · ${firstPerson.fine?'FINE':'NORMALE'} · ${strokePhase==='spin'?'RÉGLAGE DE L’EFFET':strokePhase==='stroke'?'GESTE DE TIR':document.pointerLockElement===el.gameCanvas?'VISÉE ACTIVE':'SOURIS LIBRE'}`;
     if(!placementMode&&!needsCuePlacement)el.sceneHint.textContent=shotActive?
       'CAMÉRA FIXE AU POINT DE TIR · V : CHANGER DE VUE':
       document.pointerLockElement===el.gameCanvas?
-      (powerInputMode==='mouse'?(strokePhase==='spin'?'DÉPLACEZ LE POINT ROUGE · CLIC DROIT : PRÉCISION · S : VALIDER · ÉCHAP : LIBÉRER LA SOURIS':strokePhase==='stroke'?'BAS : RECULER · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':'SOURIS : VISER · CLIC GAUCHE : GESTE DE TIR · S : EFFET · ÉCHAP : RÉGLAGES'):
-      'SOURIS ↔ : VISER · ↕ : HAUTEUR · CLIC DROIT : PRÉCISION · CLIC GAUCHE / S / ÉCHAP : LIBÉRER LA SOURIS'):
+      (powerInputMode==='mouse'?(strokePhase==='spin'?'DÉPLACEZ LE POINT ROUGE · CLIC DROIT : PRÉCISION · S : VALIDER · ÉCHAP : OPTIONS':strokePhase==='stroke'?'BAS : RECULER · HAUT : FRAPPER · S : EFFET · ÉCHAP : RÉGLAGES · CLIC GAUCHE : REVISER':'SOURIS : VISER · CLIC GAUCHE : GESTE DE TIR · S : EFFET · ÉCHAP : RÉGLAGES'):
+      'SOURIS ↔ : VISER · ↕ : HAUTEUR · CLIC DROIT : PRÉCISION · CLIC GAUCHE / S / ÉCHAP : OPTIONS'):
       'VISÉE FIGÉE · RÉGLEZ LE COUP · CLIQUEZ SUR LA TABLE OU REPRENDRE LA VISÉE POUR VISER';
   }
   if(training?.editing)el.sceneHint.textContent=training.addNumber!==null?
@@ -2246,7 +2247,7 @@ function bindControls() {
     // Switching mode happens in Options; capture starts after resuming the game.
     requestAnimationFrame(resize);
   });
-  el.aimMouseButton.addEventListener('click',captureAimMouse);
+  el.aimMouseButton.addEventListener('click',()=>{if(powerInputMode==='mouse')prepareMouseAim();else captureAimMouse();});
   document.addEventListener('pointerlockchange',()=>{
     const locked=document.pointerLockElement===el.gameCanvas;
     const escaped=pointerWasLocked&&!locked&&!programmaticPointerUnlock;
