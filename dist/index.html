@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0c1216">
   <meta name="description" content="Jeu de la 8, jeu de la 9 et entraînement au billard américain.">
   <title>FRAME — Billard</title>
-  <link rel="stylesheet" href="./style.css?v=0.90">
+  <link rel="stylesheet" href="./style.css?v=0.91">
 </head>
 <body>
  <div class="app"><div class="workspace"><main class="main-stage">
@@ -25,7 +25,7 @@
   </div>
   <div class="hud-status" hidden><div class="status-card"><div class="status-indicator" id="statusIndicator"></div><div><strong id="statusTitle">À vous de jouer</strong><p id="statusText">Orientez la queue pour préparer votre coup.</p></div></div></div>
 </header>
-<canvas id="gameCanvas" tabindex="0" aria-label="Table de billard. Avant la casse, glissez la blanche dans la zone de départ. Souris pour viser, clic droit maintenu pour tourner, molette enfoncée et déplacement pour bouger la caméra, défilement pour zoomer, touche F pour le plein écran."></canvas>
+<canvas id="gameCanvas" tabindex="0" aria-label="Table de billard. Avant la casse, glissez la blanche dans la zone de départ. Souris pour viser, clic droit maintenu pour tourner, molette enfoncée et déplacement pour bouger la caméra, défilement pour zoomer, touche F pour le plein écran."></canvas><div id="jumpHint" class="jump-hint" hidden></div>
           <div class="scene-vignette"></div>
           <div class="scene-top-left" hidden><span class="scene-kicker">VUE ACTIVE</span><strong id="cameraName">PERSPECTIVE</strong></div>
           <div class="scene-top-right" hidden><span class="scene-kicker">POSITION DE TIR</span><strong id="shotState">PRÊT</strong></div>
@@ -166,9 +166,9 @@
         </div></details><p class="control-description">Choisissez le geste de souris ou la jauge. En mode jauge, la puissance et l’effet restent accessibles sur le côté de la table.</p></section>
   <details class="options-section"><summary>Caméra et queue</summary><div class="camera-queue-settings"><button id="cameraOptionsButton" type="button" class="secondary-button">CAMÉRA · C</button><details class="dock-section shot-control"><summary>Élévation de la queue</summary><div class="dock-section-content"><div class="panel-divider slim"></div>
         <div class="control-title"><div><span class="control-index">04</span><strong>ÉLÉVATION DE LA QUEUE</strong></div><span id="elevationValue" class="power-value">0°</span></div>
-        <p class="control-description">De 0 à 15°. L'inclinaison transforme une part de l'effet latéral en rotation sur le tapis. Pas de saut ni de massé complet.</p>
-        <input id="elevationSlider" type="range" min="0" max="15" value="0" step="1" aria-label="Élévation de la queue en degrés">
-        <div class="range-labels"><span>À PLAT</span><span>15°</span></div>
+        <p class="control-description">De 0 à 75°. À partir de 20°, la blanche peut sauter : inclinez la queue et dosez la puissance. En geste souris : S, puis molette pour incliner, S pour valider.</p>
+        <input id="elevationSlider" type="range" min="0" max="75" value="0" step="1" aria-label="Élévation de la queue en degrés">
+        <div class="range-labels"><span>À PLAT</span><span>75°</span></div>
 
         </div></details></div></details>
   <details class="options-section"><summary>Assistance et modèle physique</summary><aside class="right-panel panel"><div hidden><input id="trainingAssist" type="checkbox"><input id="trainingTraces" type="checkbox"></div>
@@ -212,11 +212,11 @@
           <p class="calibration-footnote">Les 57 essais sont comparés notamment aux régressions de <a href="https://mediatum.ub.tum.de/doc/1155344/988748.pdf" target="_blank" rel="noopener noreferrer">Nierhoff, Heunisch &amp; Hirche — 1 217 impacts de pool US</a>. Pool v0.17 : référence empirique conservée. Pool v0.18–0.19 : ressort normal/tangentiel inspiré des principes de <a href="https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html" target="_blank" rel="noopener noreferrer">Stronge</a>. Pool v0.20 : contact couplé en 3D avec cisaillement vertical. Pool v0.21 : <strong>identification sous contraintes et contrôle sur la vitesse 1,2 m/s exclue de l'ajustement</strong>. Pool v0.69 : accord à la régression US et transition glissement–roulement précise ; le score pool sépare les repères snooker et indicatifs. Pool v0.68 : correction de non-pénétration, mêmes paramètres et même écart à cette régression que v0.21. <strong>Recherche v0.22 : un contact simultané bille–bande–tapis est implémenté dans un banc séparé, mais ses écarts avec la régression américaine sont supérieurs ; il n'est pas activé en jeu.</strong> Aucun de ces modèles mécaniques n'est validé sur une table indépendante ; les coefficients K55/K66 ne sont pas mesurés. Snooker historique inchangé, géométrie toujours américaine. Les mesures personnelles restent dans ce navigateur.</p>
         </section></details>
 
-  <p class="options-note">VERSION 0.90 · BUILD 090</p>
+  <p class="options-note">VERSION 0.91 · BUILD 091</p>
  </div>
 </dialog>
 </section>
 </main></div></div>
- <script type="module" src="./game.js?v=0.90"></script>
+ <script type="module" src="./game.js?v=0.91"></script>
 </body>
 </html>

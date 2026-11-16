@@ -1,4 +1,4 @@
-import {RADIUS} from './physics.js?v=0.69';
+import {RADIUS} from './physics.js?v=0.91';
 // Record the actual simulated motion, rather than running the shot a second time.
 export class ShotReplay {
   constructor(balls,metadata={}) {
@@ -16,7 +16,7 @@ export class ShotReplay {
       if(!b.active&&!this.pockets.has(num))this.pockets.set(num,{time,x:b.x,z:b.z});
       const pocket=this.pockets.get(num),elapsed=pocket?time-pocket.time:0;
       return {num,x:pocket?.x??b.x,z:pocket?.z??b.z,
-        y:pocket ? RADIUS-4.905*elapsed**2 : RADIUS,
+        y:pocket ? RADIUS-4.905*elapsed**2 : (b.y??RADIUS),
         visible:!pocket||elapsed<.28,
         q:b.mesh?.quaternion.toArray()??[0,0,0,1]};
     });

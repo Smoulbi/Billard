@@ -149,12 +149,13 @@ export function getCushionSegments() {
 }
 
 export function makePhysicsBody(num, x, z) {
-  return {num, x, z, vx: 0, vz: 0, wx: 0, wy: 0, wz: 0,
+  return {num, x, z, y:RADIUS, vy:0, vx: 0, vz: 0, wx: 0, wy: 0, wz: 0,
     rotX: 0, rotY: 0, rotZ: 0, state: 'stationary', active: true};
 }
 
 export function stopBall(ball) {
-  ball.vx = ball.vz = ball.wx = ball.wy = ball.wz = 0;
+  ball.vx = ball.vz = ball.wx = ball.wy = ball.wz = ball.vy = 0;
+  ball.y=RADIUS;
   ball.rotX = ball.rotY = ball.rotZ = 0;
   ball.state = 'stationary';
 }
@@ -166,7 +167,8 @@ export function stopBall(ball) {
 // squirt. Elevation tips the impulse and contact basis in 3D: its longitudinal
 // angular component then generates a *lateral cloth slip*, so the existing
 // sliding-friction integrator produces swerve without a scripted curve.
-// Vertical translations and jumps are not simulated by this planar solver.
+// Above 20°, the downward cue impulse rebounds from the cloth into flight.
+// Restitution is a gameplay approximation, separate from calibrated planar shots.
 export function getCueImpact(aim, speed, english = {x: 0, y: 0}, options = {}) {
   const magnitude = Math.hypot(aim.x, aim.z) || 1;
   const dx = aim.x / magnitude, dz = aim.z / magnitude;
@@ -179,7 +181,7 @@ export function getCueImpact(aim, speed, english = {x: 0, y: 0}, options = {}) {
   const lateral = ox * offsetScale * gripScale * RADIUS * 0.62;
   const vertical = oy * offsetScale * gripScale * RADIUS * 0.62;
   const depth = Math.sqrt(Math.max(0, RADIUS ** 2 - lateral ** 2 - vertical ** 2));
-  const theta = Math.max(0, Math.min(15, Number(options.elevation) || 0)) * Math.PI / 180;
+  const theta = Math.max(0, Math.min(75, Number(options.elevation) || 0)) * Math.PI / 180;
   const st = Math.sin(theta), ct = Math.cos(theta);
   const smallSquirt = Math.atan2(
     PHYSICS.cueTipEffectiveMass * lateral,
@@ -205,6 +207,7 @@ export function getCueImpact(aim, speed, english = {x: 0, y: 0}, options = {}) {
   const angularFactor = PHYSICS.mass * impulseSpeed * INVERSE_INERTIA;
   return {
     vx: ux * impulseSpeed, vz: uz * impulseSpeed,
+    vy:theta>=20*Math.PI/180&&!miscue ? impulseSpeed*st*0.42 : 0,
     wx: (ry * uz - rz * uy) * angularFactor,
     wy: (rz * ux - rx * uz) * angularFactor,
     wz: (rx * uy - ry * ux) * angularFactor,
@@ -214,12 +217,13 @@ export function getCueImpact(aim, speed, english = {x: 0, y: 0}, options = {}) {
 
 export function strikeBall(ball, aim, speed, english = {x: 0, y: 0}, options = {}) {
   const impact = getCueImpact(aim, speed, english, options);
+  ball.y=RADIUS;ball.vy=impact.vy;
   ball.vx = impact.vx;
   ball.vz = impact.vz;
   ball.wx = impact.wx;
   ball.wy = impact.wy;
   ball.wz = impact.wz;
-  ball.state = 'sliding';
+  ball.state = impact.vy>0?'airborne':'sliding';
   return impact;
 }
 
@@ -808,7 +812,7 @@ function inPocket(b) {
 }
 
 export function isMoving(b) {
-  return b.active && (Math.hypot(b.vx, b.vz) > SPEED_EPS ||
+  return b.active && ((b.y??RADIUS)>RADIUS+1e-8||Math.abs(b.vy||0)>1e-8||Math.hypot(b.vx, b.vz) > SPEED_EPS ||
     Math.hypot(b.wx, b.wz) * RADIUS > SLIP_EPS || Math.abs(b.wy) > SPIN_EPS);
 }
 
@@ -819,6 +823,8 @@ export function simulatePhysics(balls, dt, callbacks = {}) {
     throw new RangeError(`Profil de bande inconnu : ${profile}`);
   if(callbacks.cushionModel&&!CUSHION_MODELS.includes(callbacks.cushionModel))
     throw new RangeError(`Modèle de contact de bande inconnu : ${callbacks.cushionModel}`);
+  if(balls.some(b=>b.active&&((b.y??RADIUS)>RADIUS+1e-8||Math.abs(b.vy||0)>1e-8)))
+    return simulateFlight(balls,dt,callbacks);
   let maxSpeed = 0;
   for (const b of balls) if (b.active) maxSpeed = Math.max(maxSpeed, Math.hypot(b.vx, b.vz));
   // At hard break speeds an ordinary 240 Hz step crosses ~20 mm. Smaller
@@ -865,5 +871,92 @@ export function simulatePhysics(balls, dt, callbacks = {}) {
       }
     }
   }
+  return balls.some(isMoving);
+}
+
+// Flight uses fine 3D contact steps; grounded-only shots keep the archived CCD
+// and Hertz rack solver unchanged. y is the centre height above the cloth.
+function simulateFlight(balls,dt,callbacks) {
+  const speed=Math.max(...balls.filter(b=>b.active).map(b=>Math.hypot(b.vx,b.vy||0,b.vz)),1);
+  const count=Math.max(1,Math.ceil(dt/Math.min(1/4000,RADIUS*.02/speed)));
+  const h=dt/count;
+  let groundCredit=balls._advanceCredit||0;balls._advanceCredit=0;
+  const wrap=(offset)=>Object.fromEntries(Object.entries(callbacks).map(([key,value])=>
+    [key,typeof value!=='function'?value:(...args)=>{
+      const index=['onBallContact','onCollision'].includes(key)?3:
+        ['onRailContact','onCushion','onBeforeRailContact'].includes(key)?2:-1;
+      // onBeforeRailContact has (ball,time,kind).
+      if(key==='onBeforeRailContact')args[1]=(args[1]??0)+offset;
+      else if(index>=0)args[index]=(args[index]??0)+offset;
+      return value(...args);
+    }]));
+  for(let step=0;step<count;step++) {
+    const time=(step+1)*h;
+    const flying=balls.filter(b=>b.active&&((b.y??RADIUS)>RADIUS+1e-8||Math.abs(b.vy||0)>1e-8));
+    const grounded=balls.filter(b=>b.active&&!flying.includes(b));
+    if(grounded.length){
+      grounded._advanceCredit=groundCredit;
+      simulatePhysics(grounded,h,wrap(step*h));
+      groundCredit=grounded._advanceCredit||0;
+    }
+    for(const b of flying){
+      const y=b.y??RADIUS,v=b.vy||0;
+      const landing=(v+Math.sqrt(v*v+2*PHYSICS.gravity*Math.max(0,y-RADIUS)))/PHYSICS.gravity;
+      const airTime=Math.min(h,landing);
+      b.x+=b.vx*airTime;b.z+=b.vz*airTime;
+      b.y=y+v*airTime-.5*PHYSICS.gravity*airTime*airTime;
+      b.vy=v-PHYSICS.gravity*airTime;b.state='airborne';
+      b.rotX+=b.wx*airTime;b.rotY+=b.wy*airTime;b.rotZ+=b.wz*airTime;
+      if(landing<=h){
+        b.y=RADIUS;
+        const incoming=-b.vy;
+        b.vy=incoming>.35?incoming*.32:0;
+        callbacks.onLanding?.(b,incoming,step*h+landing);
+        if(!b.vy){b.state='sliding';advanceBall(b,h-airTime,callbacks.cushionProfile||DEFAULT_CUSHION_PROFILE,callbacks.cushionModel);}
+      }
+      // A raised ball clears the rubber only above its top. Lower impacts
+      // retain the established horizontal rail response (no scripted landing).
+      if(b.y-RADIUS<.045)for(const rail of RAILS){
+        const impact=bounceCushion(b,rail,callbacks.cushionProfile,callbacks.cushionModel,callbacks.cushionParameters,
+          hit=>callbacks.onBeforeRailContact?.(hit,time,rail.kind));
+        if(impact>1e-7)callbacks.onRailContact?.(b,impact,time,rail.kind);
+        if(impact>.045)callbacks.onCushion?.(b,impact,time,rail.kind);
+      }
+      if(Math.abs(b.x)>LENGTH+.15||Math.abs(b.z)>WIDTH+.15){
+        b.active=false;callbacks.onOffTable?.(b,time);continue;
+      }
+      if(b.y<=RADIUS+1e-8&&inPocket(b)){
+        stopBall(b);b.active=false;callbacks.onPocket?.(b);
+      }
+    }
+    for(let i=0;i<balls.length;i++)for(let j=i+1;j<balls.length;j++){
+      const a=balls[i],b=balls[j];
+      if(!a.active||!b.active||(!flying.includes(a)&&!flying.includes(b)))continue;
+      const dx=b.x-a.x,dy=(b.y??RADIUS)-(a.y??RADIUS),dz=b.z-a.z;
+      const distance=Math.hypot(dx,dy,dz);
+      if(distance>2*RADIUS||distance<1e-12)continue;
+      const n=[dx/distance,dy/distance,dz/distance];
+      const closing=(b.vx-a.vx)*n[0]+((b.vy||0)-(a.vy||0))*n[1]+(b.vz-a.vz)*n[2];
+      // A supported ball cannot be pushed below the cloth. Its vertical
+      // inverse mass is zero for a downward normal impulse.
+      const freeA=(a.y??RADIUS)>RADIUS+1e-8||n[1]<0;
+      const freeB=(b.y??RADIUS)>RADIUS+1e-8||n[1]>0;
+      const denominator=2*(n[0]**2+n[2]**2)+(Number(freeA)+Number(freeB))*n[1]**2;
+      const overlap=2*RADIUS-distance+1e-9;
+      a.x-=n[0]*overlap*.5;a.z-=n[2]*overlap*.5;
+      b.x+=n[0]*overlap*.5;b.z+=n[2]*overlap*.5;
+      if(freeA)a.y=Math.max(RADIUS,(a.y??RADIUS)-n[1]*overlap*.5);
+      if(freeB)b.y=Math.max(RADIUS,(b.y??RADIUS)+n[1]*overlap*.5);
+      if(closing>=-1e-7)continue;
+      const impulse=-(1+PHYSICS.ballRestitution)*closing/denominator;
+      a.vx-=impulse*n[0];a.vz-=impulse*n[2];
+      b.vx+=impulse*n[0];b.vz+=impulse*n[2];
+      if(freeA)a.vy=(a.vy||0)-impulse*n[1];
+      if(freeB)b.vy=(b.vy||0)+impulse*n[1];
+      callbacks.onBallContact?.(a,b,-closing,time);
+      if(-closing>.045)callbacks.onCollision?.(a,b,-closing,time);
+    }
+  }
+  balls._advanceCredit=groundCredit;
   return balls.some(isMoving);
 }

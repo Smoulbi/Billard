@@ -11,11 +11,11 @@ export function nineBallRack(radius,random=Math.random) {
 export function adjudicateNineBall(state,shot) {
   if(!['break','playing'].includes(state.phase))throw new Error('Aucun tir ne peut être arbitré dans cet état.');
   const pots=(shot.pocketed||[]).filter(p=>p.num>=1&&p.num<=9);
-  const nine=pots.some(p=>p.num===9),isBreak=state.phase==='break';
+  const nine=pots.some(p=>p.num===9)||Boolean(shot.offTable?.includes(9)),isBreak=state.phase==='break';
   const push=Boolean(shot.pushOut);
   if(push&&(!state.pushOutAvailable||isBreak))throw new Error('Push-out indisponible.');
   const lowest=Math.min(...(shot.remainingBefore||[]).filter(n=>n>=1&&n<=9));
-  let reason=shot.scratch?'Blanche empochée : faute.':null;
+  let reason=shot.offTable?.length?'Bille sortie de table : faute.':shot.scratch?'Blanche empochée : faute.':null;
   if(!reason&&!push){
     if(shot.firstContact==null)reason='Aucune bille touchée : faute.';
     else if(shot.firstContact!==lowest)reason=`La bille ${lowest} devait être touchée en premier : faute.`;

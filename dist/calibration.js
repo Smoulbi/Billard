@@ -1,5 +1,5 @@
 import {RADIUS, makePhysicsBody, resolveBallCollision, simulatePhysics,
-  strikeBall, isMoving} from './physics.js?v=0.69';
+  strikeBall, isMoving} from './physics.js?v=0.91';
 import {powerToCueSpeed} from './power.js';
 import {PUBLISHED_COLLISIONS, MATHAVAN_2009_PDF,
   measurePostSlipCollision, measureRailRebound, measurePostSlideRailRebound,

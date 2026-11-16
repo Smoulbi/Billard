@@ -1,4 +1,4 @@
-import {makePhysicsBody, strikeBall, simulatePhysics, isMoving, RADIUS} from './physics.js?v=0.69';
+import {makePhysicsBody, strikeBall, simulatePhysics, isMoving, RADIUS} from './physics.js?v=0.91';
 import {powerToCueSpeed} from './power.js';
 
 // The guide is a dry run of the shot, not an idealised 90-degree tangent.
@@ -12,7 +12,7 @@ const PATH_LIMIT = 0.62;
 
 function copyBall(ball) {
   return {...makePhysicsBody(ball.num, ball.x, ball.z),
-    vx:ball.vx, vz:ball.vz, wx:ball.wx, wy:ball.wy, wz:ball.wz,
+    y:ball.y??RADIUS,vy:ball.vy||0,vx:ball.vx, vz:ball.vz, wx:ball.wx, wy:ball.wy, wz:ball.wz,
     state:ball.state, active:ball.active};
 }
 
@@ -24,13 +24,13 @@ function pushPoint(path, p) {
 }
 
 function sweptBallFraction(start, end, target) {
-  const dx=end.x-start.x,dz=end.z-start.z;
-  const rx=start.x-target.x,rz=start.z-target.z;
-  const a=dx*dx+dz*dz;
-  const c=rx*rx+rz*rz-4*RADIUS*RADIUS;
+  const dx=end.x-start.x,dz=end.z-start.z,dy=(end.y??RADIUS)-(start.y??RADIUS);
+  const rx=start.x-target.x,rz=start.z-target.z,ry=(start.y??RADIUS)-(target.y??RADIUS);
+  const a=dx*dx+dz*dz+dy*dy;
+  const c=rx*rx+rz*rz+ry*ry-4*RADIUS*RADIUS;
   if(c<=0)return 0;
   if(a<1e-14)return Infinity;
-  const b=2*(rx*dx+rz*dz);
+  const b=2*(rx*dx+rz*dz+ry*dy);
   const discriminant=b*b-4*a*c;
   if(b>=0||discriminant<0)return Infinity;
   const fraction=(-b-Math.sqrt(discriminant))/(2*a);

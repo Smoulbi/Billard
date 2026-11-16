@@ -46,6 +46,10 @@ const foulReason = ({scratch,firstContact,railAfterContact,pocketed,group,remain
 export function adjudicateEightBall(state, shot) {
   if (state.phase !== 'break' && state.phase !== 'playing')
     throw new Error('Aucun tir ne peut être arbitré dans cet état.');
+  if(shot.offTable?.includes(8))return {...state,phase:'finished',winner:opponent(state.current),
+    turn:state.turn+1,ballInHand:null,pending:null,
+    lastResult:{kind:'loss',reason:'Bille 8 sortie de table : perte de la partie.'}};
+  if(shot.offTable?.length)return handoff(state,'Bille sortie de table : faute.',true,'anywhere');
   const pocketed = (shot.pocketed || []).filter(p => p.num !== 0);
   const numbers = pocketed.map(p => p.num);
   const remainingBefore = shot.remainingBefore || [];

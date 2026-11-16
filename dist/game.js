@@ -1,13 +1,13 @@
 import {createGameMenu,playerBallState} from './game-menu.js?v=0.83';
 import {createImpactAudio} from './impact-audio.js?v=0.82';
-import {ShotReplay} from './shot-replay.js?v=0.69';
+import {ShotReplay} from './shot-replay.js?v=0.91';
 import {railCutawayForView} from './rail-visibility.js?v=0.88';
 import {trainingLayout,canPlaceTrainingBall,createTrainingSession,recordTrainingChange,undoTrainingChange,redoTrainingChange} from './training.js?v=0.69';
 import {createAimSmoothing,resetAimSmoothing,queueAimMovement,stepAimSmoothing} from './aim-smoothing.js?v=0.61';
 import {spinContactPoint,moveSpinTarget} from './spin-target.js';
 import {createMouseStroke,moveMouseStroke,strokeSensitivityGain} from './mouse-stroke.js?v=0.60';
 import {shotCameraProgress,SHOT_CAMERA_DURATION,SHOT_CAMERA_DELAY} from './shot-camera-transition.js';
-import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js?v=0.65';
+import {newNineBallMatch,nineBallRack,adjudicateNineBall,resolveNineBallDecision,nineBallVictoryPresentation} from './nine-ball-rules.js?v=0.91';
 import {createFirstPersonView,resetFirstPersonAim,adjustFirstPersonHeight,freezeFirstPersonShot,currentFirstPersonPose} from './first-person-camera.js?v=0.61';
 import * as THREE from './vendor/three.module.js';
 import {configureSceneLighting} from './scene-lighting.js?v=0.72';
@@ -15,14 +15,14 @@ import {createCueModel} from './cue-model.js?v=0.75';
 import {createCueMaterials} from './cue-materials.js?v=0.75';
 import {LENGTH, WIDTH, RADIUS, CORNER_CUT, SIDE_CUT, getPockets,
   getCushionSegments, makePhysicsBody, getCueImpact, strikeBall, stopBall,
-  simulatePhysics} from './physics.js?v=0.69';
+  simulatePhysics} from './physics.js?v=0.91';
 import {getLabScenario, ShotTelemetry} from './lab.js?v=0.68';
 import {powerToCueSpeed} from './power.js';
 import {HEAD_STRING_X, clampBreakPosition, canPlaceBreakCue,
   clampFreePosition, canPlaceFreeCue} from './placement.js?v=0.69';
 import {newEightBallMatch,adjudicateEightBall,resolveEightBallDecision,
-  eightBallVictoryPresentation,groupOf} from './eight-ball-rules.js';
-import {predictTrajectory} from './trajectory.js?v=0.69';
+  eightBallVictoryPresentation,groupOf} from './eight-ball-rules.js?v=0.91';
+import {predictTrajectory} from './trajectory.js?v=0.91';
 import {runCalibration, signedDeviation, calibrationToCSV} from './calibration.js?v=0.69';
 import {panCameraTarget,zoomCamera,isCameraSettingsShortcut} from './camera-controls.js?v=0.88';
 import {isFullscreenShortcut,toggleSceneFullscreen,requestSceneFullscreen} from './fullscreen.js?v=0.88';
@@ -39,7 +39,7 @@ const FIXED_STEP = 1 / 240;
 const MAX_DT = 0.05;
 const BALL_COLORS = ['#f5f7ed','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835','#202427','#e8c43b','#2c61b5','#cb3f36','#763c9b','#dd792d','#2a8753','#8a2835'];
 
-const ids = ['cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
+const ids = ['jumpHint','cameraDialog','cameraOptionsButton','closeCameraSettings','cameraViewSelect','cameraSettingsHint','pauseDialog','openOptionsButton','optionsButton','optionsDialog','closeOptions','resumeGame','mainMenuButton','restartMatchButton','homeOptionsButton','volumeSlider','volumeValue','playerOneBalls','playerTwoBalls','replayResume','labRailImpact','shotReplayButton','replayDialog','stopReplayButton','replayProgress','replayTime','controlModeTitle','controlModeHint','trainingEditor','spinSettings','trainingPanel','trainingEditButton','trainingClear','trainingEight','trainingNine','trainingBallSelect','trainingAdd','trainingRemove','trainingUndo','trainingRedo','trainingHistory','trainingAssist','trainingTraces','strokeSensitivityControls','strokeSensitivitySlider','strokeSensitivityValue','strokeSensitivityReset','powerModeButton','mouseStrokeHint','aimMouseButton','pushOutButton','nineBallPanel','nineBallTarget','firstPersonHeightSlider','firstPersonHeightValue','firstPersonPositionReset','firstPersonSettings','firstPersonFovSlider','firstPersonFovValue','firstPersonFovReset','gameCanvas','fullscreenButton','loadingOverlay','shotsCount','pottedCount','ballTotal','ballsProgress','statusTitle','statusText','statusIndicator','shotState','cameraName','sceneHint','placeCueButton','spinPad','spinDot','spinReset','spinType','spinCoords','impactReadout','squirtValue','elevationSlider','elevationValue','powerSlider','powerValue','powerMode','powerSpeed','breakPreset','shootButton','resetButton','viewButton','aimAssist','audioToggle','audioLabel','showTraces','labScenario','labLoad','labReplay','labExport','labDescription','labDistance','labAfterContact','labCushions','labTime','labState','calibrationRun','calibrationExport','calibrationRows','calibrationStats','calibrationHeading','cushionModel','matchOverlay','requireCall','breakerSelect','startMatch','matchPanel','modeChip','playerOne','playerTwo','playerOneGroup','playerTwoGroup','matchMessage','callPanel','calledBall','calledPockets','safetyButton','callHint','decisionOverlay','decisionText','decisionActions','victoryOverlay','victoryWinner','victoryOutcome','victoryReason','victoryNewMatch','victoryInspect'];
 const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
 
 let gamePaused=false;
@@ -1207,10 +1207,10 @@ function updatePowerReadout() {
 }
 
 function setElevation(value) {
-  const elevation=Math.max(0,Math.min(15,Number(value)||0));
+  const elevation=Math.max(0,Math.min(75,Number(value)||0));
   el.elevationSlider.value=String(elevation);
   el.elevationValue.textContent=`${elevation}°`;
-  el.elevationSlider.style.background=`linear-gradient(to right,var(--accent) 0%,var(--accent) ${100*elevation/15}%,#35443e ${100*elevation/15}%,#35443e 100%)`;
+  el.elevationSlider.style.background=`linear-gradient(to right,var(--accent) 0%,var(--accent) ${100*elevation/75}%,#35443e ${100*elevation/75}%,#35443e 100%)`;
   updatePowerReadout();
   updateVisuals();
 }
@@ -1739,6 +1739,13 @@ function physicsStep(dt) {
   const hasMotion=simulatePhysics(balls,dt,{
     cushionModel:el.cushionModel.value,
     onPocket:pocketBall,
+    onLanding:(_ball,speed)=>{if(speed>.35)impactAudio.play('ball',speed*.25);},
+    onOffTable:b=>{
+      if(shotEvents)(shotEvents.offTable??=[]).push(b.num);
+      b.mesh.visible=false;stopBall(b);
+      if(b.num===0)scratchedThisShot=true;
+      updateCounters();
+    },
     onBeforeRailContact:(ball,time,kind)=>telemetry?.recordRailBefore(ball,shotSimTime+(time??dt),kind),
     onRailContact:(ball,_speed,time,kind)=>{
       telemetry?.recordRailAfter(ball,shotSimTime+(time??dt),kind);
@@ -1776,7 +1783,7 @@ function physicsStep(dt) {
       b.mesh.quaternion.premultiply(ballRotationQuaternion);
     }
     b.rotX=b.rotY=b.rotZ=0;
-    b.mesh.position.set(b.x,RADIUS,b.z);
+    b.mesh.position.set(b.x,b.y??RADIUS,b.z);
   }
   lastShotReplay?.record(shotSimTime,balls);
   if(shotActive&&!hasMotion){lastShotReplay?.finish(shotSimTime,balls);settleShot();}
@@ -2466,7 +2473,7 @@ function bindControls() {
     placementMode=!placementMode;
     refreshPlacementUI();
   });
-  el.gameCanvas.addEventListener('wheel',e=>{e.preventDefault();if(cameraMode==='first-person')return;zoomCamera(orbit,e.deltaY,e.deltaMode);updateCamera();},{passive:false});
+  el.gameCanvas.addEventListener('wheel',e=>{e.preventDefault();if(gamePaused||shotActive||replayPlayback)return;if(powerInputMode==='mouse'&&strokePhase==='spin'){setElevation(Number(el.elevationSlider.value)+(e.deltaY<0?1:-1));return;}if(cameraMode==='first-person')return;zoomCamera(orbit,e.deltaY,e.deltaMode);updateCamera();},{passive:false});
   let spinning=false;
   const spinFromPointer=e=>{
     const rect=el.spinPad.getBoundingClientRect();
@@ -2749,7 +2756,7 @@ function drawFallback() {
 
   for(const b of balls) {
     if(!b.active)continue;
-    const r=RADIUS;
+    const r=RADIUS*(1+Math.min(.8,Math.max(0,(b.y??RADIUS)-RADIUS)*2));
     ctx.beginPath();ctx.arc(b.x+r*.12,b.z+r*.16,r*1.1,0,Math.PI*2);ctx.fillStyle='#00111777';ctx.fill();
     const grad=ctx.createRadialGradient(b.x-r*.35,b.z-r*.42,r*.05,b.x,b.z,r*1.25);
     grad.addColorStop(0,'#ffffff');grad.addColorStop(.13,b.num===0?'#f7f7ef':BALL_COLORS[b.num]);
