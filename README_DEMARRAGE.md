@@ -1,8 +1,8 @@
-# FRAME v0.85 — projet complet
+# FRAME v0.86 — projet complet
 
 Code source récupéré le 2 novembre 2026.
 Commit : d49dfc952e4a396ac49b69b5bef8dc2efff443d4.
-Version courante : 0.85 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
+Version courante : 0.86 (voir `VERSION`). Le projet provient de l’archive v0.58 récupérée ci-dessus. Le compteur de versions de l’hébergement est distinct.
 
 ## Lancer localement
 
@@ -493,3 +493,12 @@ Les slogans de l’accueil sont supprimés. Les billes sous les joueurs reprenne
 la palette de la table, le numéro noir dans son disque ivoire, les rayures et
 les reflets de la résine. Le même dessin sert aux billes restantes du jeu de la 9.
 Les joueurs restent présentés dans un bandeau compact.
+
+
+## Version 0.86 — commandes et typographie
+
+Les actions Replay, Changer de vue et Placer la blanche sont en bas à droite.
+Les placements rapides et les sous-titres du menu principal sont supprimés.
+Les cartes joueurs gardent leur contenu mais perdent leur contour ; le nom du
+joueur actif reste distingué. La police monospace est remplacée dans toute
+l’interface par DM Sans. Les numéros des billes conservent leur police de jeu.

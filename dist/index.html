@@ -8,8 +8,8 @@
   <title>FRAME — Billard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=0.85">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css?v=0.86">
 </head>
 <body>
  <div class="app"><div class="workspace"><main class="main-stage">
@@ -31,10 +31,9 @@
 <canvas id="gameCanvas" tabindex="0" aria-label="Table de billard. Avant la casse, glissez la blanche dans la zone de départ. Souris pour viser, clic droit maintenu pour tourner, molette enfoncée et déplacement pour bouger la caméra, défilement pour zoomer, touche F pour le plein écran."></canvas>
           <div class="scene-vignette"></div>
           <div class="scene-top-left" hidden><span class="scene-kicker">VUE ACTIVE</span><strong id="cameraName">PERSPECTIVE</strong></div>
-          <div id="placementQuick" class="placement-quick" aria-label="Positions de casse rapides"><span>PLACEMENT RAPIDE</span><button type="button" data-cue-z="-0.42">HAUT</button><button type="button" data-cue-z="0">CENTRE</button><button type="button" data-cue-z="0.42">BAS</button></div>
           <div class="scene-top-right" hidden><span class="scene-kicker">POSITION DE TIR</span><strong id="shotState">PRÊT</strong></div>
           <div class="scene-bottom-left" hidden><span class="crosshair">+</span><span id="sceneHint">CLIC DROIT : TOURNER <span class="hint-sep">·</span> MOLETTE ENFONCÉE : DÉPLACER <span class="hint-sep">·</span> DÉFILER : ZOOM <span class="hint-sep">·</span> F : PLEIN ÉCRAN</span></div>
-          <div class="scene-bottom-right"><button id="shotReplayButton" class="secondary-button" type="button" disabled title="Revoir le dernier tir sans modifier la partie">↻ REPLAY</button><button id="aimMouseButton" class="camera-button" type="button" hidden>REPRENDRE LA VISÉE</button><button hidden id="fullscreenButton" class="camera-button" type="button" aria-label="Activer ou quitter le plein écran">PLEIN ÉCRAN</button><button id="placeCueButton" class="camera-button place-cue-button" type="button">PLACER LA BLANCHE</button><button id="viewButton" class="camera-button" title="Alterner perspective, dessus et première personne"><span class="view-icon">▣</span> CHANGER DE VUE <kbd>V</kbd></button></div>
+          <div class="scene-bottom-right"><button id="shotReplayButton" class="secondary-button" type="button" disabled title="Revoir le dernier tir sans modifier la partie">↻ REPLAY</button><button id="viewButton" class="camera-button" title="Alterner perspective, dessus et première personne"><span class="view-icon">▣</span> CHANGER DE VUE <kbd>V</kbd></button><button id="placeCueButton" class="camera-button place-cue-button" type="button">PLACER LA BLANCHE</button><button id="aimMouseButton" class="camera-button" type="button" hidden>REPRENDRE LA VISÉE</button><button hidden id="fullscreenButton" class="camera-button" type="button" aria-label="Activer ou quitter le plein écran">PLEIN ÉCRAN</button></div>
           <div class="context-controls"><section id="trainingPanel" class="training-panel" aria-label="Entraînement libre" hidden>
   <div class="eyebrow">ENTRAÎNEMENT LIBRE</div>
   <button id="trainingEditButton" type="button" class="power-mode-button" aria-pressed="false">PLACER LES BILLES</button>
@@ -106,13 +105,12 @@
 
   <div id="matchOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="matchOverlayTitle">
     <div class="game-dialog welcome-dialog"><h2 id="matchOverlayTitle">FRAME<span>.</span></h2>
-      <div class="game-mode-grid"><label class="mode-tile"><input type="radio" name="gameMode" value="training"><b>ENTRAÎNEMENT</b><span>Libre · placement · annuler les coups</span></label><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JOUER À LA 8</b><span>2 joueurs locaux · règles WPA</span></label><label class="mode-tile"><input type="radio" name="gameMode" value="nine"><b>JOUER À LA 9</b><span>2 joueurs · rotation · push-out</span></label></div>
-      <label class="call-switch-row"><input id="requireCall" type="checkbox" checked><span><b>Annonce de bille et de poche</b><small>À chaque coup hors casse. Désactivable pour une variante sans annonce.</small></span></label>
+      <div class="game-mode-grid"><label class="mode-tile"><input type="radio" name="gameMode" value="training"><b>ENTRAÎNEMENT</b></label><label class="mode-tile selected"><input type="radio" name="gameMode" value="eight" checked><b>JOUER À LA 8</b></label><label class="mode-tile"><input type="radio" name="gameMode" value="nine"><b>JOUER À LA 9</b></label></div>
+      <label class="call-switch-row"><input id="requireCall" type="checkbox" checked><span><b>Annonce de bille et de poche</b></span></label>
       <label class="dialog-label" for="breakerSelect">PREMIER JOUEUR À CASSER</label>
       <select id="breakerSelect" class="dialog-select"><option value="0">Joueur 1</option><option value="1">Joueur 2</option></select>
       <button id="startMatch" type="button" class="primary-button dialog-primary"><span>LANCER LA PARTIE</span><span class="button-arrow">↗</span></button>
       <button id="homeOptionsButton" class="home-options-button" type="button" aria-haspopup="dialog" aria-controls="optionsDialog">☷ OPTIONS</button>
-      <p>Les décisions de casse sont proposées selon les règles WPA. Le replacement de la blanche se fait à la souris.</p>
     </div>
   </div>
   <div id="decisionOverlay" class="game-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="decisionTitle" hidden>
@@ -210,12 +208,12 @@
           <p class="calibration-footnote">Les 57 essais sont comparés notamment aux régressions de <a href="https://mediatum.ub.tum.de/doc/1155344/988748.pdf" target="_blank" rel="noopener noreferrer">Nierhoff, Heunisch &amp; Hirche — 1 217 impacts de pool US</a>. Pool v0.17 : référence empirique conservée. Pool v0.18–0.19 : ressort normal/tangentiel inspiré des principes de <a href="https://pooltool.readthedocs.io/en/latest/autoapi/pooltool/physics/index.html" target="_blank" rel="noopener noreferrer">Stronge</a>. Pool v0.20 : contact couplé en 3D avec cisaillement vertical. Pool v0.21 : <strong>identification sous contraintes et contrôle sur la vitesse 1,2 m/s exclue de l'ajustement</strong>. Pool v0.69 : accord à la régression US et transition glissement–roulement précise ; le score pool sépare les repères snooker et indicatifs. Pool v0.68 : correction de non-pénétration, mêmes paramètres et même écart à cette régression que v0.21. <strong>Recherche v0.22 : un contact simultané bille–bande–tapis est implémenté dans un banc séparé, mais ses écarts avec la régression américaine sont supérieurs ; il n'est pas activé en jeu.</strong> Aucun de ces modèles mécaniques n'est validé sur une table indépendante ; les coefficients K55/K66 ne sont pas mesurés. Snooker historique inchangé, géométrie toujours américaine. Les mesures personnelles restent dans ce navigateur.</p>
         </section></details>
 
-  <p class="options-note">VERSION 0.85 · BUILD 085</p>
+  <p class="options-note">VERSION 0.86 · BUILD 086</p>
  </div>
  <div class="options-footer" hidden><button id="resumeGame" type="button" class="primary-button"><span>REPRENDRE LE JEU</span><span class="button-arrow">↗</span></button></div>
 </dialog>
 </section>
 </main></div></div>
- <script type="module" src="./game.js?v=0.85"></script>
+ <script type="module" src="./game.js?v=0.86"></script>
 </body>
 </html>

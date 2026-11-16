@@ -1,4 +1,4 @@
-:root{color-scheme:dark;--bg:#0b1115;--panel:#121a1e;--surface:#151f23;--line:#293339;--line-soft:#242d31;--text:#e6ece8;--muted:#849298;--subtle:#5a696e;--accent:#a6dd7a;--accent-strong:#b9eb90;--mono:'DM Mono',monospace;--body:'DM Sans',sans-serif;--display:'Outfit',sans-serif}
+:root{color-scheme:dark;--bg:#0b1115;--panel:#121a1e;--surface:#151f23;--line:#293339;--line-soft:#242d31;--text:#e6ece8;--muted:#849298;--subtle:#5a696e;--accent:#a6dd7a;--accent-strong:#b9eb90;--mono:var(--body);--body:'DM Sans',Arial,sans-serif;--display:'Outfit',sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:var(--body);background:var(--bg);color:var(--text)}
 button,input{font:inherit}
@@ -557,3 +557,10 @@ aside.shot-dock .primary-button{height:38px;font-size:10px}
  .welcome-dialog h2{margin:0 0 23px}
 }
 @media(max-width:430px){.player-balls .hud-ball{--hud-ball-size:19px}.player-balls{gap:3px;min-height:19px}.session-score .hud-ball{--hud-ball-size:16px}}
+
+
+/* Match actions stay in the lower-right corner in every input mode. */
+.scene-frame .scene-bottom-right{left:auto;right:20px;bottom:18px;transform:none;justify-content:flex-end;max-width:calc(100% - 40px)}
+.game-hud .match-player,.game-hud .match-player.current{border-color:transparent;outline:0;box-shadow:none}
+.game-hud .match-player.current small{color:var(--gold)}
+@media(max-width:700px){.scene-frame .scene-bottom-right{left:auto;right:12px;bottom:14px;max-width:calc(100% - 24px);justify-content:flex-end}}
